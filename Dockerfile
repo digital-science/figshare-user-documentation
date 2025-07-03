@@ -1,5 +1,6 @@
-# Use an official Python runtime as the base image
-FROM debian:11-slim AS build
+ARG registry=942286566325.dkr.ecr.eu-west-1.amazonaws.com
+FROM ${registry}/figshare/debian:11 AS build
+LABEL org.opencontainers.image.source https://github.com/figshare/user_documentation
 
 # Set the working directory in the container
 WORKDIR /app
@@ -33,6 +34,7 @@ RUN make swagger_install
 FROM build as development
 
 # Make the swagger documentation
+RUN make build
 RUN make swagger_build
 
 # Expose port 8000 for the server
@@ -40,3 +42,8 @@ EXPOSE 8000
 
 # Set the default command to run when the container starts
 CMD ["make", "server"]
+
+FROM ${registry}/figshare/nginx:1.18 AS deployment
+
+# Copy the built documentation from the build stage
+COPY --from=development /app /app
