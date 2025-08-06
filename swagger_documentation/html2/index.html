@@ -787,7 +787,7 @@ margin-bottom: 20px;
         defs["ResponseMessage"] = {"type":"object","required":["message"],"properties":{"message":{"type":"string","example":"Project 1 has been published","description":"Response message text"}},"x-tag":"common"};
         defs["Role"] = {"type":"object","required":["category","description","id","name"],"properties":{"id":{"type":"integer","format":"int64","example":1,"description":"Role id"},"name":{"type":"string","example":"Curator","description":"Role name"},"category":{"type":"string","example":"group","description":"Role category"},"description":{"type":"string","description":"Role description"}},"x-tag":"institutions"};
         defs["ShortAccount"] = {"type":"object","required":["active","email","first_name","id","institution_id","institution_user_id","last_name","orcid_id","quota","used_quota","user_id"],"properties":{"id":{"type":"integer","format":"int64","example":1495682,"description":"Account id"},"first_name":{"type":"string","example":"Doe","description":"First Name"},"last_name":{"type":"string","example":"John","description":"Last Name"},"institution_id":{"type":"integer","format":"int64","example":1,"description":"Account institution"},"email":{"type":"string","example":"user@domain.com","description":"User email"},"active":{"type":"integer","format":"int64","example":0,"description":"Account activity status"},"institution_user_id":{"type":"string","example":"1","description":"Account institution user id"},"quota":{"type":"integer","format":"int64","example":1074000000,"description":"Total storage available to account, in bytes"},"used_quota":{"type":"integer","format":"int64","example":1074000000,"description":"Storage used by the account, in bytes"},"user_id":{"type":"integer","format":"int64","example":1000001,"description":"User id associated with account, useful for example for adding the account as an author to an item"},"orcid_id":{"type":"string","example":"0000-0001-2345-6789","description":"ORCID iD associated to account"}},"x-tag":"other"};
-        defs["ShortCustomField"] = {"type":"object","required":["field_type","id","name"],"properties":{"id":{"type":"integer","format":"int64","example":365,"description":"Custom field id"},"name":{"type":"string","example":"my custom field","description":"Custom field name"},"field_type":{"type":"string","example":"textarea","description":"Custom field type","enum":["text","textarea","dropdown","url","email","date","dropdown_large_list"]},"settings":{"type":"object","example":{"validations":{"min_length":1,"max_length":1000},"placeholder":"Enter your custom field here"},"description":"Settings for the custom field","properties":{}},"order":{"type":"integer","format":"int64","example":1,"description":"Order of the field in the group"}},"x-tag":"institutions"};
+        defs["ShortCustomField"] = {"type":"object","required":["field_type","id","name"],"properties":{"id":{"type":"integer","format":"int64","example":365,"description":"Custom field id"},"name":{"type":"string","example":"my custom field","description":"Custom field name"},"field_type":{"type":"string","example":"textarea","description":"Custom field type","enum":["text","textarea","dropdown","url","email","date","dropdown_large_list"]},"settings":{"type":"object","example":{"validations":{"min_length":1,"max_length":1000},"placeholder":"Enter your custom field here"},"description":"Settings for the custom field","properties":{}}},"x-tag":"institutions"};
         defs["Timeline"] = {"allOf":[{"$ref":"#/definitions/TimelineUpdate"}],"x-tag":"timeline"};
         defs["TimelineUpdate"] = {"type":"object","properties":{"firstOnline":{"type":"string","example":"2015-12-31","description":"Online posted date"},"publisherPublication":{"type":"string","example":"2015-12-31","description":"Publish date"},"publisherAcceptance":{"type":"string","example":"2015-12-31","description":"Date when the item was accepted for publication"}},"x-tag":"timeline_update"};
         defs["UploadFilePart"] = {"type":"object","properties":{"partNo":{"type":"integer","format":"int64","example":1,"description":"File part id"},"startOffset":{"type":"integer","format":"int64","example":0,"description":"Indexes on byte range. zero-based and inclusive"},"endOffset":{"type":"integer","format":"int64","example":69,"description":"Indexes on byte range. zero-based and inclusive"},"status":{"type":"string","description":"part status","enum":["PENDING","COMPLETE"]},"locked":{"type":"boolean","description":"When a part is being uploaded it is being locked, by setting the locked flag to true. No changes/uploads can happen on this part from other requests."}},"x-tag":"upload"};
@@ -42194,7 +42194,7 @@ $(document).ready(function() {
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Institutions-privateInstitutionArticles-0-curl">
-                            <pre class="prettyprint"><code class="language-bsh">curl -X GET "https://api.figinternal.dev/v2/account/institution/articles?page=&page_size=&limit=&offset=&order=&order_direction=&published_since=&modified_since=&status=&resource_doi=&item_type="</code></pre>
+                            <pre class="prettyprint"><code class="language-bsh">curl -X GET "https://api.figinternal.dev/v2/account/institution/articles?page=&page_size=&limit=&offset=&order=&order_direction=&published_since=&modified_since=&status=&resource_doi=&item_type=&group="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Institutions-privateInstitutionArticles-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -42226,8 +42226,9 @@ public class InstitutionsApiExample {
         Long status = 789; // Long | only return collections with this status
         String resourceDoi = resourceDoi_example; // String | only return collections with this resource_doi
         Long itemType = 789; // Long | Only return articles with the respective type. Mapping for item_type is: 1 - Figure, 2 - Media, 3 - Dataset, 5 - Poster, 6 - Journal contribution, 7 - Presentation, 8 - Thesis, 9 - Software, 11 - Online resource, 12 - Preprint, 13 - Book, 14 - Conference contribution, 15 - Chapter, 16 - Peer review, 17 - Educational resource, 18 - Report, 19 - Standard, 20 - Composition, 21 - Funding, 22 - Physical object, 23 - Data management plan, 24 - Workflow, 25 - Monograph, 26 - Performance, 27 - Event, 28 - Service, 29 - Model
+        Long group = 789; // Long | only return articles from this group
         try {
-            array[Article] result = apiInstance.privateInstitutionArticles(page, pageSize, limit, offset, order, orderDirection, publishedSince, modifiedSince, status, resourceDoi, itemType);
+            array[Article] result = apiInstance.privateInstitutionArticles(page, pageSize, limit, offset, order, orderDirection, publishedSince, modifiedSince, status, resourceDoi, itemType, group);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling InstitutionsApi#privateInstitutionArticles");
@@ -42255,8 +42256,9 @@ public class InstitutionsApiExample {
         Long status = 789; // Long | only return collections with this status
         String resourceDoi = resourceDoi_example; // String | only return collections with this resource_doi
         Long itemType = 789; // Long | Only return articles with the respective type. Mapping for item_type is: 1 - Figure, 2 - Media, 3 - Dataset, 5 - Poster, 6 - Journal contribution, 7 - Presentation, 8 - Thesis, 9 - Software, 11 - Online resource, 12 - Preprint, 13 - Book, 14 - Conference contribution, 15 - Chapter, 16 - Peer review, 17 - Educational resource, 18 - Report, 19 - Standard, 20 - Composition, 21 - Funding, 22 - Physical object, 23 - Data management plan, 24 - Workflow, 25 - Monograph, 26 - Performance, 27 - Event, 28 - Service, 29 - Model
+        Long group = 789; // Long | only return articles from this group
         try {
-            array[Article] result = apiInstance.privateInstitutionArticles(page, pageSize, limit, offset, order, orderDirection, publishedSince, modifiedSince, status, resourceDoi, itemType);
+            array[Article] result = apiInstance.privateInstitutionArticles(page, pageSize, limit, offset, order, orderDirection, publishedSince, modifiedSince, status, resourceDoi, itemType, group);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling InstitutionsApi#privateInstitutionArticles");
@@ -42286,6 +42288,7 @@ String *modifiedSince = modifiedSince_example; // Filter by article modified dat
 Long *status = 789; // only return collections with this status (optional)
 String *resourceDoi = resourceDoi_example; // only return collections with this resource_doi (optional)
 Long *itemType = 789; // Only return articles with the respective type. Mapping for item_type is: 1 - Figure, 2 - Media, 3 - Dataset, 5 - Poster, 6 - Journal contribution, 7 - Presentation, 8 - Thesis, 9 - Software, 11 - Online resource, 12 - Preprint, 13 - Book, 14 - Conference contribution, 15 - Chapter, 16 - Peer review, 17 - Educational resource, 18 - Report, 19 - Standard, 20 - Composition, 21 - Funding, 22 - Physical object, 23 - Data management plan, 24 - Workflow, 25 - Monograph, 26 - Performance, 27 - Event, 28 - Service, 29 - Model (optional)
+Long *group = 789; // only return articles from this group (optional)
 
 InstitutionsApi *apiInstance = [[InstitutionsApi alloc] init];
 
@@ -42301,6 +42304,7 @@ InstitutionsApi *apiInstance = [[InstitutionsApi alloc] init];
     status:status
     resourceDoi:resourceDoi
     itemType:itemType
+    group:group
               completionHandler: ^(array[Article] output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
@@ -42333,7 +42337,8 @@ var opts = {
   'modifiedSince': modifiedSince_example, // {String} Filter by article modified date. Will only return articles published after the date. date(ISO 8601) YYYY-MM-DD
   'status': 789, // {Long} only return collections with this status
   'resourceDoi': resourceDoi_example, // {String} only return collections with this resource_doi
-  'itemType': 789 // {Long} Only return articles with the respective type. Mapping for item_type is: 1 - Figure, 2 - Media, 3 - Dataset, 5 - Poster, 6 - Journal contribution, 7 - Presentation, 8 - Thesis, 9 - Software, 11 - Online resource, 12 - Preprint, 13 - Book, 14 - Conference contribution, 15 - Chapter, 16 - Peer review, 17 - Educational resource, 18 - Report, 19 - Standard, 20 - Composition, 21 - Funding, 22 - Physical object, 23 - Data management plan, 24 - Workflow, 25 - Monograph, 26 - Performance, 27 - Event, 28 - Service, 29 - Model
+  'itemType': 789, // {Long} Only return articles with the respective type. Mapping for item_type is: 1 - Figure, 2 - Media, 3 - Dataset, 5 - Poster, 6 - Journal contribution, 7 - Presentation, 8 - Thesis, 9 - Software, 11 - Online resource, 12 - Preprint, 13 - Book, 14 - Conference contribution, 15 - Chapter, 16 - Peer review, 17 - Educational resource, 18 - Report, 19 - Standard, 20 - Composition, 21 - Funding, 22 - Physical object, 23 - Data management plan, 24 - Workflow, 25 - Monograph, 26 - Performance, 27 - Event, 28 - Service, 29 - Model
+  'group': 789 // {Long} only return articles from this group
 };
 
 var callback = function(error, data, response) {
@@ -42379,11 +42384,12 @@ namespace Example
             var status = 789;  // Long | only return collections with this status (optional) 
             var resourceDoi = resourceDoi_example;  // String | only return collections with this resource_doi (optional) 
             var itemType = 789;  // Long | Only return articles with the respective type. Mapping for item_type is: 1 - Figure, 2 - Media, 3 - Dataset, 5 - Poster, 6 - Journal contribution, 7 - Presentation, 8 - Thesis, 9 - Software, 11 - Online resource, 12 - Preprint, 13 - Book, 14 - Conference contribution, 15 - Chapter, 16 - Peer review, 17 - Educational resource, 18 - Report, 19 - Standard, 20 - Composition, 21 - Funding, 22 - Physical object, 23 - Data management plan, 24 - Workflow, 25 - Monograph, 26 - Performance, 27 - Event, 28 - Service, 29 - Model (optional) 
+            var group = 789;  // Long | only return articles from this group (optional) 
 
             try
             {
                 // Private Institution Articles
-                array[Article] result = apiInstance.privateInstitutionArticles(page, pageSize, limit, offset, order, orderDirection, publishedSince, modifiedSince, status, resourceDoi, itemType);
+                array[Article] result = apiInstance.privateInstitutionArticles(page, pageSize, limit, offset, order, orderDirection, publishedSince, modifiedSince, status, resourceDoi, itemType, group);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -42415,9 +42421,10 @@ $modifiedSince = modifiedSince_example; // String | Filter by article modified d
 $status = 789; // Long | only return collections with this status
 $resourceDoi = resourceDoi_example; // String | only return collections with this resource_doi
 $itemType = 789; // Long | Only return articles with the respective type. Mapping for item_type is: 1 - Figure, 2 - Media, 3 - Dataset, 5 - Poster, 6 - Journal contribution, 7 - Presentation, 8 - Thesis, 9 - Software, 11 - Online resource, 12 - Preprint, 13 - Book, 14 - Conference contribution, 15 - Chapter, 16 - Peer review, 17 - Educational resource, 18 - Report, 19 - Standard, 20 - Composition, 21 - Funding, 22 - Physical object, 23 - Data management plan, 24 - Workflow, 25 - Monograph, 26 - Performance, 27 - Event, 28 - Service, 29 - Model
+$group = 789; // Long | only return articles from this group
 
 try {
-    $result = $api_instance->privateInstitutionArticles($page, $pageSize, $limit, $offset, $order, $orderDirection, $publishedSince, $modifiedSince, $status, $resourceDoi, $itemType);
+    $result = $api_instance->privateInstitutionArticles($page, $pageSize, $limit, $offset, $order, $orderDirection, $publishedSince, $modifiedSince, $status, $resourceDoi, $itemType, $group);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling InstitutionsApi->privateInstitutionArticles: ', $e->getMessage(), PHP_EOL;
@@ -42445,9 +42452,10 @@ my $modifiedSince = modifiedSince_example; # String | Filter by article modified
 my $status = 789; # Long | only return collections with this status
 my $resourceDoi = resourceDoi_example; # String | only return collections with this resource_doi
 my $itemType = 789; # Long | Only return articles with the respective type. Mapping for item_type is: 1 - Figure, 2 - Media, 3 - Dataset, 5 - Poster, 6 - Journal contribution, 7 - Presentation, 8 - Thesis, 9 - Software, 11 - Online resource, 12 - Preprint, 13 - Book, 14 - Conference contribution, 15 - Chapter, 16 - Peer review, 17 - Educational resource, 18 - Report, 19 - Standard, 20 - Composition, 21 - Funding, 22 - Physical object, 23 - Data management plan, 24 - Workflow, 25 - Monograph, 26 - Performance, 27 - Event, 28 - Service, 29 - Model
+my $group = 789; # Long | only return articles from this group
 
 eval { 
-    my $result = $api_instance->privateInstitutionArticles(page => $page, pageSize => $pageSize, limit => $limit, offset => $offset, order => $order, orderDirection => $orderDirection, publishedSince => $publishedSince, modifiedSince => $modifiedSince, status => $status, resourceDoi => $resourceDoi, itemType => $itemType);
+    my $result = $api_instance->privateInstitutionArticles(page => $page, pageSize => $pageSize, limit => $limit, offset => $offset, order => $order, orderDirection => $orderDirection, publishedSince => $publishedSince, modifiedSince => $modifiedSince, status => $status, resourceDoi => $resourceDoi, itemType => $itemType, group => $group);
     print Dumper($result);
 };
 if ($@) {
@@ -42478,10 +42486,11 @@ modifiedSince = modifiedSince_example # String | Filter by article modified date
 status = 789 # Long | only return collections with this status (optional)
 resourceDoi = resourceDoi_example # String | only return collections with this resource_doi (optional)
 itemType = 789 # Long | Only return articles with the respective type. Mapping for item_type is: 1 - Figure, 2 - Media, 3 - Dataset, 5 - Poster, 6 - Journal contribution, 7 - Presentation, 8 - Thesis, 9 - Software, 11 - Online resource, 12 - Preprint, 13 - Book, 14 - Conference contribution, 15 - Chapter, 16 - Peer review, 17 - Educational resource, 18 - Report, 19 - Standard, 20 - Composition, 21 - Funding, 22 - Physical object, 23 - Data management plan, 24 - Workflow, 25 - Monograph, 26 - Performance, 27 - Event, 28 - Service, 29 - Model (optional)
+group = 789 # Long | only return articles from this group (optional)
 
 try: 
     # Private Institution Articles
-    api_response = api_instance.private_institution_articles(page=page, pageSize=pageSize, limit=limit, offset=offset, order=order, orderDirection=orderDirection, publishedSince=publishedSince, modifiedSince=modifiedSince, status=status, resourceDoi=resourceDoi, itemType=itemType)
+    api_response = api_instance.private_institution_articles(page=page, pageSize=pageSize, limit=limit, offset=offset, order=order, orderDirection=orderDirection, publishedSince=publishedSince, modifiedSince=modifiedSince, status=status, resourceDoi=resourceDoi, itemType=itemType, group=group)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling InstitutionsApi->privateInstitutionArticles: %s\n" % e)</code></pre>
@@ -42728,6 +42737,29 @@ except ApiException as e:
 
                     <div class="inner description">
                         Only return articles with the respective type. Mapping for item_type is: 1 - Figure, 2 - Media, 3 - Dataset, 5 - Poster, 6 - Journal contribution, 7 - Presentation, 8 - Thesis, 9 - Software, 11 - Online resource, 12 - Preprint, 13 - Book, 14 - Conference contribution, 15 - Chapter, 16 - Peer review, 17 - Educational resource, 18 - Report, 19 - Standard, 20 - Composition, 21 - Funding, 22 - Physical object, 23 - Data management plan, 24 - Workflow, 25 - Monograph, 26 - Performance, 27 - Event, 28 - Service, 29 - Model
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                <tr><td style="width:150px;">group</td>
+<td>
+
+
+    <div id="d2e199_privateInstitutionArticles_group">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Long
+                </span>
+                    <span class="format">
+                        (int64)
+                    </span>
+
+                    <div class="inner description">
+                        only return articles from this group
                     </div>
             </div>
         </div>

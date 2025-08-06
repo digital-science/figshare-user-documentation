@@ -7522,6 +7522,14 @@
                         "type": "integer",
                         "format": "int64",
                         "required": false
+                    },
+                    {
+                        "name": "group",
+                        "in": "query",
+                        "description": "only return articles from this group",
+                        "type": "integer",
+                        "format": "int64",
+                        "required": false
                     }
                 ],
                 "responses": {
@@ -9074,12 +9082,6 @@
                         },
                         "placeholder": "Enter your custom field here"
                     }
-                },
-                "order": {
-                    "description": "Order of the field in the group",
-                    "type": "integer",
-                    "format": "int64",
-                    "example": 1
                 }
             }
         },
