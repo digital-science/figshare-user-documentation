@@ -10807,6 +10807,24 @@
                         "format": "url"
                     }
                 },
+                "related_materials": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/RelatedMaterial"
+                    },
+                    "default": [],
+                    "description": "List of related materials; supersedes references and resource DOI/title.",
+                    "example": [
+                        {
+                            "id": 10432,
+                            "identifier": "10.6084/m9.figshare.1407024",
+                            "identifier_type": "DOI",
+                            "relation": "IsSupplementTo",
+                            "title": "Figshare for institutions brochure",
+                            "is_linkout": false
+                        }
+                    ]
+                },
                 "tags": {
                     "type": "array",
                     "description": "List of collection tags",
@@ -12147,6 +12165,24 @@
                         "format": "url"
                     }
                 },
+                "related_materials": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/RelatedMaterial"
+                    },
+                    "default": [],
+                    "description": "List of related materials; supersedes references and resource DOI/title.",
+                    "example": [
+                        {
+                            "id": 10432,
+                            "identifier": "10.6084/m9.figshare.1407024",
+                            "identifier_type": "DOI",
+                            "relation": "IsSupplementTo",
+                            "title": "Figshare for institutions brochure",
+                            "is_linkout": false
+                        }
+                    ]
+                },
                 "tags": {
                     "type": "array",
                     "description": "List of collection tags",
@@ -12348,6 +12384,24 @@
                         "http://api.figshare.com"
                     ]
                 },
+                "related_materials": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/RelatedMaterial"
+                    },
+                    "default": [],
+                    "description": "List of related materials; supersedes references and resource DOI/title.",
+                    "example": [
+                        {
+                            "id": 10432,
+                            "identifier": "10.6084/m9.figshare.1407024",
+                            "identifier_type": "DOI",
+                            "relation": "IsSupplementTo",
+                            "title": "Figshare for institutions brochure",
+                            "is_linkout": false
+                        }
+                    ]
+                },
                 "custom_fields": {
                     "type": "object",
                     "description": "List of key, values pairs to be associated with the collection",
@@ -12524,6 +12578,24 @@
                     "example": [
                         "http://figshare.com",
                         "http://api.figshare.com"
+                    ]
+                },
+                "related_materials": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/RelatedMaterial"
+                    },
+                    "default": [],
+                    "description": "List of related materials; supersedes references and resource DOI/title.",
+                    "example": [
+                        {
+                            "id": 10432,
+                            "identifier": "10.6084/m9.figshare.1407024",
+                            "identifier_type": "DOI",
+                            "relation": "IsSupplementTo",
+                            "title": "Figshare for institutions brochure",
+                            "is_linkout": false
+                        }
                     ]
                 },
                 "custom_fields": {
