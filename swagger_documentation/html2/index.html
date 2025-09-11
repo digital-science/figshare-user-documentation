@@ -696,13 +696,14 @@ margin-bottom: 20px;
   <script>
     // Script section to load models into a JS Var
     var defs = {}
-        defs["Account"] = {"type":"object","required":["active","created_date","email","first_name","group_id","id","institution_id","institution_user_id","last_name","maximum_file_size","modified_date","pending_quota_request","quota","used_quota","used_quota_private","used_quota_public"],"properties":{"id":{"type":"integer","format":"int64","example":1495682,"description":"Account id"},"first_name":{"type":"string","example":"Doe","description":"First Name"},"last_name":{"type":"string","example":"John","description":"Last Name"},"used_quota_private":{"type":"integer","format":"int64","example":0,"description":"Account used private quota"},"modified_date":{"type":"string","example":"2018-05-22T04:04:04","description":"Date of last account modification"},"used_quota":{"type":"integer","format":"int64","example":0,"description":"Account total used quota"},"created_date":{"type":"string","example":"2018-05-22T04:04:04","description":"Date when account was created"},"quota":{"type":"integer","format":"int64","example":0,"description":"Account quota"},"group_id":{"type":"integer","format":"int64","example":0,"description":"Account group id"},"institution_user_id":{"type":"string","example":"djohn42","description":"Account institution user id"},"institution_id":{"type":"integer","format":"int64","example":1,"description":"Account institution"},"email":{"type":"string","example":"user@domain.com","description":"User email"},"used_quota_public":{"type":"integer","format":"int64","example":0,"description":"Account public used quota"},"pending_quota_request":{"type":"boolean","example":true,"description":"True if a quota request is pending"},"active":{"type":"integer","format":"int64","example":0,"description":"Account activity status"},"maximum_file_size":{"type":"integer","format":"int64","example":0,"description":"Maximum upload size for account"}},"x-tag":"other"};
+        defs["Account"] = {"type":"object","required":["active","created_date","email","first_name","group_id","id","institution_id","institution_user_id","last_name","maximum_file_size","modified_date","orcid_id","pending_quota_request","quota","used_quota","used_quota_private","used_quota_public","user_id"],"properties":{"id":{"type":"integer","format":"int64","example":1495682,"description":"Account id"},"first_name":{"type":"string","example":"Doe","description":"First Name"},"last_name":{"type":"string","example":"John","description":"Last Name"},"used_quota_private":{"type":"integer","format":"int64","example":0,"description":"Account used private quota"},"modified_date":{"type":"string","example":"2018-05-22T04:04:04","description":"Date of last account modification"},"used_quota":{"type":"integer","format":"int64","example":0,"description":"Account total used quota"},"created_date":{"type":"string","example":"2018-05-22T04:04:04","description":"Date when account was created"},"quota":{"type":"integer","format":"int64","example":0,"description":"Account quota"},"group_id":{"type":"integer","format":"int64","example":0,"description":"Account group id"},"institution_user_id":{"type":"string","example":"djohn42","description":"Account institution user id"},"institution_id":{"type":"integer","format":"int64","example":1,"description":"Account institution"},"email":{"type":"string","example":"user@domain.com","description":"User email"},"used_quota_public":{"type":"integer","format":"int64","example":0,"description":"Account public used quota"},"pending_quota_request":{"type":"boolean","example":true,"description":"True if a quota request is pending"},"active":{"type":"integer","format":"int64","example":0,"description":"Account activity status"},"maximum_file_size":{"type":"integer","format":"int64","example":0,"description":"Maximum upload size for account"},"user_id":{"type":"integer","format":"int64","example":1000001,"description":"User id associated with account, useful for example for adding the account as an author to an item"},"orcid_id":{"type":"string","example":"0000-0001-2345-6789","description":"ORCID iD associated to account"}},"x-tag":"other"};
         defs["AccountCreate"] = {"type":"object","required":["email","last_name"],"properties":{"email":{"type":"string","example":"johndoe@example.com","description":"Email of account","minLength":3,"maxLength":150},"first_name":{"type":"string","example":"John","description":"First Name","maxLength":255,"default":""},"last_name":{"type":"string","example":"Doe","description":"Last Name","maxLength":255,"default":""},"group_id":{"type":"integer","format":"int64","description":"Not applicable to regular users. This field is reserved to institutions/publishers with access to assign to specific groups"},"institution_user_id":{"type":"string","example":"johndoe","description":"Institution user id","maxLength":50,"default":""},"symplectic_user_id":{"type":"string","example":"johndoe","description":"Symplectic user id","maxLength":50,"default":""},"quota":{"type":"integer","format":"int64","example":1000,"description":"Account quota"},"is_active":{"type":"boolean","description":"Is account active"}},"x-tag":"institutions","x-maxCombinedLength":{"description":"The combined length of first_name and last_name must not exceed 255 characters."}};
+        defs["AccountCreateResponse"] = {"type":"object","required":["account_id"],"properties":{"account_id":{"type":"integer","format":"int64","example":33334444,"description":"ID of created account"}},"x-tag":"common"};
         defs["AccountGroupRoles"] = {"type":"object","example":{"2":[{"category":"group","id":7,"name":"User"}]},"x-tag":"institutions"};
         defs["AccountGroupRolesCreate"] = {"type":"object","example":{"2":[2,7],"3":[7,9]},"x-tag":"institutions"};
         defs["AccountReport"] = {"type":"object","required":["account_id","created_date","download_url","group_id","id","status"],"properties":{"id":{"type":"integer","format":"int64","description":"A unique ID for the AccountRecord"},"account_id":{"type":"integer","format":"int64","description":"The ID of the account which generated this report."},"created_date":{"type":"string","example":"2017-05-15T15:12:26Z","description":"Date when the AccountReport was requested"},"status":{"type":"string","description":"Status of the report","enum":["missing","pending","done"]},"download_url":{"type":"string","format":"url","example":"https://some.com/storage/path/123/report-456.xlsx","description":"The download link for the generated XLSX"},"group_id":{"type":"integer","format":"int64","description":"The group ID that was used to filter the report, if any."}}};
         defs["AccountUpdate"] = {"type":"object","required":["group_id","is_active"],"properties":{"group_id":{"type":"integer","format":"int64","description":"Not applicable to regular users. This field is reserved to institutions/publishers with access to assign to specific groups"},"is_active":{"type":"boolean","description":"Is account active"}},"x-tag":"institutions"};
-        defs["Article"] = {"type":"object","required":["defined_type","defined_type_name","doi","handle","id","resource_doi","resource_title","thumb","timeline","title","url","url_private_api","url_private_html","url_public_api","url_public_html"],"properties":{"id":{"type":"integer","format":"int64","example":1434614,"description":"Unique identifier for article"},"title":{"type":"string","example":"Test article title","description":"Title of article"},"doi":{"type":"string","example":"10.6084/m9.figshare.1434614","description":"DOI"},"handle":{"type":"string","example":"111184/figshare.1234","description":"Handle"},"url":{"type":"string","format":"url","example":"http://api.figshare.com/articles/1434614","description":"Api endpoint for article"},"url_public_html":{"type":"string","format":"url","example":"https://figshare.com/articles/media/Test_article_title/1434614","description":"Public site endpoint for article"},"url_public_api":{"type":"string","format":"url","example":"https://api.figshare.com/articles/1434614","description":"Public Api endpoint for article"},"url_private_html":{"type":"string","format":"url","example":"https://figshare.com/account/articles/1434614","description":"Private site endpoint for article"},"url_private_api":{"type":"string","format":"url","example":"https://api.figshare.com/account/articles/1434614","description":"Private Api endpoint for article"},"timeline":{"description":"Various timeline dates","$ref":"#/definitions/Timeline"},"thumb":{"type":"string","format":"url","example":"https://ndownloader.figshare.com/files/123456789/preview/12345678/thumb.png","description":"Thumbnail image"},"defined_type":{"type":"integer","format":"int64","example":3,"description":"Type of article identifier"},"defined_type_name":{"type":"string","example":"media","description":"Name of the article type identifier"},"resource_doi":{"type":"string","description":"Deprecated by related materials. Not applicable to regular users. In a publisher case, this is the publisher article DOI.","default":""},"resource_title":{"type":"string","description":"Deprecated by related materials. Not applicable to regular users. In a publisher case, this is the publisher article title.","default":""}},"x-tag":"articles"};
+        defs["Article"] = {"type":"object","required":["created_date","defined_type","defined_type_name","doi","handle","id","resource_doi","resource_title","thumb","timeline","title","url","url_private_api","url_private_html","url_public_api","url_public_html"],"properties":{"id":{"type":"integer","format":"int64","example":1434614,"description":"Unique identifier for article"},"title":{"type":"string","example":"Test article title","description":"Title of article"},"doi":{"type":"string","example":"10.6084/m9.figshare.1434614","description":"DOI"},"handle":{"type":"string","example":"111184/figshare.1234","description":"Handle"},"url":{"type":"string","format":"url","example":"http://api.figshare.com/articles/1434614","description":"Api endpoint for article"},"url_public_html":{"type":"string","format":"url","example":"https://figshare.com/articles/media/Test_article_title/1434614","description":"Public site endpoint for article"},"url_public_api":{"type":"string","format":"url","example":"https://api.figshare.com/articles/1434614","description":"Public Api endpoint for article"},"url_private_html":{"type":"string","format":"url","example":"https://figshare.com/account/articles/1434614","description":"Private site endpoint for article"},"url_private_api":{"type":"string","format":"url","example":"https://api.figshare.com/account/articles/1434614","description":"Private Api endpoint for article"},"timeline":{"description":"Various timeline dates","$ref":"#/definitions/Timeline"},"thumb":{"type":"string","format":"url","example":"https://ndownloader.figshare.com/files/123456789/preview/12345678/thumb.png","description":"Thumbnail image"},"defined_type":{"type":"integer","format":"int64","example":3,"description":"Type of article identifier"},"defined_type_name":{"type":"string","example":"media","description":"Name of the article type identifier"},"resource_doi":{"type":"string","description":"Deprecated by related materials. Not applicable to regular users. In a publisher case, this is the publisher article DOI.","default":""},"resource_title":{"type":"string","description":"Deprecated by related materials. Not applicable to regular users. In a publisher case, this is the publisher article title.","default":""},"created_date":{"type":"string","example":"2017-05-18T11:49:03Z","description":"Date when article was created"}},"x-tag":"articles"};
         defs["ArticleComplete"] = {"properties":{"figshare_url":{"type":"string","format":"url","example":"http://figshare.com/articles/media/article_name/2000005","description":"Article public url"},"download_disabled":{"type":"boolean","example":false,"description":"If true, downloading of files for this article is disabled"},"files":{"type":"array","description":"List of up to 10 article files.","items":{"$ref":"#/definitions/PublicFile"}},"authors":{"type":"array","description":"List of article authors","items":{"$ref":"#/definitions/Author"}},"custom_fields":{"type":"array","description":"List of custom fields values","items":{"$ref":"#/definitions/CustomArticleField"}},"embargo_options":{"type":"array","description":"List of embargo options","items":{"$ref":"#/definitions/GroupEmbargoOptions"}}},"required":["authors","custom_fields","download_disabled","embargo_options","figshare_url","files"],"allOf":[{"$ref":"#/definitions/ProjectArticle"}],"x-tag":"articles"};
         defs["ArticleCompletePrivate"] = {"properties":{"account_id":{"type":"integer","format":"int64","example":1000001,"description":"ID of the account owning the article"}},"required":["account_id"],"allOf":[{"$ref":"#/definitions/ArticleComplete"}],"x-tag":"articles"};
         defs["ArticleConfidentiality"] = {"type":"object","required":["is_confidential","reason"],"properties":{"is_confidential":{"type":"boolean","example":true,"description":"True if article is confidential"},"reason":{"type":"string","example":"need to","description":"Reason for confidentiality"}},"x-tag":"articles"};
@@ -712,37 +713,37 @@ margin-bottom: 20px;
         defs["ArticleEmbargoUpdater"] = {"type":"object","required":["embargo_date","embargo_type","is_embargoed"],"properties":{"is_embargoed":{"type":"boolean","example":true,"description":"Embargo status"},"embargo_date":{"type":"string","example":"2018-05-22T04:04:04","description":"Date when the embargo expires and the article gets published, '0' value will set up permanent embargo"},"embargo_type":{"type":"string","example":"file","description":"Embargo can be enabled at the article or the file level. Possible values: article, file","enum":["article","file"]},"embargo_title":{"type":"string","example":"File(s) under embargo","description":"Title for embargo"},"embargo_reason":{"type":"string","example":"","description":"Reason for setting embargo"},"embargo_options":{"type":"array","example":[{"id":1321},{"id":3345},{"id":54621,"group_ids":[4332,5433,678]}],"description":"List of embargo permissions to be associated with the article. The list must contain `id` and can also contain `group_ids`(a field that only applies to 'logged_in' permissions). The new list replaces old options in the database, and an empty list removes all permissions for this article. Administration permission has to be set up alone but logged in and IP range permissions can be set up together.","items":{"type":"object","properties":{}}}},"x-tag":"articles"};
         defs["ArticleHandle"] = {"type":"object","required":["handle"],"properties":{"handle":{"type":"string","example":"11172/FK2.FIGSHARE.20345","description":"Reserved Handle"}},"x-tag":"articles"};
         defs["ArticleProjectCreate"] = {"type":"object","required":["title"],"properties":{"title":{"type":"string","example":"Test article title","description":"Title of article","minLength":3,"maxLength":1000},"description":{"type":"string","example":"Test description of article","description":"The article description. In a publisher case, usually this is the remote article description","maxLength":20000,"default":""},"tags":{"type":"array","example":["tag1","tag2"],"description":"List of tags to be associated with the article. Keywords can be used instead","items":{"type":"string"}},"keywords":{"type":"array","example":["tag1","tag2"],"description":"List of tags to be associated with the article. Tags can be used instead","items":{"type":"string"}},"references":{"type":"array","example":["http://figshare.com","http://api.figshare.com"],"description":"List of links to be associated with the article (e.g [\"http://link1\", \"http://link2\", \"http://link3\"])","items":{"type":"string","format":"link"}},"related_materials":{"type":"array","example":[{"id":10432,"identifier":"10.6084/m9.figshare.1407024","identifier_type":"DOI","relation":"IsSupplementTo","title":"Figshare for institutions brochure","is_linkout":false}],"description":"List of related materials; supersedes references and resource DOI/title.","items":{"$ref":"#/definitions/RelatedMaterial"}},"categories":{"type":"array","example":[1,10,11],"description":"List of category ids to be associated with the article(e.g [1, 23, 33, 66])","items":{"type":"integer","format":"int64"}},"categories_by_source_id":{"type":"array","example":["300204","400207"],"description":"List of category source ids to be associated with the article, supersedes the categories property","items":{"type":"string"}},"authors":{"type":"array","example":[{"name":"John Doe"},{"id":1000008}],"description":"List of authors to be associated with the article. The list can contain the following fields: id, name, first_name, last_name, email, orcid_id. If an id is supplied, it will take priority and everything else will be ignored. For adding more authors use the specific authors endpoint.","items":{"type":"object","properties":{}}},"custom_fields":{"type":"object","example":{"defined_key":"value for it"},"description":"List of key, values pairs to be associated with the article","properties":{}},"custom_fields_list":{"type":"array","description":"List of custom fields values, supersedes custom_fields parameter","items":{"$ref":"#/definitions/CustomArticleFieldAdd"}},"defined_type":{"type":"string","example":"media","description":"<b>One of:</b> <code>figure</code> <code>online resource</code> <code>preprint</code> <code>book</code> <code>conference contribution</code> <code>media</code> <code>dataset</code> <code>poster</code> <code>journal contribution</code> <code>presentation</code> <code>thesis</code> <code>software</code>"},"funding":{"type":"string","description":"Grant number or funding authority","default":""},"funding_list":{"type":"array","description":"Funding creation / update items","items":{"$ref":"#/definitions/FundingCreate"}},"license":{"type":"integer","format":"int64","example":1,"description":"License id for this article.","default":0},"doi":{"type":"string","description":"Not applicable for regular users. In an institutional case, make sure your group supports setting DOIs. This setting is applied by figshare via opening a ticket through our support/helpdesk system.","default":""},"handle":{"type":"string","description":"Not applicable for regular users. In an institutional case, make sure your group supports setting Handles. This setting is applied by figshare via opening a ticket through our support/helpdesk system.","default":""},"resource_doi":{"type":"string","description":"Deprecated by related materials. Not applicable to regular users. In a publisher case, this is the publisher article DOI.","default":""},"resource_title":{"type":"string","description":"Deprecated by related materials. Not applicable to regular users. In a publisher case, this is the publisher article title.","default":""},"timeline":{"description":"Various timeline dates","$ref":"#/definitions/TimelineUpdate"}},"x-tag":"articles"};
-        defs["ArticleSearch"] = {"properties":{"resource_doi":{"type":"string","example":"10.6084/m9.figshare.1407024","description":"Only return articles with this resource_doi"},"item_type":{"type":"integer","format":"int64","example":1,"description":"Only return articles with the respective type. Mapping for item_type is: 1 - Figure, 2 - Media, 3 - Dataset, 5 - Poster, 6 - Journal contribution, 7 - Presentation, 8 - Thesis, 9 - Software, 11 - Online resource, 12 - Preprint, 13 - Book, 14 - Conference contribution, 15 - Chapter, 16 - Peer review, 17 - Educational resource, 18 - Report, 19 - Standard, 20 - Composition, 21 - Funding, 22 - Physical object, 23 - Data management plan, 24 - Workflow, 25 - Monograph, 26 - Performance, 27 - Event, 28 - Service, 29 - Model"},"doi":{"type":"string","example":"10.6084/m9.figshare.1407024","description":"Only return articles with this doi"},"handle":{"type":"string","example":"111084/m9.figshare.14074","description":"Only return articles with this handle"},"project_id":{"type":"integer","format":"int64","example":1,"description":"Only return articles in this project"},"order":{"type":"string","example":"published_date","description":"The field by which to order","enum":["created_date","published_date","modified_date","views","shares","downloads","cites"],"default":"created_date"}},"allOf":[{"$ref":"#/definitions/CommonSearch"}],"x-tag":"articles"};
+        defs["ArticleSearch"] = {"properties":{"resource_doi":{"type":"string","example":"10.6084/m9.figshare.1407024","description":"Only return articles with this resource_doi"},"item_type":{"type":"integer","format":"int64","example":1,"description":"Only return articles with the respective type. Mapping for item_type is: 1 - Figure, 2 - Media, 3 - Dataset, 5 - Poster, 6 - Journal contribution, 7 - Presentation, 8 - Thesis, 9 - Software, 11 - Online resource, 12 - Preprint, 13 - Book, 14 - Conference contribution, 15 - Chapter, 16 - Peer review, 17 - Educational resource, 18 - Report, 19 - Standard, 20 - Composition, 21 - Funding, 22 - Physical object, 23 - Data management plan, 24 - Workflow, 25 - Monograph, 26 - Performance, 27 - Event, 28 - Service, 29 - Model"},"doi":{"type":"string","example":"10.6084/m9.figshare.1407024","description":"Only return articles with this doi"},"handle":{"type":"string","example":"111084/m9.figshare.14074","description":"Only return articles with this handle"},"project_id":{"type":"integer","format":"int64","example":1,"description":"Only return articles in this project"},"order":{"type":"string","example":"published_date","description":"The field by which to order","default":"created_date","enum":["created_date","published_date","modified_date","views","shares","downloads","cites"]}},"allOf":[{"$ref":"#/definitions/CommonSearch"}],"x-tag":"articles"};
         defs["ArticleUnpublishData"] = {"type":"object","required":["reason"],"properties":{"reason":{"type":"string","example":"Unpublish article reason","description":"Reason of article unpublishing","minLength":5,"maxLength":500}},"x-tag":"articles"};
         defs["ArticleUpdate"] = {"type":"object","properties":{"title":{"type":"string","example":"Test article title","description":"Title of article","minLength":3,"maxLength":1000},"description":{"type":"string","example":"Test description of article","description":"The article description. In a publisher case, usually this is the remote article description","maxLength":20000,"default":""},"is_metadata_record":{"type":"boolean","example":true,"description":"True if article has no files"},"metadata_reason":{"type":"string","example":"hosted somewhere else","description":"Article metadata reason"},"tags":{"type":"array","example":["tag1","tag2"],"description":"List of tags to be associated with the article. Keywords can be used instead","items":{"type":"string"}},"keywords":{"type":"array","example":["tag1","tag2"],"description":"List of tags to be associated with the article. Tags can be used instead","items":{"type":"string"}},"references":{"type":"array","example":["http://figshare.com","http://api.figshare.com"],"description":"List of links to be associated with the article (e.g [\"http://link1\", \"http://link2\", \"http://link3\"])","items":{"type":"string","format":"link"}},"related_materials":{"type":"array","example":[{"id":10432,"identifier":"10.6084/m9.figshare.1407024","identifier_type":"DOI","relation":"IsSupplementTo","title":"Figshare for institutions brochure","is_linkout":false}],"description":"List of related materials; supersedes references and resource DOI/title.","items":{"$ref":"#/definitions/RelatedMaterial"}},"categories":{"type":"array","example":[1,10,11],"description":"List of category ids to be associated with the article(e.g [1, 23, 33, 66])","items":{"type":"integer","format":"int64"}},"categories_by_source_id":{"type":"array","example":["300204","400207"],"description":"List of category source ids to be associated with the article, supersedes the categories property","items":{"type":"string"}},"authors":{"type":"array","example":[{"name":"John Doe"},{"id":1000008}],"description":"List of authors to be associated with the article. The list can contain the following fields: id, name, first_name, last_name, email, orcid_id. If an id is supplied, it will take priority and everything else will be ignored. For adding more authors use the specific authors endpoint.","items":{"type":"object","properties":{}}},"custom_fields":{"type":"object","example":{"defined_key":"value for it"},"description":"List of key, values pairs to be associated with the article","properties":{}},"custom_fields_list":{"type":"array","description":"List of custom fields values, supersedes custom_fields parameter","items":{"$ref":"#/definitions/CustomArticleFieldAdd"}},"defined_type":{"type":"string","example":"media","description":"<b>One of:</b> <code>figure</code> <code>online resource</code> <code>preprint</code> <code>book</code> <code>conference contribution</code> <code>media</code> <code>dataset</code> <code>poster</code> <code>journal contribution</code> <code>presentation</code> <code>thesis</code> <code>software</code>"},"funding":{"type":"string","description":"Grant number or funding authority","default":""},"funding_list":{"type":"array","description":"Funding creation / update items","items":{"$ref":"#/definitions/FundingCreate"}},"license":{"type":"integer","format":"int64","example":1,"description":"License id for this article.","default":0},"doi":{"type":"string","description":"Not applicable for regular users. In an institutional case, make sure your group supports setting DOIs. This setting is applied by figshare via opening a ticket through our support/helpdesk system.","default":""},"handle":{"type":"string","description":"Not applicable for regular users. In an institutional case, make sure your group supports setting Handles. This setting is applied by figshare via opening a ticket through our support/helpdesk system.","default":""},"resource_doi":{"type":"string","description":"Deprecated by related materials. Not applicable to regular users. In a publisher case, this is the publisher article DOI.","default":""},"resource_title":{"type":"string","description":"Deprecated by related materials. Not applicable to regular users. In a publisher case, this is the publisher article title.","default":""},"timeline":{"description":"Various timeline dates","$ref":"#/definitions/TimelineUpdate"},"download_disabled":{"type":"boolean","example":false,"description":"If true, downloading of files for this article is disabled"},"group_id":{"type":"integer","format":"int64","description":"Not applicable to regular users. This field is reserved to institutions/publishers with access to assign to specific groups"}},"x-tag":"articles"};
         defs["ArticleVersionUpdate"] = {"type":"object","properties":{"supplementary_fields":{"type":"array","example":[{"name":"abc","value":"def"},{"name":"fname","value":"fvalue"}],"description":"List of supplementary fields to be associated with the article version","items":{"type":"object","properties":{}}},"internal_metadata":{"type":"object","example":{"curation_review_date":"2021-11-16T13:03:38","export_pdf_download_url":null},"description":"List of supplementary fields to be associated with the article version","properties":{}}},"x-tag":"article_version"};
         defs["ArticleVersions"] = {"type":"object","required":["url","version"],"properties":{"version":{"type":"integer","format":"int64","example":1,"description":"Version number"},"url":{"type":"string","format":"url","example":"https://api.figshare.com/v2/articles/2000005/versions/1","description":"Api endpoint for the item version"}},"x-tag":"articles"};
         defs["ArticleWithProject"] = {"properties":{"project_id":{"type":"integer","format":"int64","example":1,"description":"Project id for this article.","default":0}},"required":["project_id"],"allOf":[{"$ref":"#/definitions/Article"}],"x-tag":"articles_with_project"};
         defs["ArticlesCreator"] = {"type":"object","required":["articles"],"properties":{"articles":{"type":"array","example":[2000003,2000004],"description":"List of article ids","items":{"type":"integer","format":"int64","description":"Id of article"}}},"x-tag":"articles"};
-        defs["Author"] = {"type":"object","required":["first_name","full_name","id","is_active","last_name","orcid_id","url_name"],"properties":{"id":{"type":"integer","format":"int64","example":97657,"description":"Author id"},"full_name":{"type":"string","example":"John Doe","description":"Author full name"},"first_name":{"type":"string","example":"John","description":"Author first name"},"last_name":{"type":"string","example":"Doe","description":"Author last name"},"is_active":{"type":"boolean","example":false,"description":"True if author has published items"},"url_name":{"type":"string","example":"John_Doe","description":"Author url name"},"orcid_id":{"type":"string","example":"1234-5678-9123-1234","description":"Author Orcid"}},"x-tag":"authors"};
+        defs["Author"] = {"type":"object","required":["first_name","full_name","group_id","id","institution_id","is_active","is_public","job_title","last_name","orcid_id","url_name"],"properties":{"id":{"type":"integer","format":"int64","example":97657,"description":"Author id"},"full_name":{"type":"string","example":"John Doe","description":"Author full name"},"first_name":{"type":"string","example":"John","description":"Author first name"},"last_name":{"type":"string","example":"Doe","description":"Author last name"},"is_active":{"type":"boolean","example":false,"description":"True if author has published items"},"url_name":{"type":"string","example":"John_Doe","description":"Author url name"},"orcid_id":{"type":"string","example":"1234-5678-9123-1234","description":"Author Orcid"},"group_id":{"type":"integer","format":"int64","example":0,"description":"Author group id"},"is_public":{"type":"boolean","example":true,"description":"True if author is public"},"institution_id":{"type":"integer","format":"int64","description":"Institution id"},"job_title":{"type":"string","description":"Job title"}},"x-tag":"authors"};
         defs["AuthorComplete"] = {"properties":{"institution_id":{"type":"integer","format":"int64","description":"Institution id"},"group_id":{"type":"integer","format":"int64","description":"Group id"},"first_name":{"type":"string","description":"First Name"},"last_name":{"type":"string","description":"Last Name"},"is_public":{"type":"integer","format":"int64","description":"if 1 then the author has published items"},"job_title":{"type":"string","description":"Job title"}},"required":["first_name","group_id","institution_id","is_public","job_title","last_name"],"allOf":[{"$ref":"#/definitions/Author"}],"x-tag":"authors"};
         defs["AuthorsCreator"] = {"type":"object","required":["authors"],"properties":{"authors":{"type":"array","example":[{"id":12121},{"id":34345},{"name":"John Doe"}],"description":"List of authors to be associated with the article. The list can contain the following fields: id, name, first_name, last_name, email, orcid_id. If an id is supplied, it will take priority and everything else will be ignored. For adding more authors use the specific authors endpoint.","items":{"type":"object","properties":{}}}},"x-tag":"articles"};
         defs["CategoriesCreator"] = {"type":"object","required":["categories"],"properties":{"categories":{"type":"array","example":[1,10,11],"description":"List of category ids","items":{"type":"integer","format":"int64","description":"Id of category"}}},"x-tag":"articles"};
-        defs["Category"] = {"type":"object","required":["id","parent_id","path","source_id","taxonomy_id","title"],"properties":{"parent_id":{"type":"integer","format":"int64","example":1,"description":"Parent category"},"id":{"type":"integer","format":"int64","example":11,"description":"Category id"},"title":{"type":"string","example":"Anatomy","description":"Category title"},"path":{"type":"string","example":"/450/1024/6532","description":"Path to all ancestor ids"},"source_id":{"type":"string","example":"300204","description":"ID in original standard taxonomy"},"taxonomy_id":{"type":"integer","format":"int64","example":4,"description":"Internal id of taxonomy the category is part of"}},"x-tag":"common"};
+        defs["Category"] = {"type":"object","required":["has_children","id","is_selectable","parent_id","path","source_id","taxonomy_id","title"],"properties":{"parent_id":{"type":"integer","format":"int64","example":1,"description":"Parent category"},"id":{"type":"integer","format":"int64","example":11,"description":"Category id"},"title":{"type":"string","example":"Anatomy","description":"Category title"},"path":{"type":"string","example":"/450/1024/6532","description":"Path to all ancestor ids"},"source_id":{"type":"string","example":"300204","description":"ID in original standard taxonomy"},"taxonomy_id":{"type":"integer","format":"int64","example":4,"description":"Internal id of taxonomy the category is part of"},"has_children":{"type":"boolean","example":false,"description":"True if category has children"},"is_selectable":{"type":"boolean","example":true,"description":"The selectable status"}},"x-tag":"common"};
         defs["Collaborator"] = {"type":"object","required":["name","role_name","user_id"],"properties":{"role_name":{"type":"string","example":"Owner","description":"Collaborator role"},"user_id":{"type":"integer","example":1,"description":"Collaborator id"},"name":{"type":"string","example":"name","description":"Collaborator name"}},"x-tag":"projects"};
         defs["Collection"] = {"type":"object","required":["doi","handle","id","timeline","title","url"],"properties":{"id":{"type":"integer","format":"int64","example":123,"description":"Collection id"},"title":{"type":"string","example":"Sample collection","description":"Collection title"},"doi":{"type":"string","example":"10.6084/m9.figshare.123","description":"Collection DOI"},"handle":{"type":"string","example":"111184/figshare.1234","description":"Collection Handle"},"url":{"type":"string","example":"https://api.figshare.com/v2/collections/123","description":"Api endpoint"},"timeline":{"description":"Various timeline dates","$ref":"#/definitions/Timeline"}},"x-tag":"collections"};
-        defs["CollectionComplete"] = {"properties":{"funding":{"type":"array","description":"Full Collection funding information","items":{"$ref":"#/definitions/FundingInformation"}},"resource_id":{"type":"string","example":"","description":"Collection resource id"},"resource_doi":{"type":"string","example":"10.6084/m9.figshare.123","description":"Collection resource doi"},"resource_title":{"type":"string","example":"test","description":"Collection resource title"},"resource_link":{"type":"string","example":"http://figshare.com","description":"Collection resource link"},"resource_version":{"type":"integer","format":"int64","example":0,"description":"Collection resource version"},"version":{"type":"integer","format":"int64","example":1,"description":"Collection version"},"description":{"type":"string","example":"description","description":"Collection description"},"categories":{"type":"array","description":"List of collection categories","items":{"$ref":"#/definitions/Category"}},"references":{"type":"array","description":"List of collection references","items":{"type":"string","format":"url"}},"related_materials":{"type":"array","example":[{"id":10432,"identifier":"10.6084/m9.figshare.1407024","identifier_type":"DOI","relation":"IsSupplementTo","title":"Figshare for institutions brochure","is_linkout":false}],"description":"List of related materials; supersedes references and resource DOI/title.","items":{"$ref":"#/definitions/RelatedMaterial"}},"tags":{"type":"array","example":["t1","t2"],"description":"List of collection tags","items":{"type":"string"}},"authors":{"type":"array","description":"List of collection authors","items":{"$ref":"#/definitions/Author"}},"institution_id":{"type":"integer","format":"int64","example":1,"description":"Collection institution"},"group_id":{"type":"integer","format":"int64","example":1,"description":"Collection group"},"articles_count":{"type":"integer","format":"int64","example":1,"description":"Number of articles in collection"},"public":{"type":"boolean","example":true,"description":"True if collection is published"},"citation":{"type":"string","example":"citation","description":"Collection citation"},"custom_fields":{"type":"array","description":"Collection custom fields","items":{"$ref":"#/definitions/CustomArticleField"}},"modified_date":{"type":"string","example":"2017-05-15T15:12:26Z","description":"Date when collection was last modified"},"created_date":{"type":"string","example":"2017-05-15T15:12:26Z","description":"Date when collection was created"},"timeline":{"description":"Various timeline dates","$ref":"#/definitions/Timeline"}},"required":["articles_count","authors","categories","citation","created_date","custom_fields","description","funding","group_id","institution_id","modified_date","public","references","resource_doi","resource_id","resource_link","resource_title","resource_version","tags","timeline","version"],"allOf":[{"$ref":"#/definitions/Collection"}],"x-tag":"collections"};
-        defs["CollectionCompletePrivate"] = {"properties":{"account_id":{"type":"integer","format":"int64","example":1000001,"description":"ID of the account owning the collection"},"funding":{"type":"array","description":"Full Collection funding information","items":{"$ref":"#/definitions/FundingInformation"}},"resource_id":{"type":"string","example":"","description":"Collection resource id"},"resource_doi":{"type":"string","example":"10.6084/m9.figshare.123","description":"Collection resource doi"},"resource_title":{"type":"string","example":"test","description":"Collection resource title"},"resource_link":{"type":"string","example":"http://figshare.com","description":"Collection resource link"},"resource_version":{"type":"integer","format":"int64","example":0,"description":"Collection resource version"},"version":{"type":"integer","format":"int64","example":1,"description":"Collection version"},"description":{"type":"string","example":"description","description":"Collection description"},"categories":{"type":"array","description":"List of collection categories","items":{"$ref":"#/definitions/Category"}},"references":{"type":"array","description":"List of collection references","items":{"type":"string","format":"url"}},"related_materials":{"type":"array","example":[{"id":10432,"identifier":"10.6084/m9.figshare.1407024","identifier_type":"DOI","relation":"IsSupplementTo","title":"Figshare for institutions brochure","is_linkout":false}],"description":"List of related materials; supersedes references and resource DOI/title.","items":{"$ref":"#/definitions/RelatedMaterial"}},"tags":{"type":"array","example":["t1","t2"],"description":"List of collection tags","items":{"type":"string"}},"authors":{"type":"array","description":"List of collection authors","items":{"$ref":"#/definitions/Author"}},"institution_id":{"type":"integer","format":"int64","example":1,"description":"Collection institution"},"group_id":{"type":"integer","format":"int64","example":1,"description":"Collection group"},"articles_count":{"type":"integer","format":"int64","example":1,"description":"Number of articles in collection"},"public":{"type":"boolean","example":true,"description":"True if collection is published"},"citation":{"type":"string","example":"citation","description":"Collection citation"},"custom_fields":{"type":"array","description":"Collection custom fields","items":{"$ref":"#/definitions/CustomArticleField"}},"modified_date":{"type":"string","example":"2017-05-15T15:12:26Z","description":"Date when collection was last modified"},"created_date":{"type":"string","example":"2017-05-15T15:12:26Z","description":"Date when collection was created"},"timeline":{"description":"Various timeline dates","$ref":"#/definitions/Timeline"}},"required":["account_id","articles_count","authors","categories","citation","created_date","custom_fields","description","funding","group_id","institution_id","modified_date","public","references","resource_doi","resource_id","resource_link","resource_title","resource_version","tags","timeline","version"],"allOf":[{"$ref":"#/definitions/Collection"}],"x-tag":"collections"};
+        defs["CollectionComplete"] = {"properties":{"funding":{"type":"array","description":"Full Collection funding information","items":{"$ref":"#/definitions/FundingInformation"}},"resource_id":{"type":"string","example":"","description":"Collection resource id"},"resource_doi":{"type":"string","example":"10.6084/m9.figshare.123","description":"Collection resource doi"},"resource_title":{"type":"string","example":"test","description":"Collection resource title"},"resource_link":{"type":"string","example":"http://figshare.com","description":"Collection resource link"},"resource_version":{"type":"integer","format":"int64","example":0,"description":"Collection resource version"},"version":{"type":"integer","format":"int64","example":1,"description":"Collection version"},"description":{"type":"string","example":"description","description":"Collection description"},"categories":{"type":"array","description":"List of collection categories","items":{"$ref":"#/definitions/Category"}},"references":{"type":"array","description":"List of collection references","items":{"type":"string","format":"url"}},"related_materials":{"type":"array","example":[{"id":10432,"identifier":"10.6084/m9.figshare.1407024","identifier_type":"DOI","relation":"IsSupplementTo","title":"Figshare for institutions brochure","is_linkout":false}],"description":"List of related materials; supersedes references and resource DOI/title.","items":{"$ref":"#/definitions/RelatedMaterial"}},"keywords":{"type":"array","example":["t1","t2"],"description":"List of collection keywords","items":{"type":"string"}},"authors":{"type":"array","description":"List of collection authors","items":{"$ref":"#/definitions/Author"}},"institution_id":{"type":"integer","format":"int64","example":1,"description":"Collection institution"},"group_id":{"type":"integer","format":"int64","example":1,"description":"Collection group"},"articles_count":{"type":"integer","format":"int64","example":1,"description":"Number of articles in collection"},"public":{"type":"boolean","example":true,"description":"True if collection is published"},"citation":{"type":"string","example":"citation","description":"Collection citation"},"custom_fields":{"type":"array","description":"Collection custom fields","items":{"$ref":"#/definitions/CustomArticleField"}},"modified_date":{"type":"string","example":"2017-05-15T15:12:26Z","description":"Date when collection was last modified"},"created_date":{"type":"string","example":"2017-05-15T15:12:26Z","description":"Date when collection was created"},"timeline":{"description":"Various timeline dates","$ref":"#/definitions/Timeline"}},"required":["articles_count","authors","categories","citation","created_date","custom_fields","description","funding","group_id","institution_id","keywords","modified_date","public","references","related_materials","resource_doi","resource_id","resource_link","resource_title","resource_version","timeline","version"],"allOf":[{"$ref":"#/definitions/Collection"}],"x-tag":"collections"};
+        defs["CollectionCompletePrivate"] = {"properties":{"account_id":{"type":"integer","format":"int64","example":1000001,"description":"ID of the account owning the collection"},"funding":{"type":"array","description":"Full Collection funding information","items":{"$ref":"#/definitions/FundingInformation"}},"resource_id":{"type":"string","example":"","description":"Collection resource id"},"resource_doi":{"type":"string","example":"10.6084/m9.figshare.123","description":"Collection resource doi"},"resource_title":{"type":"string","example":"test","description":"Collection resource title"},"resource_link":{"type":"string","example":"http://figshare.com","description":"Collection resource link"},"resource_version":{"type":"integer","format":"int64","example":0,"description":"Collection resource version"},"version":{"type":"integer","format":"int64","example":1,"description":"Collection version"},"description":{"type":"string","example":"description","description":"Collection description"},"categories":{"type":"array","description":"List of collection categories","items":{"$ref":"#/definitions/Category"}},"references":{"type":"array","description":"List of collection references","items":{"type":"string","format":"url"}},"related_materials":{"type":"array","example":[{"id":10432,"identifier":"10.6084/m9.figshare.1407024","identifier_type":"DOI","relation":"IsSupplementTo","title":"Figshare for institutions brochure","is_linkout":false}],"description":"List of related materials; supersedes references and resource DOI/title.","items":{"$ref":"#/definitions/RelatedMaterial"}},"keywords":{"type":"array","example":["t1","t2"],"description":"List of collection keywords","items":{"type":"string"}},"authors":{"type":"array","description":"List of collection authors","items":{"$ref":"#/definitions/Author"}},"institution_id":{"type":"integer","format":"int64","example":1,"description":"Collection institution"},"group_id":{"type":"integer","format":"int64","example":1,"description":"Collection group"},"articles_count":{"type":"integer","format":"int64","example":1,"description":"Number of articles in collection"},"public":{"type":"boolean","example":true,"description":"True if collection is published"},"citation":{"type":"string","example":"citation","description":"Collection citation"},"custom_fields":{"type":"array","description":"Collection custom fields","items":{"$ref":"#/definitions/CustomArticleField"}},"modified_date":{"type":"string","example":"2017-05-15T15:12:26Z","description":"Date when collection was last modified"},"created_date":{"type":"string","example":"2017-05-15T15:12:26Z","description":"Date when collection was created"},"timeline":{"description":"Various timeline dates","$ref":"#/definitions/Timeline"}},"required":["account_id","articles_count","authors","categories","citation","created_date","custom_fields","description","funding","group_id","institution_id","keywords","modified_date","public","references","resource_doi","resource_id","resource_link","resource_title","resource_version","timeline","version"],"allOf":[{"$ref":"#/definitions/Collection"}],"x-tag":"collections"};
         defs["CollectionCreate"] = {"type":"object","required":["title"],"properties":{"funding":{"type":"string","description":"Grant number or funding authority","default":""},"funding_list":{"type":"array","description":"Funding creation / update items","items":{"$ref":"#/definitions/FundingCreate"}},"title":{"type":"string","example":"Test collection title","description":"Title of collection","minLength":3,"maxLength":1000},"description":{"type":"string","example":"Test description of article","description":"The collection description. In a publisher case, usually this is the remote collection description","maxLength":20000,"default":""},"articles":{"type":"array","example":[2000001,2000005],"description":"List of articles to be associated with the collection","items":{"type":"integer"}},"authors":{"type":"array","example":[{"name":"John Doe"},{"id":20005}],"description":"List of authors to be associated with the collection. The list can contain the following fields: id, name, first_name, last_name, email, orcid_id. If an id is supplied, it will take priority and everything else will be ignored. For adding more authors use the specific authors endpoint.","items":{"type":"object","properties":{}}},"categories":{"type":"array","example":[1,10,11],"description":"List of category ids to be associated with the collection(e.g [1, 23, 33, 66])","items":{"type":"integer","format":"int64"}},"categories_by_source_id":{"type":"array","example":["300204","400207"],"description":"List of category source ids to be associated with the collection, supersedes the categories property","items":{"type":"string"}},"tags":{"type":"array","example":["tag1","tag2"],"description":"List of tags to be associated with the collection. Keywords can be used instead","items":{"type":"string"}},"keywords":{"type":"array","example":["tag1","tag2"],"description":"List of tags to be associated with the collection. Tags can be used instead","items":{"type":"string"}},"references":{"type":"array","example":["http://figshare.com","http://api.figshare.com"],"description":"List of links to be associated with the collection (e.g [\"http://link1\", \"http://link2\", \"http://link3\"])","items":{"type":"string","format":"link"}},"related_materials":{"type":"array","example":[{"id":10432,"identifier":"10.6084/m9.figshare.1407024","identifier_type":"DOI","relation":"IsSupplementTo","title":"Figshare for institutions brochure","is_linkout":false}],"description":"List of related materials; supersedes references and resource DOI/title.","items":{"$ref":"#/definitions/RelatedMaterial"}},"custom_fields":{"type":"object","example":{"defined_key":"value for it"},"description":"List of key, values pairs to be associated with the collection","properties":{}},"custom_fields_list":{"type":"array","description":"List of custom fields values, supersedes custom_fields parameter","items":{"$ref":"#/definitions/CustomArticleFieldAdd"}},"doi":{"type":"string","description":"Not applicable for regular users. In an institutional case, make sure your group supports setting DOIs. This setting is applied by figshare via opening a ticket through our support/helpdesk system.","default":""},"handle":{"type":"string","description":"Not applicable for regular users. In an institutional case, make sure your group supports setting Handles. This setting is applied by figshare via opening a ticket through our support/helpdesk system.","default":""},"resource_id":{"type":"string","description":"Not applicable to regular users. In a publisher case, this is the publisher article id"},"resource_doi":{"type":"string","description":"Not applicable to regular users. In a publisher case, this is the publisher article DOI.","default":""},"resource_link":{"type":"string","description":"Not applicable to regular users. In a publisher case, this is the publisher article link"},"resource_title":{"type":"string","description":"Not applicable to regular users. In a publisher case, this is the publisher article title.","default":""},"resource_version":{"type":"integer","description":"Not applicable to regular users. In a publisher case, this is the publisher article version"},"group_id":{"type":"integer","format":"int64","description":"Not applicable to regular users. This field is reserved to institutions/publishers with access to assign to specific groups"},"timeline":{"description":"Various timeline dates","$ref":"#/definitions/TimelineUpdate"}},"x-tag":"collections"};
         defs["CollectionDOI"] = {"type":"object","required":["doi"],"properties":{"doi":{"type":"string","example":"10.5072/FK2.FIGSHARE.20345","description":"Reserved DOI"}},"x-tag":"collections"};
         defs["CollectionHandle"] = {"type":"object","required":["handle"],"properties":{"handle":{"type":"string","example":"11172/FK2.FIGSHARE.20345","description":"Reserved Handle"}},"x-tag":"collections"};
-        defs["CollectionPrivateLinkCreator"] = {"type":"object","properties":{"expires_date":{"type":"string","example":"2018-02-22 22:22:22","description":"Date when this private link should expire - optional. By default private links expire in 365 days."},"read_only":{"type":"boolean","example":true,"description":"Optional, default true. Set to false to give private link users editing rights for this collection."}},"x-tag":"collections"};
-        defs["CollectionSearch"] = {"properties":{"resource_doi":{"type":"string","example":"10.6084/m9.figshare.1407024","description":"Only return collections with this resource_doi"},"doi":{"type":"string","example":"10.6084/m9.figshare.1407024","description":"Only return collections with this doi"},"handle":{"type":"string","example":"10084/figshare.1407024","description":"Only return collections with this handle"},"order":{"type":"string","example":"published_date","description":"The field by which to order.","enum":["created_date","published_date","modified_date","views","shares","cites"],"default":"created_date"}},"allOf":[{"$ref":"#/definitions/CommonSearch"}],"x-tag":"collections"};
+        defs["CollectionPrivateLinkCreator"] = {"type":"object","properties":{"expires_date":{"type":"string","example":"2018-02-22 22:22:22","description":"Date when this private link should expire - optional. By default private links expire in 365 days."}},"x-tag":"collections"};
+        defs["CollectionSearch"] = {"properties":{"resource_doi":{"type":"string","example":"10.6084/m9.figshare.1407024","description":"Only return collections with this resource_doi"},"doi":{"type":"string","example":"10.6084/m9.figshare.1407024","description":"Only return collections with this doi"},"handle":{"type":"string","example":"10084/figshare.1407024","description":"Only return collections with this handle"},"order":{"type":"string","example":"published_date","description":"The field by which to order.","default":"created_date","enum":["created_date","published_date","modified_date","views","shares","cites"]}},"allOf":[{"$ref":"#/definitions/CommonSearch"}],"x-tag":"collections"};
         defs["CollectionUpdate"] = {"type":"object","properties":{"funding":{"type":"string","description":"Grant number or funding authority","default":""},"funding_list":{"type":"array","description":"Funding creation / update items","items":{"$ref":"#/definitions/FundingCreate"}},"title":{"type":"string","example":"Test collection title","description":"Title of collection","minLength":3,"maxLength":1000},"description":{"type":"string","example":"Test description of collection","description":"The collection description. In a publisher case, usually this is the remote collection description","maxLength":20000,"default":""},"articles":{"type":"array","example":[2000001,2000005],"description":"List of articles to be associated with the collection","items":{"type":"integer"}},"authors":{"type":"array","example":[{"name":"John Doe"},{"id":20005}],"description":"List of authors to be associated with the collection. The list can contain the following fields: id, name, first_name, last_name, email, orcid_id. If an id is supplied, it will take priority and everything else will be ignored. For adding more authors use the specific authors endpoint.","items":{"type":"object","properties":{}}},"categories":{"type":"array","example":[1,10,11],"description":"List of category ids to be associated with the collection (e.g [1, 23, 33, 66])","items":{"type":"integer","format":"int64"}},"categories_by_source_id":{"type":"array","example":["300204","400207"],"description":"List of category source ids to be associated with the article, supersedes the categories property","items":{"type":"string"}},"tags":{"type":"array","example":["tag1","tag2"],"description":"List of tags to be associated with the collection. Keywords can be used instead","items":{"type":"string"}},"keywords":{"type":"array","example":["tag1","tag2"],"description":"List of tags to be associated with the collection. Tags can be used instead","items":{"type":"string"}},"references":{"type":"array","example":["http://figshare.com","http://api.figshare.com"],"description":"List of links to be associated with the collection (e.g [\"http://link1\", \"http://link2\", \"http://link3\"])","items":{"type":"string","format":"link"}},"related_materials":{"type":"array","example":[{"id":10432,"identifier":"10.6084/m9.figshare.1407024","identifier_type":"DOI","relation":"IsSupplementTo","title":"Figshare for institutions brochure","is_linkout":false}],"description":"List of related materials; supersedes references and resource DOI/title.","items":{"$ref":"#/definitions/RelatedMaterial"}},"custom_fields":{"type":"object","example":{"defined_key":"value for it"},"description":"List of key, values pairs to be associated with the collection","properties":{}},"custom_fields_list":{"type":"array","description":"List of custom fields values, supersedes custom_fields parameter","items":{"$ref":"#/definitions/CustomArticleFieldAdd"}},"doi":{"type":"string","description":"Not applicable for regular users. In an institutional case, make sure your group supports setting DOIs. This setting is applied by figshare via opening a ticket through our support/helpdesk system.","default":""},"handle":{"type":"string","description":"Not applicable for regular users. In an institutional case, make sure your group supports setting Handles. This setting is applied by figshare via opening a ticket through our support/helpdesk system.","default":""},"resource_id":{"type":"string","description":"Not applicable to regular users. In a publisher case, this is the publisher article id"},"resource_doi":{"type":"string","description":"Not applicable to regular users. In a publisher case, this is the publisher article DOI.","default":""},"resource_link":{"type":"string","description":"Not applicable to regular users. In a publisher case, this is the publisher article link"},"resource_title":{"type":"string","description":"Not applicable to regular users. In a publisher case, this is the publisher article title.","default":""},"resource_version":{"type":"integer","description":"Not applicable to regular users. In a publisher case, this is the publisher article version"},"group_id":{"type":"integer","format":"int64","description":"Not applicable to regular users. This field is reserved to institutions/publishers with access to assign to specific groups"},"timeline":{"description":"Various timeline dates","$ref":"#/definitions/TimelineUpdate"}},"x-tag":"collections"};
-        defs["CollectionVersions"] = {"type":"object","required":["id","url"],"properties":{"id":{"type":"integer","format":"int64","example":1,"description":"Version number"},"url":{"type":"string","format":"url","example":"https://api.figshare.com/v2/collections/2000005/versions/1","description":"Api endpoint for the collection version"}},"x-tag":"collections"};
-        defs["CommonSearch"] = {"type":"object","properties":{"search_for":{"type":"string","example":"figshare","description":"Search term"},"page":{"type":"integer","format":"int64","example":1,"description":"Page number. Used for pagination with page_size","minimum":1,"maximum":5000},"page_size":{"type":"integer","format":"int64","example":10,"description":"The number of results included on a page. Used for pagination with page","minimum":1,"maximum":1000,"default":10},"limit":{"type":"integer","format":"int64","example":10,"description":"Number of results included on a page. Used for pagination with query","minimum":1,"maximum":1000},"offset":{"type":"integer","format":"int64","example":0,"description":"Where to start the listing(the offset of the first result). Used for pagination with limit","minimum":0,"maximum":5000},"order_direction":{"type":"string","example":"desc","description":"Direction of ordering","enum":["asc","desc"],"default":"desc"},"institution":{"type":"integer","format":"int32","example":2000013,"description":"only return collections from this institution"},"published_since":{"type":"string","example":"2017-12-22","description":"Filter by article publishing date. Will only return articles published after the date. date(ISO 8601) YYYY-MM-DD"},"modified_since":{"type":"string","example":"2017-12-22","description":"Filter by article modified date. Will only return articles published after the date. date(ISO 8601) YYYY-MM-DD"},"group":{"type":"integer","format":"int32","example":2000013,"description":"only return collections from this group"}},"x-tag":"common"};
+        defs["CollectionVersions"] = {"type":"object","required":["funding","url","version"],"properties":{"version":{"type":"integer","format":"int64","example":1,"description":"Version number"},"url":{"type":"string","format":"url","example":"https://api.figshare.com/v2/collections/2000005/versions/1","description":"Api endpoint for the collection version"},"funding":{"type":"array","description":"Full Collection funding information","items":{"$ref":"#/definitions/FundingInformation"}}},"x-tag":"collections"};
+        defs["CommonSearch"] = {"type":"object","properties":{"search_for":{"type":"string","example":"figshare","description":"Search term"},"page":{"type":"integer","format":"int64","example":1,"description":"Page number. Used for pagination with page_size","minimum":1,"maximum":5000},"page_size":{"type":"integer","format":"int64","example":10,"description":"The number of results included on a page. Used for pagination with page","minimum":1,"maximum":1000,"default":10},"limit":{"type":"integer","format":"int64","example":10,"description":"Number of results included on a page. Used for pagination with query","minimum":1,"maximum":1000},"offset":{"type":"integer","format":"int64","example":0,"description":"Where to start the listing(the offset of the first result). Used for pagination with limit","minimum":0,"maximum":5000},"order_direction":{"type":"string","example":"desc","description":"Direction of ordering","default":"desc","enum":["asc","desc"]},"institution":{"type":"integer","format":"int32","example":2000013,"description":"only return collections from this institution"},"published_since":{"type":"string","example":"2017-12-22","description":"Filter by article publishing date. Will only return articles published after the date. date(ISO 8601) YYYY-MM-DD"},"modified_since":{"type":"string","example":"2017-12-22","description":"Filter by article modified date. Will only return articles published after the date. date(ISO 8601) YYYY-MM-DD"},"group":{"type":"integer","format":"int32","example":2000013,"description":"only return collections from this group"}},"x-tag":"common"};
         defs["ConfidentialityCreator"] = {"type":"object","required":["reason"],"properties":{"reason":{"type":"string","description":"Reason for confidentiality"}}};
         defs["CreateProjectResponse"] = {"type":"object","required":["entity_id","location"],"properties":{"entity_id":{"type":"integer","format":"int64","example":33334444,"description":"Figshare ID of the entity"},"location":{"type":"string","format":"url","description":"Url for entity"}},"x-tag":"common"};
-        defs["Curation"] = {"type":"object","required":["account_id","article_id","assigned_to","comments_count","created_date","group_id","id","modified_date","status","version"],"properties":{"id":{"type":"integer","format":"int64","description":"The review id"},"group_id":{"type":"integer","format":"int64","description":"The group in which the article is present."},"account_id":{"type":"integer","format":"int64","description":"The ID of the account of the owner of the article of this review."},"assigned_to":{"type":"integer","format":"int64","description":"The ID of the account to which this review is assigned."},"article_id":{"type":"integer","format":"int64","description":"The ID of the article of this review."},"version":{"type":"integer","format":"int64","description":"The Version number of the article in review."},"comments_count":{"type":"integer","format":"int64","description":"The number of comments in the review."},"status":{"type":"string","description":"The status of the review.","enum":["pending","approved","rejected","closed"]},"created_date":{"type":"string","description":"The creation date of the review."},"modified_date":{"type":"string","description":"The date the review has been modified."}},"x-tag":"institutions"};
+        defs["Curation"] = {"type":"object","required":["account_id","article_id","assigned_to","comments_count","created_date","group_id","id","modified_date","request_number","resolution_comment","status","version"],"properties":{"id":{"type":"integer","format":"int64","description":"The review id"},"group_id":{"type":"integer","format":"int64","description":"The group in which the article is present."},"account_id":{"type":"integer","format":"int64","description":"The ID of the account of the owner of the article of this review."},"assigned_to":{"type":"integer","format":"int64","description":"The ID of the account to which this review is assigned."},"article_id":{"type":"integer","format":"int64","description":"The ID of the article of this review."},"version":{"type":"integer","format":"int64","description":"The Version number of the article in review."},"comments_count":{"type":"integer","format":"int64","description":"The number of comments in the review."},"status":{"type":"string","description":"The status of the review.","enum":["pending","approved","rejected","closed"]},"created_date":{"type":"string","description":"The creation date of the review."},"modified_date":{"type":"string","description":"The date the review has been modified."},"request_number":{"type":"integer","format":"int64","description":"The request number of the review."},"resolution_comment":{"type":"string","description":"The resolution comment of the review."}},"x-tag":"institutions"};
         defs["CurationComment"] = {"type":"object","required":["account_id","id","text","type"],"properties":{"id":{"type":"integer","format":"int64","description":"The ID of the comment."},"account_id":{"type":"integer","format":"int64","description":"The ID of the account which generated this comment."},"type":{"type":"string","description":"The ID of the account which generated this comment.","enum":["comment","approved","rejected","closed"]},"text":{"type":"string","description":"The value/content of the comment."}},"x-tag":"institutions"};
         defs["CurationCommentCreate"] = {"type":"object","required":["text"],"properties":{"text":{"type":"string","description":"The contents/value of the comment","minLength":1,"maxLength":2000}},"x-tag":"institutions"};
         defs["CurationDetail"] = {"properties":{"item":{"description":"Article details","$ref":"#/definitions/ArticleComplete"}},"required":["item"],"allOf":[{"$ref":"#/definitions/Curation"}],"x-tag":"institutions"};
-        defs["CustomArticleField"] = {"type":"object","required":["name","value"],"properties":{"name":{"type":"string","example":"key","description":"Custom  metadata name"},"value":{"example":"value","description":"Custom metadata value (can be either a string or an array of strings)"}},"x-tag":"articles"};
+        defs["CustomArticleField"] = {"type":"object","required":["field_type","name","order","settings","value"],"properties":{"name":{"type":"string","example":"key","description":"Custom  metadata name"},"value":{"example":"value","description":"Custom metadata value (can be either a string or an array of strings)"},"field_type":{"type":"string","example":"textarea","description":"Custom field type","enum":["text","textarea","dropdown","url","email","date","dropdown_large_list"]},"settings":{"type":"object","example":{"validations":{"min_length":1,"max_length":1000},"placeholder":"Enter your custom field here"},"description":"Settings for the custom field","properties":{}},"order":{"type":"integer","format":"int64","example":1,"description":"Order of the custom field"}},"x-tag":"articles"};
         defs["CustomArticleFieldAdd"] = {"type":"object","required":["name","value"],"properties":{"name":{"type":"string","example":"key","description":"Custom  metadata name"},"value":{"example":"value","description":"Custom metadata value (can be either a string or an array of strings)"}},"x-tag":"articles"};
         defs["ErrorMessage"] = {"type":"object","properties":{"code":{"type":"integer","format":"int64","description":"A machine friendly error code, used by the dev team to identify the error."},"message":{"type":"string","description":"A human friendly message explaining the error."}},"x-tag":"common"};
         defs["FileCreator"] = {"type":"object","properties":{"link":{"type":"string","example":"http://figshare.com/file.txt","description":"Url for an existing file that will not be uploaded to Figshare"},"md5":{"type":"string","example":"6c16e6e7d7587bd078e5117dda01d565","description":"MD5 sum pre-computed on client side."},"name":{"type":"string","example":"test.py","description":"File name including the extension; can be omitted only for linked files."},"size":{"type":"integer","format":"int64","example":70,"description":"File size in bytes; can be omitted only for linked files."},"folder_path":{"type":"string","example":"/level1/level2/level3","description":"Unix-style directory path of the file; only available if the file was uploaded within a folder structure"}},"x-tag":"articles"};
@@ -760,19 +761,20 @@ margin-bottom: 20px;
         defs["LocationWarnings"] = {"type":"object","required":["entity_id","location","warnings"],"properties":{"entity_id":{"type":"integer","format":"int64","example":33334444,"description":"Figshare ID of the entity"},"location":{"type":"string","format":"url","description":"Url for entity"},"warnings":{"type":"array","description":"Issues encountered during the operation","items":{"type":"string"}}},"x-tag":"common"};
         defs["LocationWarningsUpdate"] = {"type":"object","required":["location","warnings"],"properties":{"location":{"type":"string","format":"url","description":"Url for entity"},"warnings":{"type":"array","description":"Issues encountered during the operation","items":{"type":"string"}}},"x-tag":"common"};
         defs["PrivateArticleSearch"] = {"properties":{"resource_id":{"type":"string","example":"1407024","description":"only return collections with this resource_id"}},"allOf":[{"$ref":"#/definitions/ArticleSearch"}],"x-tag":"articles"};
-        defs["PrivateAuthorsSearch"] = {"type":"object","properties":{"search_for":{"type":"string","example":"figshare","description":"Search term"},"page":{"type":"integer","format":"int64","example":1,"description":"Page number. Used for pagination with page_size","minimum":1,"maximum":5000},"page_size":{"type":"integer","format":"int64","example":10,"description":"The number of results included on a page. Used for pagination with page","minimum":1,"maximum":1000,"default":10},"limit":{"type":"integer","format":"int64","example":10,"description":"Number of results included on a page. Used for pagination with query","minimum":1,"maximum":1000},"offset":{"type":"integer","format":"int64","example":0,"description":"Where to start the listing(the offset of the first result). Used for pagination with limit","minimum":0,"maximum":5000},"order":{"type":"string","example":"published_date","description":"The field by which to order. Default varies by endpoint/resource.","enum":["published_date","modified_date","views","shares","downloads","cites"],"default":"published_date"},"order_direction":{"type":"string","example":"desc","description":"Direction of ordering","enum":["asc","desc"],"default":"desc"},"institution_id":{"type":"integer","format":"int64","example":1,"description":"Return only authors associated to this institution","minimum":0},"orcid":{"type":"string","description":"Orcid of author"},"group_id":{"type":"integer","format":"int64","description":"Return only authors in this group or subgroups of the group","minimum":0},"is_active":{"type":"boolean","description":"Return only active authors if True"},"is_public":{"type":"boolean","description":"Return only authors that have published items if True"}},"x-tag":"authors"};
+        defs["PrivateAuthorsSearch"] = {"type":"object","properties":{"search_for":{"type":"string","example":"figshare","description":"Search term"},"page":{"type":"integer","format":"int64","example":1,"description":"Page number. Used for pagination with page_size","minimum":1,"maximum":5000},"page_size":{"type":"integer","format":"int64","example":10,"description":"The number of results included on a page. Used for pagination with page","minimum":1,"maximum":1000,"default":10},"limit":{"type":"integer","format":"int64","example":10,"description":"Number of results included on a page. Used for pagination with query","minimum":1,"maximum":1000},"offset":{"type":"integer","format":"int64","example":0,"description":"Where to start the listing(the offset of the first result). Used for pagination with limit","minimum":0,"maximum":5000},"order":{"type":"string","example":"published_date","description":"The field by which to order. Default varies by endpoint/resource.","default":"published_date","enum":["published_date","modified_date","views","shares","downloads","cites"]},"order_direction":{"type":"string","example":"desc","description":"Direction of ordering","default":"desc","enum":["asc","desc"]},"institution_id":{"type":"integer","format":"int64","example":1,"description":"Return only authors associated to this institution","minimum":0},"orcid":{"type":"string","description":"Orcid of author"},"group_id":{"type":"integer","format":"int64","description":"Return only authors in this group or subgroups of the group","minimum":0},"is_active":{"type":"boolean","description":"Return only active authors if True"},"is_public":{"type":"boolean","description":"Return only authors that have published items if True"}},"x-tag":"authors"};
         defs["PrivateCollectionSearch"] = {"properties":{"resource_id":{"type":"string","example":"1407024","description":"only return collections with this resource_id"}},"allOf":[{"$ref":"#/definitions/CollectionSearch"}],"x-tag":"collections"};
         defs["PrivateFile"] = {"properties":{"viewer_type":{"type":"string","description":"File viewer type"},"preview_state":{"type":"string","example":"preview not available","description":"File preview state"},"upload_url":{"type":"string","format":"url","example":"https://uploads.figshare.com","description":"Upload url for file"},"upload_token":{"type":"string","example":"9dfc5fe3-d617-4d93-ac11-8afe7e984a4b","description":"Token for file upload"},"is_attached_to_public_version":{"type":"boolean","example":true,"description":"True if the file is attached to a public item version"}},"required":["is_attached_to_public_version","preview_state","upload_token","upload_url","viewer_type"],"allOf":[{"$ref":"#/definitions/PublicFile"}],"x-tag":"common"};
         defs["PrivateLink"] = {"type":"object","required":["expires_date","html_location","id","is_active"],"properties":{"id":{"type":"string","example":"0cfb0dbeac92df445df4aba45f63fdc85fa0b9a888b64e157ce3c93b576aa300fb3621ef3a219515dd482","description":"Private link id"},"is_active":{"type":"boolean","example":true,"description":"True if private link is active"},"expires_date":{"type":"string","example":"2015-07-03T00:00:00","description":"Date when link will expire"},"html_location":{"type":"string","format":"url","example":"https://figshare.com/s/d5ec7a85bcd6dbe9d9b2","description":"HTML url for private link"}},"x-tag":"articles"};
-        defs["PrivateLinkCreator"] = {"type":"object","properties":{"expires_date":{"type":"string","example":"2018-02-22 22:22:22","description":"Date when this private link should expire - optional. By default private links expire in 365 days."},"read_only":{"type":"boolean","example":true,"description":"Optional, default true. Set to false to give private link users editing rights for this collection."}},"x-tag":"articles"};
+        defs["PrivateLinkCreator"] = {"type":"object","properties":{"expires_date":{"type":"string","example":"2018-02-22 22:22:22","description":"Date when this private link should expire - optional. By default private links expire in 365 days."}},"x-tag":"articles"};
         defs["PrivateLinkResponse"] = {"type":"object","required":["html_location","location","token"],"properties":{"location":{"type":"string","format":"url","description":"Url for private link"},"html_location":{"type":"string","format":"url","example":"https://figshare.com/s/d5ec7a85bcd6dbe9d9b2","description":"HTML url for private link"},"token":{"type":"string","example":"d5ec7a85bcd6dbe9d9b2","description":"Token for private link"}},"x-tag":"common"};
+        defs["PrivateProjectArticle"] = {"properties":{"files":{"type":"array","description":"List of up to 10 article files.","items":{"$ref":"#/definitions/PublicFile"}},"embargo_options":{"type":"array","description":"List of embargo options","items":{"$ref":"#/definitions/GroupEmbargoOptions"}},"custom_fields":{"type":"array","description":"List of custom fields values","items":{"$ref":"#/definitions/CustomArticleField"}},"account_id":{"type":"integer","format":"int64","example":1000001,"description":"ID of the account owning the article"},"download_disabled":{"type":"boolean","example":false,"description":"If true, downloading of files for this article is disabled"},"authors":{"type":"array","description":"List of authors","items":{"$ref":"#/definitions/Author"}},"figshare_url":{"type":"string","format":"url","example":"http://figshare.com/articles/media/article_name/2000005","description":"Article public url"},"curation_status":{"type":"string","example":"approved","description":"Curation status of the article"}},"required":["account_id","authors","curation_status","custom_fields","download_disabled","embargo_options","figshare_url","files"],"allOf":[{"$ref":"#/definitions/ProjectArticle"}],"x-tag":"articles"};
         defs["ProfileUpdateData"] = {"type":"object","properties":{"first_name":{"type":"string","example":"John","description":"First name"},"last_name":{"type":"string","example":"Doe","description":"Last Name"},"orcid":{"type":"string","example":"0000-0001-YYYY-XXXX","description":"User ORCID"},"job_title":{"type":"string","example":"Researcher at institution X","description":"User job title"},"fields_of_interest":{"type":"array","example":[1,2],"description":"User fields of interest (category ids)","items":{"type":"integer","format":"int64","description":"Id of category"}},"fields_of_interest_by_source_id":{"type":"array","example":["3204","320401"],"description":"User fields of interest (category source IDs), supersedes the fields_of_interest property","items":{"type":"string","description":"Source ID of category"}},"location":{"type":"string","example":"London, UK","description":"User location"},"facebook":{"type":"string","format":"url","example":"https://facebook.com/profile/1","description":"User facebook URL"},"x":{"type":"string","format":"url","example":"https://x.com/profile/1","description":"User X (twitter) URL"},"linkedin":{"type":"string","format":"url","example":"https://linkedin.com/profile/2","description":"User linkedin URL"},"bio":{"type":"string","example":"Biographical information","description":"User biographical information"},"personal_profiles":{"type":"array","example":[{"label":"ResearchGate","url":"https://researchgate.net/profile/1"},{"label":"","url":"https://academia.edu/profile/1"}],"description":"Add up to 10 additional personal profile links","items":{"$ref":"#/definitions/ProfileUpdateData_personal_profiles"}}},"x-tag":"profiles"};
         defs["ProfileUpdateData_personal_profiles"] = {"type":"object","properties":{"label":{"type":"string","example":"ResearchGate","description":"Label for the personal profile link"},"url":{"type":"string","format":"url","example":"https://researchgate.net/profile/1","description":"URL for the personal profile link"}}};
         defs["Project"] = {"type":"object","required":["id","title","url"],"properties":{"url":{"type":"string","example":"http://api.figshare.com/v2/account/projects/1","description":"Api endpoint"},"id":{"type":"integer","format":"int64","example":1,"description":"Project id"},"title":{"type":"string","example":"project","description":"Project title"}},"x-tag":"projects"};
-        defs["ProjectArticle"] = {"properties":{"citation":{"type":"string","example":"lilliput, figshare admin (2017): first project item. figshare.\n \n Retrieved: 14 01, May 22, 2017 (GMT)","description":"Article citation"},"confidential_reason":{"type":"string","example":"none","description":"Confidentiality reason"},"is_confidential":{"type":"boolean","example":true,"description":"Article Confidentiality"},"size":{"type":"integer","format":"int64","example":69939,"description":"Article size"},"funding":{"type":"string","example":"none","description":"Article funding"},"funding_list":{"type":"array","description":"Full Article funding information","items":{"$ref":"#/definitions/FundingInformation"}},"tags":{"type":"array","example":["t1","t2","t3"],"description":"List of article tags","items":{"type":"string"}},"version":{"type":"integer","format":"int64","example":1,"description":"Article version"},"is_active":{"type":"boolean","example":true,"description":"True if article is active"},"is_metadata_record":{"type":"boolean","example":false,"description":"True if article has no files"},"metadata_reason":{"type":"string","example":"hosted somewhere else","description":"Article metadata reason"},"status":{"type":"string","example":"public","description":"Article status"},"description":{"type":"string","example":"article description","description":"Article description"},"is_embargoed":{"type":"boolean","example":true,"description":"True if article is embargoed"},"is_public":{"type":"boolean","example":true,"description":"True if article is published"},"created_date":{"type":"string","example":"2017-05-18T11:49:03Z","description":"Date when article was created"},"has_linked_file":{"type":"boolean","example":true,"description":"True if any files are linked to the article"},"categories":{"type":"array","description":"List of categories selected for the article","items":{"$ref":"#/definitions/Category"}},"license":{"description":"Article selected license","$ref":"#/definitions/License"},"embargo_title":{"type":"string","example":"File(s) under embargo","description":"Title for embargo"},"embargo_reason":{"type":"string","example":"not complete","description":"Reason for embargo"},"references":{"type":"array","example":["http://figshare.com","http://figshare.com/api"],"description":"List of references","items":{"type":"string","format":"url"}},"related_materials":{"type":"array","example":[{"id":10432,"identifier":"10.6084/m9.figshare.1407024","identifier_type":"DOI","relation":"IsSupplementTo","title":"Figshare for institutions brochure","is_linkout":false}],"description":"List of related materials; supersedes references and resource DOI/title.","items":{"$ref":"#/definitions/RelatedMaterial"}}},"required":["categories","citation","confidential_reason","created_date","description","embargo_reason","embargo_title","funding","funding_list","has_linked_file","is_active","is_confidential","is_embargoed","is_metadata_record","is_public","license","metadata_reason","references","size","status","tags","version"],"allOf":[{"$ref":"#/definitions/Article"}],"x-tag":"articles"};
+        defs["ProjectArticle"] = {"properties":{"citation":{"type":"string","example":"lilliput, figshare admin (2017): first project item. figshare.\n \n Retrieved: 14 01, May 22, 2017 (GMT)","description":"Article citation"},"confidential_reason":{"type":"string","example":"none","description":"Confidentiality reason"},"is_confidential":{"type":"boolean","example":true,"description":"Article Confidentiality"},"size":{"type":"integer","format":"int64","example":69939,"description":"Article size"},"funding":{"type":"string","example":"none","description":"Article funding"},"funding_list":{"type":"array","description":"Full Article funding information","items":{"$ref":"#/definitions/FundingInformation"}},"keywords":{"type":"array","example":["t1","t2","t3"],"description":"List of article keywords","items":{"type":"string"}},"version":{"type":"integer","format":"int64","example":1,"description":"Article version"},"is_metadata_record":{"type":"boolean","example":false,"description":"True if article has no files"},"metadata_reason":{"type":"string","example":"hosted somewhere else","description":"Article metadata reason"},"status":{"type":"string","example":"public","description":"Article status"},"description":{"type":"string","example":"article description","description":"Article description"},"is_embargoed":{"type":"boolean","example":true,"description":"True if article is embargoed"},"is_public":{"type":"boolean","example":true,"description":"True if article is published"},"created_date":{"type":"string","example":"2017-05-18T11:49:03Z","description":"Date when article was created"},"has_linked_file":{"type":"boolean","example":true,"description":"True if any files are linked to the article"},"categories":{"type":"array","description":"List of categories selected for the article","items":{"$ref":"#/definitions/Category"}},"license":{"description":"Article selected license","$ref":"#/definitions/License"},"embargo_title":{"type":"string","example":"File(s) under embargo","description":"Title for embargo"},"embargo_reason":{"type":"string","example":"not complete","description":"Reason for embargo"},"references":{"type":"array","example":["http://figshare.com","http://figshare.com/api"],"description":"List of references","items":{"type":"string","format":"url"}},"related_materials":{"type":"array","example":[{"id":10432,"identifier":"10.6084/m9.figshare.1407024","identifier_type":"DOI","relation":"IsSupplementTo","title":"Figshare for institutions brochure","is_linkout":false}],"description":"List of related materials; supersedes references and resource DOI/title.","items":{"$ref":"#/definitions/RelatedMaterial"}}},"required":["categories","citation","confidential_reason","created_date","description","embargo_reason","embargo_title","funding","funding_list","has_linked_file","is_confidential","is_embargoed","is_metadata_record","is_public","keywords","license","metadata_reason","references","size","status","version"],"allOf":[{"$ref":"#/definitions/Article"}],"x-tag":"articles"};
         defs["ProjectCollaborator"] = {"type":"object","required":["name","role_name","status","user_id"],"properties":{"status":{"type":"string","example":"invited","description":"Status of collaborator invitation"},"role_name":{"type":"string","example":"Owner","description":"Collaborator role"},"user_id":{"type":"integer","example":1,"description":"Collaborator id"},"name":{"type":"string","example":"name","description":"Collaborator name"}},"x-tag":"projects"};
         defs["ProjectCollaboratorInvite"] = {"type":"object","required":["role_name"],"properties":{"role_name":{"type":"string","example":"viewer","description":"Role of the the collaborator inside the project","enum":["viewer","collaborator"]},"user_id":{"type":"integer","format":"int64","example":100008,"description":"User id of the collaborator"},"email":{"type":"string","example":"user@domain.com","description":"Collaborator email"},"comment":{"type":"string","example":"hey","description":"Text sent when inviting the user to the project"}},"x-tag":"projects"};
-        defs["ProjectComplete"] = {"properties":{"funding":{"type":"string","example":"","description":"Project funding"},"funding_list":{"type":"array","description":"Full Project funding information","items":{"$ref":"#/definitions/FundingInformation"}},"description":{"type":"string","example":"description","description":"Project description"},"collaborators":{"type":"array","description":"List of project collaborators","items":{"$ref":"#/definitions/Collaborator"}}},"required":["collaborators","description","funding","funding_list"],"allOf":[{"$ref":"#/definitions/Project"}],"x-tag":"projects"};
+        defs["ProjectComplete"] = {"properties":{"funding":{"type":"string","example":"","description":"Project funding"},"funding_list":{"type":"array","description":"Full Project funding information","items":{"$ref":"#/definitions/FundingInformation"}},"description":{"type":"string","example":"description","description":"Project description"},"collaborators":{"type":"array","description":"List of project collaborators","items":{"$ref":"#/definitions/Collaborator"}},"custom_fields":{"type":"array","description":"Project custom fields","items":{"$ref":"#/definitions/CustomArticleField"}},"modified_date":{"type":"string","example":"2017-05-16T14:52:54Z","description":"Date when project was last modified"},"created_date":{"type":"string","example":"2017-05-16T14:52:54Z","description":"Date when project was created"}},"required":["collaborators","created_date","custom_fields","description","funding","funding_list","modified_date"],"allOf":[{"$ref":"#/definitions/Project"}],"x-tag":"projects"};
         defs["ProjectCompletePrivate"] = {"properties":{"funding":{"type":"string","example":"none","description":"Project funding"},"funding_list":{"type":"array","description":"Full Project funding information","items":{"$ref":"#/definitions/FundingInformation"}},"description":{"type":"string","example":"description","description":"Project description"},"collaborators":{"type":"array","description":"List of project collaborators","items":{"$ref":"#/definitions/Collaborator"}},"quota":{"type":"integer","format":"int64","example":0,"description":"Project quota"},"used_quota":{"type":"integer","format":"int64","example":0,"description":"Project used quota"},"created_date":{"type":"string","example":"2017-05-16T14:52:54Z","description":"Date when project was created"},"modified_date":{"type":"string","example":"2017-05-16T14:52:54Z","description":"Date when project was last modified"},"used_quota_private":{"type":"integer","format":"int64","example":0,"description":"Project private quota used"},"used_quota_public":{"type":"integer","format":"int64","example":0,"description":"Project public quota used"},"group_id":{"type":"integer","format":"int64","example":0,"description":"Group of project if any"},"account_id":{"type":"integer","format":"int64","example":1000001,"description":"ID of the account owning the project"},"custom_fields":{"type":"array","description":"Collection custom fields","items":{"$ref":"#/definitions/CustomArticleField"}}},"required":["account_id","collaborators","created_date","custom_fields","description","funding","funding_list","group_id","modified_date","quota","used_quota","used_quota_private","used_quota_public"],"allOf":[{"$ref":"#/definitions/ProjectPrivate"}],"x-tag":"projects"};
         defs["ProjectCreate"] = {"type":"object","required":["title"],"properties":{"title":{"type":"string","example":"project title","description":"The title for this project - mandatory. 3 - 1000 characters.","minLength":3,"maxLength":1000},"description":{"type":"string","example":"project description","description":"Project description","maxLength":20000},"funding":{"type":"string","example":"","description":"Grant number or organization(s) that funded this project. Up to 2000 characters permitted."},"funding_list":{"type":"array","description":"Funding creation / update items","items":{"$ref":"#/definitions/FundingCreate"}},"group_id":{"type":"integer","format":"int64","example":0,"description":"Only if project type is group."},"custom_fields":{"type":"object","example":{"defined_key":"value for it"},"description":"List of key, values pairs to be associated with the project","properties":{}},"custom_fields_list":{"type":"array","description":"List of custom fields values, supersedes custom_fields parameter","items":{"$ref":"#/definitions/CustomArticleFieldAdd"}}},"x-tag":"projects"};
         defs["ProjectNote"] = {"type":"object","required":["abstract","created_date","id","modified_date","user_id","user_name"],"properties":{"id":{"type":"integer","format":"int64","example":1,"description":"Project note id"},"user_id":{"type":"integer","format":"int64","example":100008,"description":"User who wrote the note"},"abstract":{"type":"string","example":"text","description":"Note Abstract - short/truncated content"},"user_name":{"type":"string","example":"user","description":"Username of the one who wrote the note"},"created_date":{"type":"string","example":"2017-05-16T16:49:11Z","description":"Date when note was created"},"modified_date":{"type":"string","example":"2017-05-16T16:49:11Z","description":"Date when note was last modified"}},"x-tag":"projects"};
@@ -780,9 +782,9 @@ margin-bottom: 20px;
         defs["ProjectNotePrivate"] = {"properties":{"text":{"type":"string","example":"text","description":"Full text of note"}},"required":["text"],"allOf":[{"$ref":"#/definitions/ProjectNote"}],"x-tag":"projects"};
         defs["ProjectPrivate"] = {"properties":{"role":{"type":"string","example":"Owner","description":"Role inside this project","enum":["Owner","Collaborator","Viewer"]},"storage":{"type":"string","example":"individual","description":"Project storage type","enum":["individual","group"]}},"required":["role","storage"],"allOf":[{"$ref":"#/definitions/Project"}],"x-tag":"projects"};
         defs["ProjectUpdate"] = {"type":"object","properties":{"title":{"type":"string","example":"project title","description":"The title for this project - mandatory. 3 - 1000 characters.","minLength":3,"maxLength":1000},"description":{"type":"string","example":"project description","description":"Project description","maxLength":20000},"funding":{"type":"string","example":"","description":"Grant number or organization(s) that funded this project. Up to 2000 characters permitted."},"funding_list":{"type":"array","description":"Funding creation / update items","items":{"$ref":"#/definitions/FundingCreate"}},"custom_fields":{"type":"object","example":{"defined_key":"value for it"},"description":"List of key, values pairs to be associated with the project","properties":{}},"custom_fields_list":{"type":"array","description":"List of custom fields values, supersedes custom_fields parameter","items":{"$ref":"#/definitions/CustomArticleFieldAdd"}}},"x-tag":"projects"};
-        defs["ProjectsSearch"] = {"properties":{"order":{"type":"string","example":"published_date","description":"The field by which to order.","enum":["published_date","modified_date","views"],"default":"published_date"}},"allOf":[{"$ref":"#/definitions/CommonSearch"}],"x-tag":"projects"};
+        defs["ProjectsSearch"] = {"properties":{"order":{"type":"string","example":"published_date","description":"The field by which to order.","default":"published_date","enum":["published_date","modified_date","views"]}},"allOf":[{"$ref":"#/definitions/CommonSearch"}],"x-tag":"projects"};
         defs["PublicFile"] = {"type":"object","required":["computed_md5","download_url","id","is_link_only","name","size","supplied_md5"],"properties":{"id":{"type":"integer","format":"int64","example":3000002,"description":"File id"},"name":{"type":"string","example":"test.xls","description":"File name"},"size":{"type":"integer","format":"int64","example":14848,"description":"File size"},"is_link_only":{"type":"boolean","example":false,"description":"True if file is hosted somewhere else"},"download_url":{"type":"string","format":"url","example":"https://ndownloader.figshare.com/files/3000002","description":"Url for file download"},"supplied_md5":{"type":"string","example":"043a51806d646e88cafbf19e7b82846f","description":"File supplied md5"},"computed_md5":{"type":"string","example":"043a51806d646e88cafbf19e7b82846f","description":"File computed md5"},"mimetype":{"type":"string","example":"application/pdf","description":"MIME Type of the file, it defaults to an empty string"}},"x-tag":"common"};
-        defs["RelatedMaterial"] = {"type":"object","properties":{"id":{"type":"integer","format":"int64","example":10432,"description":"The ID of the related material; can be used to add existing materials of the same account to items."},"identifier":{"type":"string","example":"10.6084/m9.figshare.1407024","description":"The related material identifier (e.g., DOI, Handle, ISBN). Mandatory if creating a new material."},"title":{"type":"string","example":"Rooter: A Methodology for the Typical Unification of Access Points and Redundancy","description":"The related material title"},"relation":{"type":"string","example":"IsSupplementTo","description":"The relation between the item and the related material; defaults to 'References'. Mandatory if creating a new material.","enum":["IsCitedBy","Cites","IsSupplementTo","IsSupplementedBy","IsContinuedBy","Continues","Describes","IsDescribedBy","HasMetadata","IsMetadataFor","HasVersion","IsVersionOf","IsNewVersionOf","IsPreviousVersionOf","IsPartOf","HasPart","IsPublishedIn","IsReferencedBy","References","IsDocumentedBy","Documents","IsCompiledBy","Compiles","IsVariantFormOf","IsOriginalFormOf","IsIdenticalTo","IsReviewedBy","Reviews","IsDerivedFrom","IsSourceOf","IsRequiredBy","Requires","IsObsoletedBy","Obsoletes"],"default":"References"},"identifier_type":{"type":"string","example":"DOI","description":"The type of the identifier of the related material; defaults to 'URL'. Mandatory if creating a new material.","enum":["ARK","arXiv","bibcode","DOI","EAN13","EISSN","Handle","IGSN","ISBN","ISSN","ISTC","LISSN","LSID","PMID","PURL","UPC","URL","URN","w3id"],"default":"URL"},"is_linkout":{"type":"boolean","example":true,"description":"Flag for highlighting this related material in the call-out box"},"link":{"type":"string","example":"https://doi.org/10.6084/m9.figshare.1407024","description":"The full hyperlink for the identifier. Automatically generated by Figshare.","readOnly":true}}};
+        defs["RelatedMaterial"] = {"type":"object","properties":{"id":{"type":"integer","format":"int64","example":10432,"description":"The ID of the related material; can be used to add existing materials of the same account to items."},"identifier":{"type":"string","example":"10.6084/m9.figshare.1407024","description":"The related material identifier (e.g., DOI, Handle, ISBN). Mandatory if creating a new material."},"title":{"type":"string","example":"Rooter: A Methodology for the Typical Unification of Access Points and Redundancy","description":"The related material title"},"relation":{"type":"string","example":"IsSupplementTo","description":"The relation between the item and the related material; defaults to 'References'. Mandatory if creating a new material.","default":"References","enum":["IsCitedBy","Cites","IsSupplementTo","IsSupplementedBy","IsContinuedBy","Continues","Describes","IsDescribedBy","HasMetadata","IsMetadataFor","HasVersion","IsVersionOf","IsNewVersionOf","IsPreviousVersionOf","IsPartOf","HasPart","IsPublishedIn","IsReferencedBy","References","IsDocumentedBy","Documents","IsCompiledBy","Compiles","IsVariantFormOf","IsOriginalFormOf","IsIdenticalTo","IsReviewedBy","Reviews","IsDerivedFrom","IsSourceOf","IsRequiredBy","Requires","IsObsoletedBy","Obsoletes"]},"identifier_type":{"type":"string","example":"DOI","description":"The type of the identifier of the related material; defaults to 'URL'. Mandatory if creating a new material.","default":"URL","enum":["ARK","arXiv","bibcode","DOI","EAN13","EISSN","Handle","IGSN","ISBN","ISSN","ISTC","LISSN","LSID","PMID","PURL","UPC","URL","URN","w3id"]},"is_linkout":{"type":"boolean","example":true,"description":"Flag for highlighting this related material in the call-out box"},"link":{"type":"string","example":"https://doi.org/10.6084/m9.figshare.1407024","description":"The full hyperlink for the identifier. Automatically generated by Figshare.","readOnly":true}}};
         defs["Resource"] = {"type":"object","properties":{"id":{"type":"string","example":"aaaa23512","description":"ID of resource item","maxLength":255,"default":""},"title":{"type":"string","example":"Test title","description":"Title of resource item","maxLength":1000,"default":""},"doi":{"type":"string","description":"DOI of resource item","default":""},"link":{"type":"string","example":"https://docs.figshare.com","description":"Link of resource item","maxLength":255,"default":""},"status":{"type":"string","example":"frozen","description":"Status of resource item","maxLength":100,"default":""},"version":{"type":"integer","format":"int64","example":1,"description":"Version of resource item","default":0}},"x-tag":"resource"};
         defs["ResponseMessage"] = {"type":"object","required":["message"],"properties":{"message":{"type":"string","example":"Project 1 has been published","description":"Response message text"}},"x-tag":"common"};
         defs["Role"] = {"type":"object","required":["category","description","id","name"],"properties":{"id":{"type":"integer","format":"int64","example":1,"description":"Role id"},"name":{"type":"string","example":"Curator","description":"Role name"},"category":{"type":"string","example":"group","description":"Role category"},"description":{"type":"string","description":"Role description"}},"x-tag":"institutions"};
@@ -40430,7 +40432,8 @@ public class InstitutionsApiExample {
         InstitutionsApi apiInstance = new InstitutionsApi();
         AccountCreate account = ; // AccountCreate | Account description
         try {
-            apiInstance.privateInstitutionAccountsCreate(account);
+            AccountCreateResponse result = apiInstance.privateInstitutionAccountsCreate(account);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling InstitutionsApi#privateInstitutionAccountsCreate");
             e.printStackTrace();
@@ -40448,7 +40451,8 @@ public class InstitutionsApiExample {
         InstitutionsApi apiInstance = new InstitutionsApi();
         AccountCreate account = ; // AccountCreate | Account description
         try {
-            apiInstance.privateInstitutionAccountsCreate(account);
+            AccountCreateResponse result = apiInstance.privateInstitutionAccountsCreate(account);
+            System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling InstitutionsApi#privateInstitutionAccountsCreate");
             e.printStackTrace();
@@ -40472,7 +40476,10 @@ InstitutionsApi *apiInstance = [[InstitutionsApi alloc] init];
 
 // Create new Institution Account
 [apiInstance privateInstitutionAccountsCreateWith:account
-              completionHandler: ^(NSError* error) {
+              completionHandler: ^(AccountCreateResponse output, NSError* error) {
+                            if (output) {
+                                NSLog(@"%@", output);
+                            }
                             if (error) {
                                 NSLog(@"Error: %@", error);
                             }
@@ -40497,7 +40504,7 @@ var callback = function(error, data, response) {
   if (error) {
     console.error(error);
   } else {
-    console.log('API called successfully.');
+    console.log('API called successfully. Returned data: ' + data);
   }
 };
 api.privateInstitutionAccountsCreate(account, callback);
@@ -40530,7 +40537,8 @@ namespace Example
             try
             {
                 // Create new Institution Account
-                apiInstance.privateInstitutionAccountsCreate(account);
+                AccountCreateResponse result = apiInstance.privateInstitutionAccountsCreate(account);
+                Debug.WriteLine(result);
             }
             catch (Exception e)
             {
@@ -40553,7 +40561,8 @@ $api_instance = new Swagger\Client\Api\InstitutionsApi();
 $account = ; // AccountCreate | Account description
 
 try {
-    $api_instance->privateInstitutionAccountsCreate($account);
+    $result = $api_instance->privateInstitutionAccountsCreate($account);
+    print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling InstitutionsApi->privateInstitutionAccountsCreate: ', $e->getMessage(), PHP_EOL;
 }
@@ -40572,7 +40581,8 @@ my $api_instance = WWW::SwaggerClient::InstitutionsApi->new();
 my $account = WWW::SwaggerClient::Object::AccountCreate->new(); # AccountCreate | Account description
 
 eval { 
-    $api_instance->privateInstitutionAccountsCreate(account => $account);
+    my $result = $api_instance->privateInstitutionAccountsCreate(account => $account);
+    print Dumper($result);
 };
 if ($@) {
     warn "Exception when calling InstitutionsApi->privateInstitutionAccountsCreate: $@\n";
@@ -40595,7 +40605,8 @@ account =  # AccountCreate | Account description
 
 try: 
     # Create new Institution Account
-    api_instance.private_institution_accounts_create(account)
+    api_response = api_instance.private_institution_accounts_create(account)
+    pprint(api_response)
 except ApiException as e:
     print("Exception when calling InstitutionsApi->privateInstitutionAccountsCreate: %s\n" % e)</code></pre>
                             </div>
@@ -40654,9 +40665,44 @@ $(document).ready(function() {
                             <h3> Status: 201 - Created </h3>
 
                             <ul class="nav nav-tabs nav-tabs-examples" >
+                                <li class="active">
+                                  <a data-toggle="tab" href="#responses-privateInstitutionAccountsCreate-201-schema">Schema</a>
+                                </li>
+
                             </ul>
 
                             <div class="tab-content" style='margin-bottom: 10px;'>
+                                <div class="tab-pane active" id="responses-privateInstitutionAccountsCreate-201-schema">
+                                  <div id='responses-privateInstitutionAccountsCreate-201-schema-201' style="padding: 30px; border-left: 1px solid #eee; border-right: 1px solid #eee; border-bottom: 1px solid #eee;">
+                                    <script>
+                                      $(document).ready(function() {
+                                        var schemaWrapper = {
+  "description" : "Created",
+  "schema" : {
+    "$ref" : "#/definitions/AccountCreateResponse"
+  }
+};
+                                        var schema = schemaWrapper.schema;
+                                        if (schema.$ref != null) {
+                                          schema = defsParser.$refs.get(schema.$ref);
+                                        } else {
+                                          schemaWrapper.definitions = defs;
+                                          $RefParser.dereference(schemaWrapper).catch(function(err) {
+                                            console.log(err);
+                                          });
+                                        }
+
+                                        //console.log(JSON.stringify(schema));
+                                        var view = new JSONSchemaView(schema, 3);
+                                        $('#responses-privateInstitutionAccountsCreate-201-schema-data').val(stringify(schema));
+                                        var result = $('#responses-privateInstitutionAccountsCreate-201-schema-201');
+                                        result.empty();
+                                        result.append(view.render());
+                                      });
+                                    </script>
+                                  </div>
+                                  <input id='responses-privateInstitutionAccountsCreate-201-schema-data' type='hidden' value=''></input>
+                                </div>
                             </div>
 
                             <h3> Status: 400 - Bad Request </h3>
@@ -49116,7 +49162,7 @@ except ApiException as e:
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Projects-privateProjectArticlesCreate-0-curl">
-                            <pre class="prettyprint"><code class="language-bsh">curl -X POST "https://api.figinternal.dev/v2/account/projects/{project_id}/articles?page=&page_size=&limit=&offset="</code></pre>
+                            <pre class="prettyprint"><code class="language-bsh">curl -X POST "https://api.figinternal.dev/v2/account/projects/{project_id}/articles"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Projects-privateProjectArticlesCreate-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -49139,12 +49185,8 @@ public class ProjectsApiExample {
         ProjectsApi apiInstance = new ProjectsApi();
         Long projectId = 789; // Long | Project unique identifier
         ArticleProjectCreate article = ; // ArticleProjectCreate | Article description
-        Long page = 789; // Long | Page number. Used for pagination with page_size
-        Long pageSize = 789; // Long | The number of results included on a page. Used for pagination with page
-        Long limit = 789; // Long | Number of results included on a page. Used for pagination with query
-        Long offset = 789; // Long | Where to start the listing(the offset of the first result). Used for pagination with limit
         try {
-            Location result = apiInstance.privateProjectArticlesCreate(projectId, article, page, pageSize, limit, offset);
+            Location result = apiInstance.privateProjectArticlesCreate(projectId, article);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ProjectsApi#privateProjectArticlesCreate");
@@ -49163,12 +49205,8 @@ public class ProjectsApiExample {
         ProjectsApi apiInstance = new ProjectsApi();
         Long projectId = 789; // Long | Project unique identifier
         ArticleProjectCreate article = ; // ArticleProjectCreate | Article description
-        Long page = 789; // Long | Page number. Used for pagination with page_size
-        Long pageSize = 789; // Long | The number of results included on a page. Used for pagination with page
-        Long limit = 789; // Long | Number of results included on a page. Used for pagination with query
-        Long offset = 789; // Long | Where to start the listing(the offset of the first result). Used for pagination with limit
         try {
-            Location result = apiInstance.privateProjectArticlesCreate(projectId, article, page, pageSize, limit, offset);
+            Location result = apiInstance.privateProjectArticlesCreate(projectId, article);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ProjectsApi#privateProjectArticlesCreate");
@@ -49189,20 +49227,12 @@ public class ProjectsApiExample {
 
 Long *projectId = 789; // Project unique identifier
 ArticleProjectCreate *article = ; // Article description
-Long *page = 789; // Page number. Used for pagination with page_size (optional)
-Long *pageSize = 789; // The number of results included on a page. Used for pagination with page (optional) (default to 10)
-Long *limit = 789; // Number of results included on a page. Used for pagination with query (optional)
-Long *offset = 789; // Where to start the listing(the offset of the first result). Used for pagination with limit (optional)
 
 ProjectsApi *apiInstance = [[ProjectsApi alloc] init];
 
 // Create project article
 [apiInstance privateProjectArticlesCreateWith:projectId
     article:article
-    page:page
-    pageSize:pageSize
-    limit:limit
-    offset:offset
               completionHandler: ^(Location output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
@@ -49228,12 +49258,6 @@ var projectId = 789; // {Long} Project unique identifier
 
 var article = ; // {ArticleProjectCreate} Article description
 
-var opts = { 
-  'page': 789, // {Long} Page number. Used for pagination with page_size
-  'pageSize': 789, // {Long} The number of results included on a page. Used for pagination with page
-  'limit': 789, // {Long} Number of results included on a page. Used for pagination with query
-  'offset': 789 // {Long} Where to start the listing(the offset of the first result). Used for pagination with limit
-};
 
 var callback = function(error, data, response) {
   if (error) {
@@ -49242,7 +49266,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.privateProjectArticlesCreate(projectId, article, opts, callback);
+api.privateProjectArticlesCreate(projectId, article, callback);
 </code></pre>
                             </div>
 
@@ -49269,15 +49293,11 @@ namespace Example
             var apiInstance = new ProjectsApi();
             var projectId = 789;  // Long | Project unique identifier
             var article = new ArticleProjectCreate(); // ArticleProjectCreate | Article description
-            var page = 789;  // Long | Page number. Used for pagination with page_size (optional) 
-            var pageSize = 789;  // Long | The number of results included on a page. Used for pagination with page (optional)  (default to 10)
-            var limit = 789;  // Long | Number of results included on a page. Used for pagination with query (optional) 
-            var offset = 789;  // Long | Where to start the listing(the offset of the first result). Used for pagination with limit (optional) 
 
             try
             {
                 // Create project article
-                Location result = apiInstance.privateProjectArticlesCreate(projectId, article, page, pageSize, limit, offset);
+                Location result = apiInstance.privateProjectArticlesCreate(projectId, article);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -49300,13 +49320,9 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 $api_instance = new Swagger\Client\Api\ProjectsApi();
 $projectId = 789; // Long | Project unique identifier
 $article = ; // ArticleProjectCreate | Article description
-$page = 789; // Long | Page number. Used for pagination with page_size
-$pageSize = 789; // Long | The number of results included on a page. Used for pagination with page
-$limit = 789; // Long | Number of results included on a page. Used for pagination with query
-$offset = 789; // Long | Where to start the listing(the offset of the first result). Used for pagination with limit
 
 try {
-    $result = $api_instance->privateProjectArticlesCreate($projectId, $article, $page, $pageSize, $limit, $offset);
+    $result = $api_instance->privateProjectArticlesCreate($projectId, $article);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ProjectsApi->privateProjectArticlesCreate: ', $e->getMessage(), PHP_EOL;
@@ -49325,13 +49341,9 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 my $api_instance = WWW::SwaggerClient::ProjectsApi->new();
 my $projectId = 789; # Long | Project unique identifier
 my $article = WWW::SwaggerClient::Object::ArticleProjectCreate->new(); # ArticleProjectCreate | Article description
-my $page = 789; # Long | Page number. Used for pagination with page_size
-my $pageSize = 789; # Long | The number of results included on a page. Used for pagination with page
-my $limit = 789; # Long | Number of results included on a page. Used for pagination with query
-my $offset = 789; # Long | Where to start the listing(the offset of the first result). Used for pagination with limit
 
 eval { 
-    my $result = $api_instance->privateProjectArticlesCreate(projectId => $projectId, article => $article, page => $page, pageSize => $pageSize, limit => $limit, offset => $offset);
+    my $result = $api_instance->privateProjectArticlesCreate(projectId => $projectId, article => $article);
     print Dumper($result);
 };
 if ($@) {
@@ -49353,14 +49365,10 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 api_instance = swagger_client.ProjectsApi()
 projectId = 789 # Long | Project unique identifier
 article =  # ArticleProjectCreate | Article description
-page = 789 # Long | Page number. Used for pagination with page_size (optional)
-pageSize = 789 # Long | The number of results included on a page. Used for pagination with page (optional) (default to 10)
-limit = 789 # Long | Number of results included on a page. Used for pagination with query (optional)
-offset = 789 # Long | Where to start the listing(the offset of the first result). Used for pagination with limit (optional)
 
 try: 
     # Create project article
-    api_response = api_instance.private_project_articles_create(projectId, article, page=page, pageSize=pageSize, limit=limit, offset=offset)
+    api_response = api_instance.private_project_articles_create(projectId, article)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling ProjectsApi->privateProjectArticlesCreate: %s\n" % e)</code></pre>
@@ -49448,105 +49456,6 @@ $(document).ready(function() {
                             </table>
 
 
-                            <div class="methodsubtabletitle">Query parameters</div>
-                            <table id="methodsubtable">
-                              <tr>
-                                <th width="150px">Name</th>
-                                <th>Description</th>
-                              </tr>
-                                <tr><td style="width:150px;">page</td>
-<td>
-
-
-    <div id="d2e199_privateProjectArticlesCreate_page">
-        <div class="json-schema-view">
-            <div class="primitive">
-                <span class="type">
-                    Long
-                </span>
-                    <span class="format">
-                        (int64)
-                    </span>
-
-                    <div class="inner description">
-                        Page number. Used for pagination with page_size
-                    </div>
-            </div>
-        </div>
-    </div>
-</td>
-</tr>
-
-                                <tr><td style="width:150px;">page_size</td>
-<td>
-
-
-    <div id="d2e199_privateProjectArticlesCreate_pageSize">
-        <div class="json-schema-view">
-            <div class="primitive">
-                <span class="type">
-                    Long
-                </span>
-                    <span class="format">
-                        (int64)
-                    </span>
-
-                    <div class="inner description">
-                        The number of results included on a page. Used for pagination with page
-                    </div>
-            </div>
-        </div>
-    </div>
-</td>
-</tr>
-
-                                <tr><td style="width:150px;">limit</td>
-<td>
-
-
-    <div id="d2e199_privateProjectArticlesCreate_limit">
-        <div class="json-schema-view">
-            <div class="primitive">
-                <span class="type">
-                    Long
-                </span>
-                    <span class="format">
-                        (int64)
-                    </span>
-
-                    <div class="inner description">
-                        Number of results included on a page. Used for pagination with query
-                    </div>
-            </div>
-        </div>
-    </div>
-</td>
-</tr>
-
-                                <tr><td style="width:150px;">offset</td>
-<td>
-
-
-    <div id="d2e199_privateProjectArticlesCreate_offset">
-        <div class="json-schema-view">
-            <div class="primitive">
-                <span class="type">
-                    Long
-                </span>
-                    <span class="format">
-                        (int64)
-                    </span>
-
-                    <div class="inner description">
-                        Where to start the listing(the offset of the first result). Used for pagination with limit
-                    </div>
-            </div>
-        </div>
-    </div>
-</td>
-</tr>
-
-                            </table>
 
                           <h2>Responses</h2>
                             <h3> Status: 201 - Created </h3>
@@ -49720,7 +49629,7 @@ $(document).ready(function() {
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Projects-privateProjectArticlesList-0-curl">
-                            <pre class="prettyprint"><code class="language-bsh">curl -X GET "https://api.figinternal.dev/v2/account/projects/{project_id}/articles?page=&page_size=&limit=&offset="</code></pre>
+                            <pre class="prettyprint"><code class="language-bsh">curl -X GET "https://api.figinternal.dev/v2/account/projects/{project_id}/articles"</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Projects-privateProjectArticlesList-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -49742,12 +49651,8 @@ public class ProjectsApiExample {
 
         ProjectsApi apiInstance = new ProjectsApi();
         Long projectId = 789; // Long | Project unique identifier
-        Long page = 789; // Long | Page number. Used for pagination with page_size
-        Long pageSize = 789; // Long | The number of results included on a page. Used for pagination with page
-        Long limit = 789; // Long | Number of results included on a page. Used for pagination with query
-        Long offset = 789; // Long | Where to start the listing(the offset of the first result). Used for pagination with limit
         try {
-            array[Article] result = apiInstance.privateProjectArticlesList(projectId, page, pageSize, limit, offset);
+            array[PrivateProjectArticle] result = apiInstance.privateProjectArticlesList(projectId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ProjectsApi#privateProjectArticlesList");
@@ -49765,12 +49670,8 @@ public class ProjectsApiExample {
     public static void main(String[] args) {
         ProjectsApi apiInstance = new ProjectsApi();
         Long projectId = 789; // Long | Project unique identifier
-        Long page = 789; // Long | Page number. Used for pagination with page_size
-        Long pageSize = 789; // Long | The number of results included on a page. Used for pagination with page
-        Long limit = 789; // Long | Number of results included on a page. Used for pagination with query
-        Long offset = 789; // Long | Where to start the listing(the offset of the first result). Used for pagination with limit
         try {
-            array[Article] result = apiInstance.privateProjectArticlesList(projectId, page, pageSize, limit, offset);
+            array[PrivateProjectArticle] result = apiInstance.privateProjectArticlesList(projectId);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ProjectsApi#privateProjectArticlesList");
@@ -49790,20 +49691,12 @@ public class ProjectsApiExample {
 [apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
 
 Long *projectId = 789; // Project unique identifier
-Long *page = 789; // Page number. Used for pagination with page_size (optional)
-Long *pageSize = 789; // The number of results included on a page. Used for pagination with page (optional) (default to 10)
-Long *limit = 789; // Number of results included on a page. Used for pagination with query (optional)
-Long *offset = 789; // Where to start the listing(the offset of the first result). Used for pagination with limit (optional)
 
 ProjectsApi *apiInstance = [[ProjectsApi alloc] init];
 
 // List project articles
 [apiInstance privateProjectArticlesListWith:projectId
-    page:page
-    pageSize:pageSize
-    limit:limit
-    offset:offset
-              completionHandler: ^(array[Article] output, NSError* error) {
+              completionHandler: ^(array[PrivateProjectArticle] output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
                             }
@@ -49826,12 +49719,6 @@ var api = new FigshareApi.ProjectsApi()
 
 var projectId = 789; // {Long} Project unique identifier
 
-var opts = { 
-  'page': 789, // {Long} Page number. Used for pagination with page_size
-  'pageSize': 789, // {Long} The number of results included on a page. Used for pagination with page
-  'limit': 789, // {Long} Number of results included on a page. Used for pagination with query
-  'offset': 789 // {Long} Where to start the listing(the offset of the first result). Used for pagination with limit
-};
 
 var callback = function(error, data, response) {
   if (error) {
@@ -49840,7 +49727,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.privateProjectArticlesList(projectId, , opts, callback);
+api.privateProjectArticlesList(projectId, , callback);
 </code></pre>
                             </div>
 
@@ -49866,15 +49753,11 @@ namespace Example
 
             var apiInstance = new ProjectsApi();
             var projectId = 789;  // Long | Project unique identifier
-            var page = 789;  // Long | Page number. Used for pagination with page_size (optional) 
-            var pageSize = 789;  // Long | The number of results included on a page. Used for pagination with page (optional)  (default to 10)
-            var limit = 789;  // Long | Number of results included on a page. Used for pagination with query (optional) 
-            var offset = 789;  // Long | Where to start the listing(the offset of the first result). Used for pagination with limit (optional) 
 
             try
             {
                 // List project articles
-                array[Article] result = apiInstance.privateProjectArticlesList(projectId, page, pageSize, limit, offset);
+                array[PrivateProjectArticle] result = apiInstance.privateProjectArticlesList(projectId);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -49896,13 +49779,9 @@ Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_AC
 
 $api_instance = new Swagger\Client\Api\ProjectsApi();
 $projectId = 789; // Long | Project unique identifier
-$page = 789; // Long | Page number. Used for pagination with page_size
-$pageSize = 789; // Long | The number of results included on a page. Used for pagination with page
-$limit = 789; // Long | Number of results included on a page. Used for pagination with query
-$offset = 789; // Long | Where to start the listing(the offset of the first result). Used for pagination with limit
 
 try {
-    $result = $api_instance->privateProjectArticlesList($projectId, $page, $pageSize, $limit, $offset);
+    $result = $api_instance->privateProjectArticlesList($projectId);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ProjectsApi->privateProjectArticlesList: ', $e->getMessage(), PHP_EOL;
@@ -49920,13 +49799,9 @@ $WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
 
 my $api_instance = WWW::SwaggerClient::ProjectsApi->new();
 my $projectId = 789; # Long | Project unique identifier
-my $page = 789; # Long | Page number. Used for pagination with page_size
-my $pageSize = 789; # Long | The number of results included on a page. Used for pagination with page
-my $limit = 789; # Long | Number of results included on a page. Used for pagination with query
-my $offset = 789; # Long | Where to start the listing(the offset of the first result). Used for pagination with limit
 
 eval { 
-    my $result = $api_instance->privateProjectArticlesList(projectId => $projectId, page => $page, pageSize => $pageSize, limit => $limit, offset => $offset);
+    my $result = $api_instance->privateProjectArticlesList(projectId => $projectId);
     print Dumper($result);
 };
 if ($@) {
@@ -49947,14 +49822,10 @@ swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
 # create an instance of the API class
 api_instance = swagger_client.ProjectsApi()
 projectId = 789 # Long | Project unique identifier
-page = 789 # Long | Page number. Used for pagination with page_size (optional)
-pageSize = 789 # Long | The number of results included on a page. Used for pagination with page (optional) (default to 10)
-limit = 789 # Long | Number of results included on a page. Used for pagination with query (optional)
-offset = 789 # Long | Where to start the listing(the offset of the first result). Used for pagination with limit (optional)
 
 try: 
     # List project articles
-    api_response = api_instance.private_project_articles_list(projectId, page=page, pageSize=pageSize, limit=limit, offset=offset)
+    api_response = api_instance.private_project_articles_list(projectId)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling ProjectsApi->privateProjectArticlesList: %s\n" % e)</code></pre>
@@ -50000,105 +49871,6 @@ except ApiException as e:
 
 
 
-                            <div class="methodsubtabletitle">Query parameters</div>
-                            <table id="methodsubtable">
-                              <tr>
-                                <th width="150px">Name</th>
-                                <th>Description</th>
-                              </tr>
-                                <tr><td style="width:150px;">page</td>
-<td>
-
-
-    <div id="d2e199_privateProjectArticlesList_page">
-        <div class="json-schema-view">
-            <div class="primitive">
-                <span class="type">
-                    Long
-                </span>
-                    <span class="format">
-                        (int64)
-                    </span>
-
-                    <div class="inner description">
-                        Page number. Used for pagination with page_size
-                    </div>
-            </div>
-        </div>
-    </div>
-</td>
-</tr>
-
-                                <tr><td style="width:150px;">page_size</td>
-<td>
-
-
-    <div id="d2e199_privateProjectArticlesList_pageSize">
-        <div class="json-schema-view">
-            <div class="primitive">
-                <span class="type">
-                    Long
-                </span>
-                    <span class="format">
-                        (int64)
-                    </span>
-
-                    <div class="inner description">
-                        The number of results included on a page. Used for pagination with page
-                    </div>
-            </div>
-        </div>
-    </div>
-</td>
-</tr>
-
-                                <tr><td style="width:150px;">limit</td>
-<td>
-
-
-    <div id="d2e199_privateProjectArticlesList_limit">
-        <div class="json-schema-view">
-            <div class="primitive">
-                <span class="type">
-                    Long
-                </span>
-                    <span class="format">
-                        (int64)
-                    </span>
-
-                    <div class="inner description">
-                        Number of results included on a page. Used for pagination with query
-                    </div>
-            </div>
-        </div>
-    </div>
-</td>
-</tr>
-
-                                <tr><td style="width:150px;">offset</td>
-<td>
-
-
-    <div id="d2e199_privateProjectArticlesList_offset">
-        <div class="json-schema-view">
-            <div class="primitive">
-                <span class="type">
-                    Long
-                </span>
-                    <span class="format">
-                        (int64)
-                    </span>
-
-                    <div class="inner description">
-                        Where to start the listing(the offset of the first result). Used for pagination with limit
-                    </div>
-            </div>
-        </div>
-    </div>
-</td>
-</tr>
-
-                            </table>
 
                           <h2>Responses</h2>
                             <h3> Status: 200 - OK. List of articles </h3>
@@ -50120,7 +49892,7 @@ except ApiException as e:
   "schema" : {
     "type" : "array",
     "items" : {
-      "$ref" : "#/definitions/Article"
+      "$ref" : "#/definitions/PrivateProjectArticle"
     }
   }
 };
@@ -56895,7 +56667,7 @@ $(document).ready(function() {
 
                         <div class="tab-content">
                           <div class="tab-pane active" id="examples-Projects-projectArticles-0-curl">
-                            <pre class="prettyprint"><code class="language-bsh">curl -X GET "https://api.figinternal.dev/v2/projects/{project_id}/articles"</code></pre>
+                            <pre class="prettyprint"><code class="language-bsh">curl -X GET "https://api.figinternal.dev/v2/projects/{project_id}/articles?page=&page_size=&limit=&offset="</code></pre>
                           </div>
                           <div class="tab-pane" id="examples-Projects-projectArticles-0-java">
                             <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
@@ -56912,8 +56684,12 @@ public class ProjectsApiExample {
         
         ProjectsApi apiInstance = new ProjectsApi();
         Long projectId = 789; // Long | Project Unique identifier
+        Long page = 789; // Long | Page number. Used for pagination with page_size
+        Long pageSize = 789; // Long | The number of results included on a page. Used for pagination with page
+        Long limit = 789; // Long | Number of results included on a page. Used for pagination with query
+        Long offset = 789; // Long | Where to start the listing(the offset of the first result). Used for pagination with limit
         try {
-            array[Article] result = apiInstance.projectArticles(projectId);
+            array[Article] result = apiInstance.projectArticles(projectId, page, pageSize, limit, offset);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ProjectsApi#projectArticles");
@@ -56931,8 +56707,12 @@ public class ProjectsApiExample {
     public static void main(String[] args) {
         ProjectsApi apiInstance = new ProjectsApi();
         Long projectId = 789; // Long | Project Unique identifier
+        Long page = 789; // Long | Page number. Used for pagination with page_size
+        Long pageSize = 789; // Long | The number of results included on a page. Used for pagination with page
+        Long limit = 789; // Long | Number of results included on a page. Used for pagination with query
+        Long offset = 789; // Long | Where to start the listing(the offset of the first result). Used for pagination with limit
         try {
-            array[Article] result = apiInstance.projectArticles(projectId);
+            array[Article] result = apiInstance.projectArticles(projectId, page, pageSize, limit, offset);
             System.out.println(result);
         } catch (ApiException e) {
             System.err.println("Exception when calling ProjectsApi#projectArticles");
@@ -56947,11 +56727,19 @@ public class ProjectsApiExample {
   </div> -->
                             <div class="tab-pane" id="examples-Projects-projectArticles-0-objc">
                               <pre class="prettyprint"><code class="language-cpp">Long *projectId = 789; // Project Unique identifier
+Long *page = 789; // Page number. Used for pagination with page_size (optional)
+Long *pageSize = 789; // The number of results included on a page. Used for pagination with page (optional) (default to 10)
+Long *limit = 789; // Number of results included on a page. Used for pagination with query (optional)
+Long *offset = 789; // Where to start the listing(the offset of the first result). Used for pagination with limit (optional)
 
 ProjectsApi *apiInstance = [[ProjectsApi alloc] init];
 
 // Public Project Articles
 [apiInstance projectArticlesWith:projectId
+    page:page
+    pageSize:pageSize
+    limit:limit
+    offset:offset
               completionHandler: ^(array[Article] output, NSError* error) {
                             if (output) {
                                 NSLog(@"%@", output);
@@ -56970,6 +56758,12 @@ var api = new FigshareApi.ProjectsApi()
 
 var projectId = 789; // {Long} Project Unique identifier
 
+var opts = { 
+  'page': 789, // {Long} Page number. Used for pagination with page_size
+  'pageSize': 789, // {Long} The number of results included on a page. Used for pagination with page
+  'limit': 789, // {Long} Number of results included on a page. Used for pagination with query
+  'offset': 789 // {Long} Where to start the listing(the offset of the first result). Used for pagination with limit
+};
 
 var callback = function(error, data, response) {
   if (error) {
@@ -56978,7 +56772,7 @@ var callback = function(error, data, response) {
     console.log('API called successfully. Returned data: ' + data);
   }
 };
-api.projectArticles(projectId, callback);
+api.projectArticles(projectId, opts, callback);
 </code></pre>
                             </div>
 
@@ -57001,11 +56795,15 @@ namespace Example
             
             var apiInstance = new ProjectsApi();
             var projectId = 789;  // Long | Project Unique identifier
+            var page = 789;  // Long | Page number. Used for pagination with page_size (optional) 
+            var pageSize = 789;  // Long | The number of results included on a page. Used for pagination with page (optional)  (default to 10)
+            var limit = 789;  // Long | Number of results included on a page. Used for pagination with query (optional) 
+            var offset = 789;  // Long | Where to start the listing(the offset of the first result). Used for pagination with limit (optional) 
 
             try
             {
                 // Public Project Articles
-                array[Article] result = apiInstance.projectArticles(projectId);
+                array[Article] result = apiInstance.projectArticles(projectId, page, pageSize, limit, offset);
                 Debug.WriteLine(result);
             }
             catch (Exception e)
@@ -57024,9 +56822,13 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 $api_instance = new Swagger\Client\Api\ProjectsApi();
 $projectId = 789; // Long | Project Unique identifier
+$page = 789; // Long | Page number. Used for pagination with page_size
+$pageSize = 789; // Long | The number of results included on a page. Used for pagination with page
+$limit = 789; // Long | Number of results included on a page. Used for pagination with query
+$offset = 789; // Long | Where to start the listing(the offset of the first result). Used for pagination with limit
 
 try {
-    $result = $api_instance->projectArticles($projectId);
+    $result = $api_instance->projectArticles($projectId, $page, $pageSize, $limit, $offset);
     print_r($result);
 } catch (Exception $e) {
     echo 'Exception when calling ProjectsApi->projectArticles: ', $e->getMessage(), PHP_EOL;
@@ -57041,9 +56843,13 @@ use WWW::SwaggerClient::ProjectsApi;
 
 my $api_instance = WWW::SwaggerClient::ProjectsApi->new();
 my $projectId = 789; # Long | Project Unique identifier
+my $page = 789; # Long | Page number. Used for pagination with page_size
+my $pageSize = 789; # Long | The number of results included on a page. Used for pagination with page
+my $limit = 789; # Long | Number of results included on a page. Used for pagination with query
+my $offset = 789; # Long | Where to start the listing(the offset of the first result). Used for pagination with limit
 
 eval { 
-    my $result = $api_instance->projectArticles(projectId => $projectId);
+    my $result = $api_instance->projectArticles(projectId => $projectId, page => $page, pageSize => $pageSize, limit => $limit, offset => $offset);
     print Dumper($result);
 };
 if ($@) {
@@ -57061,10 +56867,14 @@ from pprint import pprint
 # create an instance of the API class
 api_instance = swagger_client.ProjectsApi()
 projectId = 789 # Long | Project Unique identifier
+page = 789 # Long | Page number. Used for pagination with page_size (optional)
+pageSize = 789 # Long | The number of results included on a page. Used for pagination with page (optional) (default to 10)
+limit = 789 # Long | Number of results included on a page. Used for pagination with query (optional)
+offset = 789 # Long | Where to start the listing(the offset of the first result). Used for pagination with limit (optional)
 
 try: 
     # Public Project Articles
-    api_response = api_instance.project_articles(projectId)
+    api_response = api_instance.project_articles(projectId, page=page, pageSize=pageSize, limit=limit, offset=offset)
     pprint(api_response)
 except ApiException as e:
     print("Exception when calling ProjectsApi->projectArticles: %s\n" % e)</code></pre>
@@ -57110,6 +56920,105 @@ except ApiException as e:
 
 
 
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">page</td>
+<td>
+
+
+    <div id="d2e199_projectArticles_page">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Long
+                </span>
+                    <span class="format">
+                        (int64)
+                    </span>
+
+                    <div class="inner description">
+                        Page number. Used for pagination with page_size
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                <tr><td style="width:150px;">page_size</td>
+<td>
+
+
+    <div id="d2e199_projectArticles_pageSize">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Long
+                </span>
+                    <span class="format">
+                        (int64)
+                    </span>
+
+                    <div class="inner description">
+                        The number of results included on a page. Used for pagination with page
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                <tr><td style="width:150px;">limit</td>
+<td>
+
+
+    <div id="d2e199_projectArticles_limit">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Long
+                </span>
+                    <span class="format">
+                        (int64)
+                    </span>
+
+                    <div class="inner description">
+                        Number of results included on a page. Used for pagination with query
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                <tr><td style="width:150px;">offset</td>
+<td>
+
+
+    <div id="d2e199_projectArticles_offset">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Long
+                </span>
+                    <span class="format">
+                        (int64)
+                    </span>
+
+                    <div class="inner description">
+                        Where to start the listing(the offset of the first result). Used for pagination with limit
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
 
                           <h2>Responses</h2>
                             <h3> Status: 200 - OK. Project articles list </h3>

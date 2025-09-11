@@ -5405,6 +5405,47 @@
                         "type": "integer",
                         "format": "int64",
                         "minimum": 1
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number. Used for pagination with page_size",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64",
+                        "minimum": 1,
+                        "maximum": 5000
+                    },
+                    {
+                        "name": "page_size",
+                        "in": "query",
+                        "description": "The number of results included on a page. Used for pagination with page",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64",
+                        "minimum": 1,
+                        "maximum": 1000,
+                        "default": 10
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of results included on a page. Used for pagination with query",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64",
+                        "minimum": 1,
+                        "maximum": 1000
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Where to start the listing(the offset of the first result). Used for pagination with limit",
+                        "required": false,
+                        "type": "integer",
+                        "format": "int64",
+                        "minimum": 0,
+                        "maximum": 5000
                     }
                 ],
                 "responses": {
@@ -6479,47 +6520,6 @@
                     "type": "integer",
                     "format": "int64",
                     "minimum": 1
-                },
-                {
-                    "name": "page",
-                    "in": "query",
-                    "description": "Page number. Used for pagination with page_size",
-                    "required": false,
-                    "type": "integer",
-                    "format": "int64",
-                    "minimum": 1,
-                    "maximum": 5000
-                },
-                {
-                    "name": "page_size",
-                    "in": "query",
-                    "description": "The number of results included on a page. Used for pagination with page",
-                    "required": false,
-                    "type": "integer",
-                    "format": "int64",
-                    "minimum": 1,
-                    "maximum": 1000,
-                    "default": 10
-                },
-                {
-                    "name": "limit",
-                    "in": "query",
-                    "description": "Number of results included on a page. Used for pagination with query",
-                    "required": false,
-                    "type": "integer",
-                    "format": "int64",
-                    "minimum": 1,
-                    "maximum": 1000
-                },
-                {
-                    "name": "offset",
-                    "in": "query",
-                    "description": "Where to start the listing(the offset of the first result). Used for pagination with limit",
-                    "required": false,
-                    "type": "integer",
-                    "format": "int64",
-                    "minimum": 0,
-                    "maximum": 5000
                 }
             ],
             "get": {
@@ -6543,7 +6543,7 @@
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/Article"
+                                "$ref": "#/definitions/PrivateProjectArticle"
                             }
                         }
                     },
@@ -6572,47 +6572,6 @@
                         "type": "integer",
                         "format": "int64",
                         "minimum": 1
-                    },
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "description": "Page number. Used for pagination with page_size",
-                        "required": false,
-                        "type": "integer",
-                        "format": "int64",
-                        "minimum": 1,
-                        "maximum": 5000
-                    },
-                    {
-                        "name": "page_size",
-                        "in": "query",
-                        "description": "The number of results included on a page. Used for pagination with page",
-                        "required": false,
-                        "type": "integer",
-                        "format": "int64",
-                        "minimum": 1,
-                        "maximum": 1000,
-                        "default": 10
-                    },
-                    {
-                        "name": "limit",
-                        "in": "query",
-                        "description": "Number of results included on a page. Used for pagination with query",
-                        "required": false,
-                        "type": "integer",
-                        "format": "int64",
-                        "minimum": 1,
-                        "maximum": 1000
-                    },
-                    {
-                        "name": "offset",
-                        "in": "query",
-                        "description": "Where to start the listing(the offset of the first result). Used for pagination with limit",
-                        "required": false,
-                        "type": "integer",
-                        "format": "int64",
-                        "minimum": 0,
-                        "maximum": 5000
                     }
                 ]
             },
@@ -6649,47 +6608,6 @@
                         "type": "integer",
                         "format": "int64",
                         "minimum": 1
-                    },
-                    {
-                        "name": "page",
-                        "in": "query",
-                        "description": "Page number. Used for pagination with page_size",
-                        "required": false,
-                        "type": "integer",
-                        "format": "int64",
-                        "minimum": 1,
-                        "maximum": 5000
-                    },
-                    {
-                        "name": "page_size",
-                        "in": "query",
-                        "description": "The number of results included on a page. Used for pagination with page",
-                        "required": false,
-                        "type": "integer",
-                        "format": "int64",
-                        "minimum": 1,
-                        "maximum": 1000,
-                        "default": 10
-                    },
-                    {
-                        "name": "limit",
-                        "in": "query",
-                        "description": "Number of results included on a page. Used for pagination with query",
-                        "required": false,
-                        "type": "integer",
-                        "format": "int64",
-                        "minimum": 1,
-                        "maximum": 1000
-                    },
-                    {
-                        "name": "offset",
-                        "in": "query",
-                        "description": "Where to start the listing(the offset of the first result). Used for pagination with limit",
-                        "required": false,
-                        "type": "integer",
-                        "format": "int64",
-                        "minimum": 0,
-                        "maximum": 5000
                     }
                 ],
                 "responses": {
@@ -7993,7 +7911,10 @@
                 ],
                 "responses": {
                     "201": {
-                        "description": "Created"
+                        "description": "Created",
+                        "schema": {
+                            "$ref": "#/definitions/AccountCreateResponse"
+                        }
                     },
                     "400": {
                         "description": "Bad Request"
@@ -9064,14 +8985,6 @@
                         "dropdown_large_list"
                     ]
                 },
-                "is_mandatory": {
-                    "description": "True if field completion is mandatory",
-                    "type": [
-                        "boolean",
-                        "null"
-                    ],
-                    "example": false
-                },
                 "settings": {
                     "description": "Settings for the custom field",
                     "type": "object",
@@ -9486,7 +9399,10 @@
                 "url",
                 "published_date",
                 "id",
-                "title"
+                "title",
+                "custom_fields",
+                "modified_date",
+                "created_date"
             ],
             "properties": {
                 "funding": {
@@ -9521,6 +9437,23 @@
                     "items": {
                         "$ref": "#/definitions/Collaborator"
                     }
+                },
+                "custom_fields": {
+                    "type": "array",
+                    "description": "Project custom fields",
+                    "items": {
+                        "$ref": "#/definitions/CustomArticleField"
+                    }
+                },
+                "modified_date": {
+                    "description": "Date when project was last modified",
+                    "type": "string",
+                    "example": "2017-05-16T14:52:54Z"
+                },
+                "created_date": {
+                    "description": "Date when project was created",
+                    "type": "string",
+                    "example": "2017-05-16T14:52:54Z"
                 },
                 "url": {
                     "description": "Api endpoint",
@@ -10629,6 +10562,21 @@
                 }
             }
         },
+        "AccountCreateResponse": {
+            "x-tag": "common",
+            "type": "object",
+            "required": [
+                "account_id"
+            ],
+            "properties": {
+                "account_id": {
+                    "description": "ID of created account",
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 33334444
+                }
+            }
+        },
         "AccountUpdate": {
             "x-tag": "institutions",
             "type": "object",
@@ -10662,7 +10610,9 @@
                 "status",
                 "created_date",
                 "modified_date",
-                "review_date"
+                "review_date",
+                "request_number",
+                "resolution_comment"
             ],
             "properties": {
                 "id": {
@@ -10724,6 +10674,15 @@
                         "null"
                     ],
                     "description": "The last time a comment has been added to the review."
+                },
+                "request_number": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "The request number of the review."
+                },
+                "resolution_comment": {
+                    "type": "string",
+                    "description": "The resolution comment of the review."
                 }
             }
         },
@@ -10742,7 +10701,9 @@
                 "status",
                 "created_date",
                 "modified_date",
-                "review_date"
+                "review_date",
+                "request_number",
+                "resolution_comment"
             ],
             "allOf": [
                 {
@@ -10814,6 +10775,15 @@
                         "null"
                     ],
                     "description": "The last time a comment has been added to the review."
+                },
+                "request_number": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "The request number of the review."
+                },
+                "resolution_comment": {
+                    "type": "string",
+                    "description": "The resolution comment of the review."
                 }
             }
         },
@@ -11361,6 +11331,253 @@
                 }
             }
         },
+        "PrivateProjectArticle": {
+            "x-tag": "articles",
+            "type": "object",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/ProjectArticle"
+                }
+            ],
+            "required": [
+                "files",
+                "embargo_options",
+                "custom_fields",
+                "account_id",
+                "download_disabled",
+                "authors",
+                "figshare_url",
+                "group_resource_id",
+                "curation_status"
+            ],
+            "properties": {
+                "files": {
+                    "type": "array",
+                    "description": "List of up to 10 article files.",
+                    "items": {
+                        "$ref": "#/definitions/PublicFile"
+                    }
+                },
+                "embargo_options": {
+                    "type": "array",
+                    "description": "List of embargo options",
+                    "items": {
+                        "$ref": "#/definitions/GroupEmbargoOptions"
+                    }
+                },
+                "custom_fields": {
+                    "type": "array",
+                    "description": "List of custom fields values",
+                    "items": {
+                        "$ref": "#/definitions/CustomArticleField"
+                    }
+                },
+                "account_id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "ID of the account owning the article",
+                    "example": 1000001
+                },
+                "download_disabled": {
+                    "type": "boolean",
+                    "description": "If true, downloading of files for this article is disabled",
+                    "example": false
+                },
+                "authors": {
+                    "type": "array",
+                    "description": "List of authors",
+                    "items": {
+                        "$ref": "#/definitions/Author"
+                    }
+                },
+                "figshare_url": {
+                    "type": "string",
+                    "format": "url",
+                    "description": "Article public url",
+                    "example": "http://figshare.com/articles/media/article_name/2000005"
+                },
+                "group_resource_id": {
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "description": "Collection group resource id",
+                    "example": 1
+                },
+                "curation_status": {
+                    "type": "string",
+                    "description": "Curation status of the article",
+                    "example": "approved"
+                },
+                "citation": {
+                    "type": "string",
+                    "description": "Article citation",
+                    "example": "lilliput, figshare admin (2017): first project item. figshare.\n \n Retrieved: 14 01, May 22, 2017 (GMT)"
+                },
+                "confidential_reason": {
+                    "description": "Confidentiality reason",
+                    "type": "string",
+                    "example": "none"
+                },
+                "embargo_type": {
+                    "description": "Article embargo",
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "example": "article"
+                },
+                "is_confidential": {
+                    "description": "Article Confidentiality",
+                    "type": "boolean",
+                    "example": true
+                },
+                "size": {
+                    "description": "Article size",
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 69939
+                },
+                "funding": {
+                    "type": "string",
+                    "description": "Article funding",
+                    "example": "none"
+                },
+                "funding_list": {
+                    "type": "array",
+                    "description": "Full Article funding information",
+                    "items": {
+                        "type": "object",
+                        "$ref": "#/definitions/FundingInformation"
+                    }
+                },
+                "keywords": {
+                    "description": "List of article keywords",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "example": [
+                        "t1",
+                        "t2",
+                        "t3"
+                    ]
+                },
+                "version": {
+                    "description": "Article version",
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 1
+                },
+                "is_metadata_record": {
+                    "description": "True if article has no files",
+                    "type": "boolean",
+                    "example": false
+                },
+                "metadata_reason": {
+                    "description": "Article metadata reason",
+                    "type": "string",
+                    "example": "hosted somewhere else"
+                },
+                "status": {
+                    "type": "string",
+                    "description": "Article status",
+                    "example": "public"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Article description",
+                    "example": "article description"
+                },
+                "is_embargoed": {
+                    "type": "boolean",
+                    "description": "True if article is embargoed",
+                    "example": true
+                },
+                "embargo_date": {
+                    "description": "Date when embargo lifts",
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "example": "2017-05-18T11:49:03Z"
+                },
+                "is_public": {
+                    "description": "True if article is published",
+                    "type": "boolean",
+                    "example": true
+                },
+                "modified_date": {
+                    "description": "Date when article was last modified",
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "example": "2017-05-18T11:49:03Z"
+                },
+                "created_date": {
+                    "type": "string",
+                    "description": "Date when article was created",
+                    "example": "2017-05-18T11:49:03Z"
+                },
+                "has_linked_file": {
+                    "type": "boolean",
+                    "description": "True if any files are linked to the article",
+                    "example": true
+                },
+                "categories": {
+                    "type": "array",
+                    "description": "List of categories selected for the article",
+                    "items": {
+                        "$ref": "#/definitions/Category"
+                    }
+                },
+                "license": {
+                    "description": "Article selected license",
+                    "$ref": "#/definitions/License"
+                },
+                "embargo_title": {
+                    "type": "string",
+                    "description": "Title for embargo",
+                    "example": "File(s) under embargo"
+                },
+                "embargo_reason": {
+                    "type": "string",
+                    "description": "Reason for embargo",
+                    "example": "not complete"
+                },
+                "references": {
+                    "type": "array",
+                    "description": "List of references",
+                    "items": {
+                        "type": "string",
+                        "format": "url"
+                    },
+                    "example": [
+                        "http://figshare.com",
+                        "http://figshare.com/api"
+                    ]
+                },
+                "related_materials": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/RelatedMaterial"
+                    },
+                    "default": [],
+                    "description": "List of related materials; supersedes references and resource DOI/title.",
+                    "example": [
+                        {
+                            "id": 10432,
+                            "identifier": "10.6084/m9.figshare.1407024",
+                            "identifier_type": "DOI",
+                            "relation": "IsSupplementTo",
+                            "title": "Figshare for institutions brochure",
+                            "is_linkout": false
+                        }
+                    ]
+                }
+            }
+        },
         "ArticleProjectCreate": {
             "x-tag": "articles",
             "type": "object",
@@ -11564,7 +11781,9 @@
                 "timeline",
                 "thumb",
                 "defined_type",
-                "defined_type_name"
+                "defined_type_name",
+                "created_date",
+                "modified_date"
             ],
             "properties": {
                 "id": {
@@ -11665,6 +11884,19 @@
                     "type": "string",
                     "description": "Deprecated by related materials. Not applicable to regular users. In a publisher case, this is the publisher article title.",
                     "default": ""
+                },
+                "created_date": {
+                    "type": "string",
+                    "description": "Date when article was created",
+                    "example": "2017-05-18T11:49:03Z"
+                },
+                "modified_date": {
+                    "description": "Date when article was last modified",
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "example": "2017-05-18T11:49:03Z"
                 }
             }
         },
@@ -11692,7 +11924,9 @@
                 "timeline",
                 "thumb",
                 "defined_type",
-                "defined_type_name"
+                "defined_type_name",
+                "created_date",
+                "modified_date"
             ],
             "properties": {
                 "project_id": {
@@ -11800,6 +12034,19 @@
                     "type": "string",
                     "description": "Deprecated by related materials. Not applicable to regular users. In a publisher case, this is the publisher article title.",
                     "default": ""
+                },
+                "created_date": {
+                    "type": "string",
+                    "description": "Date when article was created",
+                    "example": "2017-05-18T11:49:03Z"
+                },
+                "modified_date": {
+                    "description": "Date when article was last modified",
+                    "type": [
+                        "string",
+                        "null"
+                    ],
+                    "example": "2017-05-18T11:49:03Z"
                 }
             }
         },
@@ -11898,9 +12145,8 @@
                 "size",
                 "funding",
                 "funding_list",
-                "tags",
+                "keywords",
                 "version",
-                "is_active",
                 "is_metadata_record",
                 "metadata_reason",
                 "status",
@@ -11975,8 +12221,8 @@
                         "$ref": "#/definitions/FundingInformation"
                     }
                 },
-                "tags": {
-                    "description": "List of article tags",
+                "keywords": {
+                    "description": "List of article keywords",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -11992,11 +12238,6 @@
                     "type": "integer",
                     "format": "int64",
                     "example": 1
-                },
-                "is_active": {
-                    "description": "True if article is active",
-                    "type": "boolean",
-                    "example": true
                 },
                 "is_metadata_record": {
                     "description": "True if article has no files",
@@ -12229,9 +12470,8 @@
                 "size",
                 "funding",
                 "funding_list",
-                "tags",
+                "keywords",
                 "version",
-                "is_active",
                 "is_metadata_record",
                 "metadata_reason",
                 "status",
@@ -12346,8 +12586,8 @@
                         "$ref": "#/definitions/FundingInformation"
                     }
                 },
-                "tags": {
-                    "description": "List of article tags",
+                "keywords": {
+                    "description": "List of article keywords",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -12363,11 +12603,6 @@
                     "type": "integer",
                     "format": "int64",
                     "example": 1
-                },
-                "is_active": {
-                    "description": "True if article is active",
-                    "type": "boolean",
-                    "example": true
                 },
                 "is_metadata_record": {
                     "description": "True if article has no files",
@@ -12603,9 +12838,8 @@
                 "funding",
                 "funding_list",
                 "array[integer](optional)",
-                "tags",
+                "keywords",
                 "version",
-                "is_active",
                 "is_metadata_record",
                 "metadata_reason",
                 "status",
@@ -12645,7 +12879,7 @@
                         "null"
                     ],
                     "description": "Group resource id",
-                    "example": null
+                    "example": 1
                 },
                 "account_id": {
                     "type": "integer",
@@ -12734,8 +12968,8 @@
                         "$ref": "#/definitions/FundingInformation"
                     }
                 },
-                "tags": {
-                    "description": "List of article tags",
+                "keywords": {
+                    "description": "List of article keywords",
                     "type": "array",
                     "items": {
                         "type": "string"
@@ -12751,11 +12985,6 @@
                     "type": "integer",
                     "format": "int64",
                     "example": 1
-                },
-                "is_active": {
-                    "description": "True if article is active",
-                    "type": "boolean",
-                    "example": true
                 },
                 "is_metadata_record": {
                     "description": "True if article has no files",
@@ -12985,7 +13214,7 @@
                 "description",
                 "categories",
                 "references",
-                "tags",
+                "keywords",
                 "authors",
                 "institution_id",
                 "group_id",
@@ -13089,9 +13318,9 @@
                         }
                     ]
                 },
-                "tags": {
+                "keywords": {
                     "type": "array",
-                    "description": "List of collection tags",
+                    "description": "List of collection keywords",
                     "items": {
                         "type": "string"
                     },
@@ -13210,7 +13439,9 @@
                 "title",
                 "path",
                 "source_id",
-                "taxonomy_id"
+                "taxonomy_id",
+                "has_children",
+                "is_selectable"
             ],
             "properties": {
                 "parent_id": {
@@ -13245,6 +13476,16 @@
                     "format": "int64",
                     "description": "Internal id of taxonomy the category is part of",
                     "example": 4
+                },
+                "has_children": {
+                    "type": "boolean",
+                    "example": false,
+                    "description": "True if category has children"
+                },
+                "is_selectable": {
+                    "type": "boolean",
+                    "example": true,
+                    "description": "The selectable status"
                 }
             }
         },
@@ -13302,11 +13543,12 @@
             "x-tag": "collections",
             "type": "object",
             "required": [
-                "id",
-                "url"
+                "version",
+                "url",
+                "funding"
             ],
             "properties": {
-                "id": {
+                "version": {
                     "type": "integer",
                     "format": "int64",
                     "description": "Version number",
@@ -13317,6 +13559,14 @@
                     "format": "url",
                     "description": "Api endpoint for the collection version",
                     "example": "https://api.figshare.com/v2/collections/2000005/versions/1"
+                },
+                "funding": {
+                    "type": "array",
+                    "description": "Full Collection funding information",
+                    "items": {
+                        "type": "object",
+                        "$ref": "#/definitions/FundingInformation"
+                    }
                 }
             }
         },
@@ -13351,7 +13601,7 @@
                         "null"
                     ],
                     "description": "Embargo type",
-                    "example": ""
+                    "example": "article"
                 },
                 "embargo_title": {
                     "type": "string",
@@ -13497,7 +13747,9 @@
             "required": [
                 "name",
                 "value",
-                "is_mandatory"
+                "field_type",
+                "settings",
+                "order"
             ],
             "properties": {
                 "name": {
@@ -13509,13 +13761,36 @@
                     "description": "Custom metadata value (can be either a string or an array of strings)",
                     "example": "value"
                 },
-                "is_mandatory": {
-                    "description": "True if field completion is mandatory",
-                    "type": [
-                        "boolean",
-                        "null"
-                    ],
-                    "example": false
+                "field_type": {
+                    "description": "Custom field type",
+                    "type": "string",
+                    "example": "textarea",
+                    "enum": [
+                        "text",
+                        "textarea",
+                        "dropdown",
+                        "url",
+                        "email",
+                        "date",
+                        "dropdown_large_list"
+                    ]
+                },
+                "settings": {
+                    "description": "Settings for the custom field",
+                    "type": "object",
+                    "example": {
+                        "validations": {
+                            "min_length": 1,
+                            "max_length": 1000
+                        },
+                        "placeholder": "Enter your custom field here"
+                    }
+                },
+                "order": {
+                    "description": "Order of the custom field",
+                    "type": "integer",
+                    "format": "int64",
+                    "example": 1
                 }
             }
         },
@@ -13689,7 +13964,11 @@
                 "last_name",
                 "is_active",
                 "url_name",
-                "orcid_id"
+                "orcid_id",
+                "group_id",
+                "is_public",
+                "institution_id",
+                "job_title"
             ],
             "properties": {
                 "id": {
@@ -13727,6 +14006,26 @@
                     "type": "string",
                     "description": "Author Orcid",
                     "example": "1234-5678-9123-1234"
+                },
+                "group_id": {
+                    "type": "integer",
+                    "description": "Author group id",
+                    "format": "int64",
+                    "example": 0
+                },
+                "is_public": {
+                    "type": "boolean",
+                    "description": "True if author is public",
+                    "example": true
+                },
+                "institution_id": {
+                    "type": "integer",
+                    "format": "int64",
+                    "description": "Institution id"
+                },
+                "job_title": {
+                    "type": "string",
+                    "description": "Job title"
                 }
             }
         },
@@ -13759,8 +14058,9 @@
                 },
                 "group_id": {
                     "type": "integer",
+                    "description": "Author group id",
                     "format": "int64",
-                    "description": "Group id"
+                    "example": 0
                 },
                 "first_name": {
                     "type": "string",
@@ -13773,9 +14073,9 @@
                     "example": "Doe"
                 },
                 "is_public": {
-                    "type": "integer",
-                    "format": "int64",
-                    "description": "if 1 then the author has published items"
+                    "type": "boolean",
+                    "description": "True if author is public",
+                    "example": true
                 },
                 "job_title": {
                     "type": "string",
@@ -13828,7 +14128,9 @@
                 "used_quota_public",
                 "pending_quota_request",
                 "active",
-                "maximum_file_size"
+                "maximum_file_size",
+                "user_id",
+                "orcid_id"
             ],
             "properties": {
                 "id": {
@@ -13919,6 +14221,17 @@
                     "description": "Maximum upload size for account",
                     "format": "int64",
                     "example": 0
+                },
+                "user_id": {
+                    "type": "integer",
+                    "description": "User id associated with account, useful for example for adding the account as an author to an item",
+                    "format": "int64",
+                    "example": 1000001
+                },
+                "orcid_id": {
+                    "type": "string",
+                    "description": "ORCID iD associated to account",
+                    "example": "0000-0001-2345-6789"
                 }
             }
         },
@@ -14201,11 +14514,6 @@
                     "type": "string",
                     "description": "Date when this private link should expire - optional. By default private links expire in 365 days.",
                     "example": "2018-02-22 22:22:22"
-                },
-                "read_only": {
-                    "type": "boolean",
-                    "description": "Optional, default true. Set to false to give private link users editing rights for this collection.",
-                    "example": true
                 }
             }
         },
@@ -14217,11 +14525,6 @@
                     "type": "string",
                     "description": "Date when this private link should expire - optional. By default private links expire in 365 days.",
                     "example": "2018-02-22 22:22:22"
-                },
-                "read_only": {
-                    "type": "boolean",
-                    "description": "Optional, default true. Set to false to give private link users editing rights for this collection.",
-                    "example": true
                 }
             }
         },
@@ -14454,7 +14757,8 @@
                 "description",
                 "categories",
                 "references",
-                "tags",
+                "related_materials",
+                "keywords",
                 "authors",
                 "institution_id",
                 "group_id",
@@ -14552,9 +14856,9 @@
                         }
                     ]
                 },
-                "tags": {
+                "keywords": {
                     "type": "array",
-                    "description": "List of collection tags",
+                    "description": "List of collection keywords",
                     "items": {
                         "type": "string"
                     },
