@@ -8471,7 +8471,9 @@
                 "url",
                 "published_date",
                 "id",
-                "title"
+                "title",
+                "created_date",
+                "modified_date"
             ],
             "properties": {
                 "url": {
@@ -8497,6 +8499,16 @@
                     "description": "Project title",
                     "type": "string",
                     "example": "project"
+                },
+                "created_date": {
+                    "description": "Date when project was created",
+                    "type": "string",
+                    "example": "2017-05-16T14:52:54Z"
+                },
+                "modified_date": {
+                    "description": "Date when project was last modified",
+                    "type": "string",
+                    "example": "2017-05-16T14:52:54Z"
                 }
             }
         },
@@ -8514,7 +8526,9 @@
                 "url",
                 "published_date",
                 "id",
-                "title"
+                "title",
+                "created_date",
+                "modified_date"
             ],
             "properties": {
                 "role": {
