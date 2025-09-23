@@ -377,6 +377,91 @@
                 }
             }
         },
+        "/articles/{article_id}/download": {
+            "get": {
+                "tags": [
+                    "articles"
+                ],
+                "x-subcategory": "Public Article",
+                "operationId": "public_article_download",
+                "summary": "Public Article Download",
+                "description": "Download files from a public article preserving the folder structure",
+                "security": [],
+                "parameters": [
+                    {
+                        "name": "article_id",
+                        "in": "path",
+                        "description": "Article unique identifier",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64",
+                        "minimum": 1
+                    },
+                    {
+                        "name": "folder_path",
+                        "in": "query",
+                        "description": "Folder path to download. If not provided, all files from the article will be downloaded",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/articles/{article_id}/versions/{v_number}/download": {
+            "get": {
+                "tags": [
+                    "articles"
+                ],
+                "x-subcategory": "Public Article",
+                "operationId": "public_article_version_download",
+                "summary": "Public Article Version Download",
+                "description": "Download files from a certain version of an public article preserving the folder structure",
+                "security": [],
+                "parameters": [
+                    {
+                        "name": "article_id",
+                        "in": "path",
+                        "description": "Article unique identifier",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64",
+                        "minimum": 1
+                    },
+                    {
+                        "name": "v_number",
+                        "in": "path",
+                        "description": "Version Number",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64",
+                        "minimum": 1
+                    },
+                    {
+                        "name": "folder_path",
+                        "in": "query",
+                        "description": "Folder path to download. If not provided, all files from the article will be downloaded",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
         "/articles/{article_id}/versions/{v_number}/embargo": {
             "get": {
                 "tags": [
@@ -1404,6 +1489,52 @@
                     },
                     "404": {
                         "description": "Not Found"
+                    },
+                    "500": {
+                        "description": "Internal Server Error"
+                    }
+                }
+            }
+        },
+        "/account/articles/{article_id}/download": {
+            "get": {
+                "tags": [
+                    "articles"
+                ],
+                "operationId": "private_article_download",
+                "summary": "Private Article Download",
+                "description": "Download files from a private article preserving the folder structure",
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "article_id",
+                        "in": "path",
+                        "description": "Article unique identifier",
+                        "required": true,
+                        "type": "integer",
+                        "format": "int64",
+                        "minimum": 1
+                    },
+                    {
+                        "name": "folder_path",
+                        "in": "query",
+                        "description": "Folder path to download. If not provided, all files from the article will be downloaded",
+                        "required": false,
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "403": {
+                        "description": "Insufficient permissions"
                     },
                     "500": {
                         "description": "Internal Server Error"
@@ -12545,6 +12676,7 @@
                 "resource_title",
                 "resource_doi",
                 "files",
+                "folder_structure",
                 "authors",
                 "custom_fields",
                 "embargo_options",
@@ -12607,6 +12739,13 @@
                     "description": "List of up to 10 article files.",
                     "items": {
                         "$ref": "#/definitions/PublicFile"
+                    }
+                },
+                "folder_structure": {
+                    "type": "object",
+                    "description": "Mapping of file ids to folder paths, if folders are used",
+                    "example": {
+                        "3000002": "Test Folder"
                     }
                 },
                 "authors": {
@@ -12925,6 +13064,7 @@
                 "resource_title",
                 "resource_doi",
                 "files",
+                "folder_structure",
                 "authors",
                 "custom_fields",
                 "embargo_options",
@@ -13008,6 +13148,13 @@
                     "description": "List of up to 10 article files.",
                     "items": {
                         "$ref": "#/definitions/PublicFile"
+                    }
+                },
+                "folder_structure": {
+                    "type": "object",
+                    "description": "Mapping of file ids to folder paths, if folders are used",
+                    "example": {
+                        "3000002": "Test Folder"
                     }
                 },
                 "authors": {

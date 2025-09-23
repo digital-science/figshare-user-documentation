@@ -704,7 +704,7 @@ margin-bottom: 20px;
         defs["AccountReport"] = {"type":"object","required":["account_id","created_date","download_url","group_id","id","status"],"properties":{"id":{"type":"integer","format":"int64","description":"A unique ID for the AccountRecord"},"account_id":{"type":"integer","format":"int64","description":"The ID of the account which generated this report."},"created_date":{"type":"string","example":"2017-05-15T15:12:26Z","description":"Date when the AccountReport was requested"},"status":{"type":"string","description":"Status of the report","enum":["missing","pending","done"]},"download_url":{"type":"string","format":"url","example":"https://some.com/storage/path/123/report-456.xlsx","description":"The download link for the generated XLSX"},"group_id":{"type":"integer","format":"int64","description":"The group ID that was used to filter the report, if any."}}};
         defs["AccountUpdate"] = {"type":"object","required":["group_id","is_active"],"properties":{"group_id":{"type":"integer","format":"int64","description":"Not applicable to regular users. This field is reserved to institutions/publishers with access to assign to specific groups"},"is_active":{"type":"boolean","description":"Is account active"}},"x-tag":"institutions"};
         defs["Article"] = {"type":"object","required":["created_date","defined_type","defined_type_name","doi","handle","id","resource_doi","resource_title","thumb","timeline","title","url","url_private_api","url_private_html","url_public_api","url_public_html"],"properties":{"id":{"type":"integer","format":"int64","example":1434614,"description":"Unique identifier for article"},"title":{"type":"string","example":"Test article title","description":"Title of article"},"doi":{"type":"string","example":"10.6084/m9.figshare.1434614","description":"DOI"},"handle":{"type":"string","example":"111184/figshare.1234","description":"Handle"},"url":{"type":"string","format":"url","example":"http://api.figshare.com/articles/1434614","description":"Api endpoint for article"},"url_public_html":{"type":"string","format":"url","example":"https://figshare.com/articles/media/Test_article_title/1434614","description":"Public site endpoint for article"},"url_public_api":{"type":"string","format":"url","example":"https://api.figshare.com/articles/1434614","description":"Public Api endpoint for article"},"url_private_html":{"type":"string","format":"url","example":"https://figshare.com/account/articles/1434614","description":"Private site endpoint for article"},"url_private_api":{"type":"string","format":"url","example":"https://api.figshare.com/account/articles/1434614","description":"Private Api endpoint for article"},"timeline":{"description":"Various timeline dates","$ref":"#/definitions/Timeline"},"thumb":{"type":"string","format":"url","example":"https://ndownloader.figshare.com/files/123456789/preview/12345678/thumb.png","description":"Thumbnail image"},"defined_type":{"type":"integer","format":"int64","example":3,"description":"Type of article identifier"},"defined_type_name":{"type":"string","example":"media","description":"Name of the article type identifier"},"resource_doi":{"type":"string","description":"Deprecated by related materials. Not applicable to regular users. In a publisher case, this is the publisher article DOI.","default":""},"resource_title":{"type":"string","description":"Deprecated by related materials. Not applicable to regular users. In a publisher case, this is the publisher article title.","default":""},"created_date":{"type":"string","example":"2017-05-18T11:49:03Z","description":"Date when article was created"}},"x-tag":"articles"};
-        defs["ArticleComplete"] = {"properties":{"figshare_url":{"type":"string","format":"url","example":"http://figshare.com/articles/media/article_name/2000005","description":"Article public url"},"download_disabled":{"type":"boolean","example":false,"description":"If true, downloading of files for this article is disabled"},"files":{"type":"array","description":"List of up to 10 article files.","items":{"$ref":"#/definitions/PublicFile"}},"authors":{"type":"array","description":"List of article authors","items":{"$ref":"#/definitions/Author"}},"custom_fields":{"type":"array","description":"List of custom fields values","items":{"$ref":"#/definitions/CustomArticleField"}},"embargo_options":{"type":"array","description":"List of embargo options","items":{"$ref":"#/definitions/GroupEmbargoOptions"}}},"required":["authors","custom_fields","download_disabled","embargo_options","figshare_url","files"],"allOf":[{"$ref":"#/definitions/ProjectArticle"}],"x-tag":"articles"};
+        defs["ArticleComplete"] = {"properties":{"figshare_url":{"type":"string","format":"url","example":"http://figshare.com/articles/media/article_name/2000005","description":"Article public url"},"download_disabled":{"type":"boolean","example":false,"description":"If true, downloading of files for this article is disabled"},"files":{"type":"array","description":"List of up to 10 article files.","items":{"$ref":"#/definitions/PublicFile"}},"folder_structure":{"type":"object","example":{"3000002":"Test Folder"},"description":"Mapping of file ids to folder paths, if folders are used","properties":{}},"authors":{"type":"array","description":"List of article authors","items":{"$ref":"#/definitions/Author"}},"custom_fields":{"type":"array","description":"List of custom fields values","items":{"$ref":"#/definitions/CustomArticleField"}},"embargo_options":{"type":"array","description":"List of embargo options","items":{"$ref":"#/definitions/GroupEmbargoOptions"}}},"required":["authors","custom_fields","download_disabled","embargo_options","figshare_url","files","folder_structure"],"allOf":[{"$ref":"#/definitions/ProjectArticle"}],"x-tag":"articles"};
         defs["ArticleCompletePrivate"] = {"properties":{"account_id":{"type":"integer","format":"int64","example":1000001,"description":"ID of the account owning the article"},"curation_status":{"type":"string","example":"approved","description":"Curation status of the article"}},"required":["account_id","curation_status"],"allOf":[{"$ref":"#/definitions/ArticleComplete"}],"x-tag":"articles"};
         defs["ArticleConfidentiality"] = {"type":"object","required":["is_confidential","reason"],"properties":{"is_confidential":{"type":"boolean","example":true,"description":"True if article is confidential"},"reason":{"type":"string","example":"need to","description":"Reason for confidentiality"}},"x-tag":"articles"};
         defs["ArticleCreate"] = {"type":"object","required":["title"],"properties":{"title":{"type":"string","example":"Test article title","description":"Title of article","minLength":3,"maxLength":1000},"description":{"type":"string","example":"Test description of article","description":"The article description. In a publisher case, usually this is the remote article description","maxLength":20000,"default":""},"is_metadata_record":{"type":"boolean","example":true,"description":"True if article has no files"},"metadata_reason":{"type":"string","example":"hosted somewhere else","description":"Article metadata reason"},"tags":{"type":"array","example":["tag1","tag2"],"description":"List of tags to be associated with the article. Keywords can be used instead","items":{"type":"string"}},"keywords":{"type":"array","example":["tag1","tag2"],"description":"List of tags to be associated with the article. Tags can be used instead","items":{"type":"string"}},"references":{"type":"array","example":["http://figshare.com","http://api.figshare.com"],"description":"List of links to be associated with the article (e.g [\"http://link1\", \"http://link2\", \"http://link3\"])","items":{"type":"string","format":"link"}},"related_materials":{"type":"array","example":[{"id":10432,"identifier":"10.6084/m9.figshare.1407024","identifier_type":"DOI","relation":"IsSupplementTo","title":"Figshare for institutions brochure","is_linkout":false}],"description":"List of related materials; supersedes references and resource DOI/title.","items":{"$ref":"#/definitions/RelatedMaterial"}},"categories":{"type":"array","example":[1,10,11],"description":"List of category ids to be associated with the article(e.g [1, 23, 33, 66])","items":{"type":"integer","format":"int64"}},"categories_by_source_id":{"type":"array","example":["300204","400207"],"description":"List of category source ids to be associated with the article, supersedes the categories property","items":{"type":"string"}},"authors":{"type":"array","example":[{"name":"John Doe"},{"id":1000008}],"description":"List of authors to be associated with the article. The list can contain the following fields: id, name, first_name, last_name, email, orcid_id. If an id is supplied, it will take priority and everything else will be ignored. For adding more authors use the specific authors endpoint.","items":{"type":"object","properties":{}}},"custom_fields":{"type":"object","example":{"defined_key":"value for it"},"description":"List of key, values pairs to be associated with the article","properties":{}},"custom_fields_list":{"type":"array","description":"List of custom fields values, supersedes custom_fields parameter","items":{"$ref":"#/definitions/CustomArticleFieldAdd"}},"defined_type":{"type":"string","example":"media","description":"<b>One of:</b> <code>figure</code> <code>online resource</code> <code>preprint</code> <code>book</code> <code>conference contribution</code> <code>media</code> <code>dataset</code> <code>poster</code> <code>journal contribution</code> <code>presentation</code> <code>thesis</code> <code>software</code>"},"funding":{"type":"string","description":"Grant number or funding authority","default":""},"funding_list":{"type":"array","description":"Funding creation / update items","items":{"$ref":"#/definitions/FundingCreate"}},"license":{"type":"integer","format":"int64","example":1,"description":"License id for this article.","default":0},"doi":{"type":"string","description":"Not applicable for regular users. In an institutional case, make sure your group supports setting DOIs. This setting is applied by figshare via opening a ticket through our support/helpdesk system.","default":""},"handle":{"type":"string","description":"Not applicable for regular users. In an institutional case, make sure your group supports setting Handles. This setting is applied by figshare via opening a ticket through our support/helpdesk system.","default":""},"resource_doi":{"type":"string","description":"Deprecated by related materials. Not applicable to regular users. In a publisher case, this is the publisher article DOI.","default":""},"resource_title":{"type":"string","description":"Deprecated by related materials. Not applicable to regular users. In a publisher case, this is the publisher article title.","default":""},"timeline":{"description":"Various timeline dates","$ref":"#/definitions/TimelineUpdate"},"group_id":{"type":"integer","format":"int64","description":"Not applicable to regular users. This field is reserved to institutions/publishers with access to assign to specific groups"}},"x-tag":"articles"};
@@ -713,7 +713,7 @@ margin-bottom: 20px;
         defs["ArticleEmbargoUpdater"] = {"type":"object","required":["embargo_date","embargo_type","is_embargoed"],"properties":{"is_embargoed":{"type":"boolean","example":true,"description":"Embargo status"},"embargo_date":{"type":"string","example":"2018-05-22T04:04:04","description":"Date when the embargo expires and the article gets published, '0' value will set up permanent embargo"},"embargo_type":{"type":"string","example":"file","description":"Embargo can be enabled at the article or the file level. Possible values: article, file","enum":["article","file"]},"embargo_title":{"type":"string","example":"File(s) under embargo","description":"Title for embargo"},"embargo_reason":{"type":"string","example":"","description":"Reason for setting embargo"},"embargo_options":{"type":"array","example":[{"id":1321},{"id":3345},{"id":54621,"group_ids":[4332,5433,678]}],"description":"List of embargo permissions to be associated with the article. The list must contain `id` and can also contain `group_ids`(a field that only applies to 'logged_in' permissions). The new list replaces old options in the database, and an empty list removes all permissions for this article. Administration permission has to be set up alone but logged in and IP range permissions can be set up together.","items":{"type":"object","properties":{}}}},"x-tag":"articles"};
         defs["ArticleHandle"] = {"type":"object","required":["handle"],"properties":{"handle":{"type":"string","example":"11172/FK2.FIGSHARE.20345","description":"Reserved Handle"}},"x-tag":"articles"};
         defs["ArticleProjectCreate"] = {"type":"object","required":["title"],"properties":{"title":{"type":"string","example":"Test article title","description":"Title of article","minLength":3,"maxLength":1000},"description":{"type":"string","example":"Test description of article","description":"The article description. In a publisher case, usually this is the remote article description","maxLength":20000,"default":""},"tags":{"type":"array","example":["tag1","tag2"],"description":"List of tags to be associated with the article. Keywords can be used instead","items":{"type":"string"}},"keywords":{"type":"array","example":["tag1","tag2"],"description":"List of tags to be associated with the article. Tags can be used instead","items":{"type":"string"}},"references":{"type":"array","example":["http://figshare.com","http://api.figshare.com"],"description":"List of links to be associated with the article (e.g [\"http://link1\", \"http://link2\", \"http://link3\"])","items":{"type":"string","format":"link"}},"related_materials":{"type":"array","example":[{"id":10432,"identifier":"10.6084/m9.figshare.1407024","identifier_type":"DOI","relation":"IsSupplementTo","title":"Figshare for institutions brochure","is_linkout":false}],"description":"List of related materials; supersedes references and resource DOI/title.","items":{"$ref":"#/definitions/RelatedMaterial"}},"categories":{"type":"array","example":[1,10,11],"description":"List of category ids to be associated with the article(e.g [1, 23, 33, 66])","items":{"type":"integer","format":"int64"}},"categories_by_source_id":{"type":"array","example":["300204","400207"],"description":"List of category source ids to be associated with the article, supersedes the categories property","items":{"type":"string"}},"authors":{"type":"array","example":[{"name":"John Doe"},{"id":1000008}],"description":"List of authors to be associated with the article. The list can contain the following fields: id, name, first_name, last_name, email, orcid_id. If an id is supplied, it will take priority and everything else will be ignored. For adding more authors use the specific authors endpoint.","items":{"type":"object","properties":{}}},"custom_fields":{"type":"object","example":{"defined_key":"value for it"},"description":"List of key, values pairs to be associated with the article","properties":{}},"custom_fields_list":{"type":"array","description":"List of custom fields values, supersedes custom_fields parameter","items":{"$ref":"#/definitions/CustomArticleFieldAdd"}},"defined_type":{"type":"string","example":"media","description":"<b>One of:</b> <code>figure</code> <code>online resource</code> <code>preprint</code> <code>book</code> <code>conference contribution</code> <code>media</code> <code>dataset</code> <code>poster</code> <code>journal contribution</code> <code>presentation</code> <code>thesis</code> <code>software</code>"},"funding":{"type":"string","description":"Grant number or funding authority","default":""},"funding_list":{"type":"array","description":"Funding creation / update items","items":{"$ref":"#/definitions/FundingCreate"}},"license":{"type":"integer","format":"int64","example":1,"description":"License id for this article.","default":0},"doi":{"type":"string","description":"Not applicable for regular users. In an institutional case, make sure your group supports setting DOIs. This setting is applied by figshare via opening a ticket through our support/helpdesk system.","default":""},"handle":{"type":"string","description":"Not applicable for regular users. In an institutional case, make sure your group supports setting Handles. This setting is applied by figshare via opening a ticket through our support/helpdesk system.","default":""},"resource_doi":{"type":"string","description":"Deprecated by related materials. Not applicable to regular users. In a publisher case, this is the publisher article DOI.","default":""},"resource_title":{"type":"string","description":"Deprecated by related materials. Not applicable to regular users. In a publisher case, this is the publisher article title.","default":""},"timeline":{"description":"Various timeline dates","$ref":"#/definitions/TimelineUpdate"}},"x-tag":"articles"};
-        defs["ArticleSearch"] = {"properties":{"resource_doi":{"type":"string","example":"10.6084/m9.figshare.1407024","description":"Only return articles with this resource_doi"},"item_type":{"type":"integer","format":"int64","example":1,"description":"Only return articles with the respective type. Mapping for item_type is: 1 - Figure, 2 - Media, 3 - Dataset, 5 - Poster, 6 - Journal contribution, 7 - Presentation, 8 - Thesis, 9 - Software, 11 - Online resource, 12 - Preprint, 13 - Book, 14 - Conference contribution, 15 - Chapter, 16 - Peer review, 17 - Educational resource, 18 - Report, 19 - Standard, 20 - Composition, 21 - Funding, 22 - Physical object, 23 - Data management plan, 24 - Workflow, 25 - Monograph, 26 - Performance, 27 - Event, 28 - Service, 29 - Model"},"doi":{"type":"string","example":"10.6084/m9.figshare.1407024","description":"Only return articles with this doi"},"handle":{"type":"string","example":"111084/m9.figshare.14074","description":"Only return articles with this handle"},"project_id":{"type":"integer","format":"int64","example":1,"description":"Only return articles in this project"},"order":{"type":"string","example":"published_date","description":"The field by which to order","default":"created_date","enum":["created_date","published_date","modified_date","views","shares","downloads","cites"]}},"allOf":[{"$ref":"#/definitions/CommonSearch"}],"x-tag":"articles"};
+        defs["ArticleSearch"] = {"properties":{"resource_doi":{"type":"string","example":"10.6084/m9.figshare.1407024","description":"Only return articles with this resource_doi"},"item_type":{"type":"integer","format":"int64","example":1,"description":"Only return articles with the respective type. Mapping for item_type is: 1 - Figure, 2 - Media, 3 - Dataset, 5 - Poster, 6 - Journal contribution, 7 - Presentation, 8 - Thesis, 9 - Software, 11 - Online resource, 12 - Preprint, 13 - Book, 14 - Conference contribution, 15 - Chapter, 16 - Peer review, 17 - Educational resource, 18 - Report, 19 - Standard, 20 - Composition, 21 - Funding, 22 - Physical object, 23 - Data management plan, 24 - Workflow, 25 - Monograph, 26 - Performance, 27 - Event, 28 - Service, 29 - Model"},"doi":{"type":"string","example":"10.6084/m9.figshare.1407024","description":"Only return articles with this doi"},"handle":{"type":"string","example":"111084/m9.figshare.14074","description":"Only return articles with this handle"},"project_id":{"type":"integer","format":"int64","example":1,"description":"Only return articles in this project"},"order":{"type":"string","example":"published_date","description":"The field by which to order","enum":["created_date","published_date","modified_date","views","shares","downloads","cites"],"default":"created_date"}},"allOf":[{"$ref":"#/definitions/CommonSearch"}],"x-tag":"articles"};
         defs["ArticleUnpublishData"] = {"type":"object","required":["reason"],"properties":{"reason":{"type":"string","example":"Unpublish article reason","description":"Reason of article unpublishing","minLength":5,"maxLength":500}},"x-tag":"articles"};
         defs["ArticleUpdate"] = {"type":"object","properties":{"title":{"type":"string","example":"Test article title","description":"Title of article","minLength":3,"maxLength":1000},"description":{"type":"string","example":"Test description of article","description":"The article description. In a publisher case, usually this is the remote article description","maxLength":20000,"default":""},"is_metadata_record":{"type":"boolean","example":true,"description":"True if article has no files"},"metadata_reason":{"type":"string","example":"hosted somewhere else","description":"Article metadata reason"},"tags":{"type":"array","example":["tag1","tag2"],"description":"List of tags to be associated with the article. Keywords can be used instead","items":{"type":"string"}},"keywords":{"type":"array","example":["tag1","tag2"],"description":"List of tags to be associated with the article. Tags can be used instead","items":{"type":"string"}},"references":{"type":"array","example":["http://figshare.com","http://api.figshare.com"],"description":"List of links to be associated with the article (e.g [\"http://link1\", \"http://link2\", \"http://link3\"])","items":{"type":"string","format":"link"}},"related_materials":{"type":"array","example":[{"id":10432,"identifier":"10.6084/m9.figshare.1407024","identifier_type":"DOI","relation":"IsSupplementTo","title":"Figshare for institutions brochure","is_linkout":false}],"description":"List of related materials; supersedes references and resource DOI/title.","items":{"$ref":"#/definitions/RelatedMaterial"}},"categories":{"type":"array","example":[1,10,11],"description":"List of category ids to be associated with the article(e.g [1, 23, 33, 66])","items":{"type":"integer","format":"int64"}},"categories_by_source_id":{"type":"array","example":["300204","400207"],"description":"List of category source ids to be associated with the article, supersedes the categories property","items":{"type":"string"}},"authors":{"type":"array","example":[{"name":"John Doe"},{"id":1000008}],"description":"List of authors to be associated with the article. The list can contain the following fields: id, name, first_name, last_name, email, orcid_id. If an id is supplied, it will take priority and everything else will be ignored. For adding more authors use the specific authors endpoint.","items":{"type":"object","properties":{}}},"custom_fields":{"type":"object","example":{"defined_key":"value for it"},"description":"List of key, values pairs to be associated with the article","properties":{}},"custom_fields_list":{"type":"array","description":"List of custom fields values, supersedes custom_fields parameter","items":{"$ref":"#/definitions/CustomArticleFieldAdd"}},"defined_type":{"type":"string","example":"media","description":"<b>One of:</b> <code>figure</code> <code>online resource</code> <code>preprint</code> <code>book</code> <code>conference contribution</code> <code>media</code> <code>dataset</code> <code>poster</code> <code>journal contribution</code> <code>presentation</code> <code>thesis</code> <code>software</code>"},"funding":{"type":"string","description":"Grant number or funding authority","default":""},"funding_list":{"type":"array","description":"Funding creation / update items","items":{"$ref":"#/definitions/FundingCreate"}},"license":{"type":"integer","format":"int64","example":1,"description":"License id for this article.","default":0},"doi":{"type":"string","description":"Not applicable for regular users. In an institutional case, make sure your group supports setting DOIs. This setting is applied by figshare via opening a ticket through our support/helpdesk system.","default":""},"handle":{"type":"string","description":"Not applicable for regular users. In an institutional case, make sure your group supports setting Handles. This setting is applied by figshare via opening a ticket through our support/helpdesk system.","default":""},"resource_doi":{"type":"string","description":"Deprecated by related materials. Not applicable to regular users. In a publisher case, this is the publisher article DOI.","default":""},"resource_title":{"type":"string","description":"Deprecated by related materials. Not applicable to regular users. In a publisher case, this is the publisher article title.","default":""},"timeline":{"description":"Various timeline dates","$ref":"#/definitions/TimelineUpdate"},"download_disabled":{"type":"boolean","example":false,"description":"If true, downloading of files for this article is disabled"},"group_id":{"type":"integer","format":"int64","description":"Not applicable to regular users. This field is reserved to institutions/publishers with access to assign to specific groups"}},"x-tag":"articles"};
         defs["ArticleVersionUpdate"] = {"type":"object","properties":{"supplementary_fields":{"type":"array","example":[{"name":"abc","value":"def"},{"name":"fname","value":"fvalue"}],"description":"List of supplementary fields to be associated with the article version","items":{"type":"object","properties":{}}},"internal_metadata":{"type":"object","example":{"curation_review_date":"2021-11-16T13:03:38","export_pdf_download_url":null},"description":"List of supplementary fields to be associated with the article version","properties":{}}},"x-tag":"article_version"};
@@ -734,10 +734,10 @@ margin-bottom: 20px;
         defs["CollectionDOI"] = {"type":"object","required":["doi"],"properties":{"doi":{"type":"string","example":"10.5072/FK2.FIGSHARE.20345","description":"Reserved DOI"}},"x-tag":"collections"};
         defs["CollectionHandle"] = {"type":"object","required":["handle"],"properties":{"handle":{"type":"string","example":"11172/FK2.FIGSHARE.20345","description":"Reserved Handle"}},"x-tag":"collections"};
         defs["CollectionPrivateLinkCreator"] = {"type":"object","properties":{"expires_date":{"type":"string","example":"2018-02-22 22:22:22","description":"Date when this private link should expire - optional. By default private links expire in 365 days."}},"x-tag":"collections"};
-        defs["CollectionSearch"] = {"properties":{"resource_doi":{"type":"string","example":"10.6084/m9.figshare.1407024","description":"Only return collections with this resource_doi"},"doi":{"type":"string","example":"10.6084/m9.figshare.1407024","description":"Only return collections with this doi"},"handle":{"type":"string","example":"10084/figshare.1407024","description":"Only return collections with this handle"},"order":{"type":"string","example":"published_date","description":"The field by which to order.","default":"created_date","enum":["created_date","published_date","modified_date","views","shares","cites"]}},"allOf":[{"$ref":"#/definitions/CommonSearch"}],"x-tag":"collections"};
+        defs["CollectionSearch"] = {"properties":{"resource_doi":{"type":"string","example":"10.6084/m9.figshare.1407024","description":"Only return collections with this resource_doi"},"doi":{"type":"string","example":"10.6084/m9.figshare.1407024","description":"Only return collections with this doi"},"handle":{"type":"string","example":"10084/figshare.1407024","description":"Only return collections with this handle"},"order":{"type":"string","example":"published_date","description":"The field by which to order.","enum":["created_date","published_date","modified_date","views","shares","cites"],"default":"created_date"}},"allOf":[{"$ref":"#/definitions/CommonSearch"}],"x-tag":"collections"};
         defs["CollectionUpdate"] = {"type":"object","properties":{"funding":{"type":"string","description":"Grant number or funding authority","default":""},"funding_list":{"type":"array","description":"Funding creation / update items","items":{"$ref":"#/definitions/FundingCreate"}},"title":{"type":"string","example":"Test collection title","description":"Title of collection","minLength":3,"maxLength":1000},"description":{"type":"string","example":"Test description of collection","description":"The collection description. In a publisher case, usually this is the remote collection description","maxLength":20000,"default":""},"articles":{"type":"array","example":[2000001,2000005],"description":"List of articles to be associated with the collection","items":{"type":"integer"}},"authors":{"type":"array","example":[{"name":"John Doe"},{"id":20005}],"description":"List of authors to be associated with the collection. The list can contain the following fields: id, name, first_name, last_name, email, orcid_id. If an id is supplied, it will take priority and everything else will be ignored. For adding more authors use the specific authors endpoint.","items":{"type":"object","properties":{}}},"categories":{"type":"array","example":[1,10,11],"description":"List of category ids to be associated with the collection (e.g [1, 23, 33, 66])","items":{"type":"integer","format":"int64"}},"categories_by_source_id":{"type":"array","example":["300204","400207"],"description":"List of category source ids to be associated with the article, supersedes the categories property","items":{"type":"string"}},"tags":{"type":"array","example":["tag1","tag2"],"description":"List of tags to be associated with the collection. Keywords can be used instead","items":{"type":"string"}},"keywords":{"type":"array","example":["tag1","tag2"],"description":"List of tags to be associated with the collection. Tags can be used instead","items":{"type":"string"}},"references":{"type":"array","example":["http://figshare.com","http://api.figshare.com"],"description":"List of links to be associated with the collection (e.g [\"http://link1\", \"http://link2\", \"http://link3\"])","items":{"type":"string","format":"link"}},"related_materials":{"type":"array","example":[{"id":10432,"identifier":"10.6084/m9.figshare.1407024","identifier_type":"DOI","relation":"IsSupplementTo","title":"Figshare for institutions brochure","is_linkout":false}],"description":"List of related materials; supersedes references and resource DOI/title.","items":{"$ref":"#/definitions/RelatedMaterial"}},"custom_fields":{"type":"object","example":{"defined_key":"value for it"},"description":"List of key, values pairs to be associated with the collection","properties":{}},"custom_fields_list":{"type":"array","description":"List of custom fields values, supersedes custom_fields parameter","items":{"$ref":"#/definitions/CustomArticleFieldAdd"}},"doi":{"type":"string","description":"Not applicable for regular users. In an institutional case, make sure your group supports setting DOIs. This setting is applied by figshare via opening a ticket through our support/helpdesk system.","default":""},"handle":{"type":"string","description":"Not applicable for regular users. In an institutional case, make sure your group supports setting Handles. This setting is applied by figshare via opening a ticket through our support/helpdesk system.","default":""},"resource_id":{"type":"string","description":"Not applicable to regular users. In a publisher case, this is the publisher article id"},"resource_doi":{"type":"string","description":"Not applicable to regular users. In a publisher case, this is the publisher article DOI.","default":""},"resource_link":{"type":"string","description":"Not applicable to regular users. In a publisher case, this is the publisher article link"},"resource_title":{"type":"string","description":"Not applicable to regular users. In a publisher case, this is the publisher article title.","default":""},"resource_version":{"type":"integer","description":"Not applicable to regular users. In a publisher case, this is the publisher article version"},"group_id":{"type":"integer","format":"int64","description":"Not applicable to regular users. This field is reserved to institutions/publishers with access to assign to specific groups"},"timeline":{"description":"Various timeline dates","$ref":"#/definitions/TimelineUpdate"}},"x-tag":"collections"};
         defs["CollectionVersions"] = {"type":"object","required":["funding","url","version"],"properties":{"version":{"type":"integer","format":"int64","example":1,"description":"Version number"},"url":{"type":"string","format":"url","example":"https://api.figshare.com/v2/collections/2000005/versions/1","description":"Api endpoint for the collection version"},"funding":{"type":"array","description":"Full Collection funding information","items":{"$ref":"#/definitions/FundingInformation"}}},"x-tag":"collections"};
-        defs["CommonSearch"] = {"type":"object","properties":{"search_for":{"type":"string","example":"figshare","description":"Search term"},"page":{"type":"integer","format":"int64","example":1,"description":"Page number. Used for pagination with page_size","minimum":1,"maximum":5000},"page_size":{"type":"integer","format":"int64","example":10,"description":"The number of results included on a page. Used for pagination with page","minimum":1,"maximum":1000,"default":10},"limit":{"type":"integer","format":"int64","example":10,"description":"Number of results included on a page. Used for pagination with query","minimum":1,"maximum":1000},"offset":{"type":"integer","format":"int64","example":0,"description":"Where to start the listing(the offset of the first result). Used for pagination with limit","minimum":0,"maximum":5000},"order_direction":{"type":"string","example":"desc","description":"Direction of ordering","default":"desc","enum":["asc","desc"]},"institution":{"type":"integer","format":"int32","example":2000013,"description":"only return collections from this institution"},"published_since":{"type":"string","example":"2017-12-22","description":"Filter by article publishing date. Will only return articles published after the date. date(ISO 8601) YYYY-MM-DD or date-time(ISO 8601) YYYY-MM-DDTHH:mm:ssZ"},"modified_since":{"type":"string","example":"2017-12-22","description":"Filter by article modified date. Will only return articles published after the date. date(ISO 8601) YYYY-MM-DD or date-time(ISO 8601) YYYY-MM-DDTHH:mm:ssZ"},"group":{"type":"integer","format":"int32","example":2000013,"description":"only return collections from this group"}},"x-tag":"common"};
+        defs["CommonSearch"] = {"type":"object","properties":{"search_for":{"type":"string","example":"figshare","description":"Search term"},"page":{"type":"integer","format":"int64","example":1,"description":"Page number. Used for pagination with page_size","minimum":1,"maximum":5000},"page_size":{"type":"integer","format":"int64","example":10,"description":"The number of results included on a page. Used for pagination with page","minimum":1,"maximum":1000,"default":10},"limit":{"type":"integer","format":"int64","example":10,"description":"Number of results included on a page. Used for pagination with query","minimum":1,"maximum":1000},"offset":{"type":"integer","format":"int64","example":0,"description":"Where to start the listing(the offset of the first result). Used for pagination with limit","minimum":0,"maximum":5000},"order_direction":{"type":"string","example":"desc","description":"Direction of ordering","enum":["asc","desc"],"default":"desc"},"institution":{"type":"integer","format":"int32","example":2000013,"description":"only return collections from this institution"},"published_since":{"type":"string","example":"2017-12-22","description":"Filter by article publishing date. Will only return articles published after the date. date(ISO 8601) YYYY-MM-DD or date-time(ISO 8601) YYYY-MM-DDTHH:mm:ssZ"},"modified_since":{"type":"string","example":"2017-12-22","description":"Filter by article modified date. Will only return articles published after the date. date(ISO 8601) YYYY-MM-DD or date-time(ISO 8601) YYYY-MM-DDTHH:mm:ssZ"},"group":{"type":"integer","format":"int32","example":2000013,"description":"only return collections from this group"}},"x-tag":"common"};
         defs["ConfidentialityCreator"] = {"type":"object","required":["reason"],"properties":{"reason":{"type":"string","description":"Reason for confidentiality"}}};
         defs["CreateProjectResponse"] = {"type":"object","required":["entity_id","location"],"properties":{"entity_id":{"type":"integer","format":"int64","example":33334444,"description":"Figshare ID of the entity"},"location":{"type":"string","format":"url","description":"Url for entity"}},"x-tag":"common"};
         defs["Curation"] = {"type":"object","required":["account_id","article_id","assigned_to","comments_count","created_date","group_id","id","modified_date","request_number","resolution_comment","status","version"],"properties":{"id":{"type":"integer","format":"int64","description":"The review id"},"group_id":{"type":"integer","format":"int64","description":"The group in which the article is present."},"account_id":{"type":"integer","format":"int64","description":"The ID of the account of the owner of the article of this review."},"assigned_to":{"type":"integer","format":"int64","description":"The ID of the account to which this review is assigned."},"article_id":{"type":"integer","format":"int64","description":"The ID of the article of this review."},"version":{"type":"integer","format":"int64","description":"The Version number of the article in review."},"comments_count":{"type":"integer","format":"int64","description":"The number of comments in the review."},"status":{"type":"string","description":"The status of the review.","enum":["pending","approved","rejected","closed"]},"created_date":{"type":"string","description":"The creation date of the review."},"modified_date":{"type":"string","description":"The date the review has been modified."},"request_number":{"type":"integer","format":"int64","description":"The request number of the review."},"resolution_comment":{"type":"string","description":"The resolution comment of the review."}},"x-tag":"institutions"};
@@ -783,9 +783,9 @@ margin-bottom: 20px;
         defs["ProjectNotePrivate"] = {"properties":{"text":{"type":"string","example":"text","description":"Full text of note"}},"required":["text"],"allOf":[{"$ref":"#/definitions/ProjectNote"}],"x-tag":"projects"};
         defs["ProjectPrivate"] = {"properties":{"role":{"type":"string","example":"Owner","description":"Role inside this project","enum":["Owner","Collaborator","Viewer"]},"storage":{"type":"string","example":"individual","description":"Project storage type","enum":["individual","group"]}},"required":["role","storage"],"allOf":[{"$ref":"#/definitions/Project"}],"x-tag":"projects"};
         defs["ProjectUpdate"] = {"type":"object","properties":{"title":{"type":"string","example":"project title","description":"The title for this project - mandatory. 3 - 1000 characters.","minLength":3,"maxLength":1000},"description":{"type":"string","example":"project description","description":"Project description","maxLength":20000},"funding":{"type":"string","example":"","description":"Grant number or organization(s) that funded this project. Up to 2000 characters permitted."},"funding_list":{"type":"array","description":"Funding creation / update items","items":{"$ref":"#/definitions/FundingCreate"}},"custom_fields":{"type":"object","example":{"defined_key":"value for it"},"description":"List of key, values pairs to be associated with the project","properties":{}},"custom_fields_list":{"type":"array","description":"List of custom fields values, supersedes custom_fields parameter","items":{"$ref":"#/definitions/CustomArticleFieldAdd"}}},"x-tag":"projects"};
-        defs["ProjectsSearch"] = {"properties":{"order":{"type":"string","example":"published_date","description":"The field by which to order.","default":"published_date","enum":["published_date","modified_date","views"]}},"allOf":[{"$ref":"#/definitions/CommonSearch"}],"x-tag":"projects"};
+        defs["ProjectsSearch"] = {"properties":{"order":{"type":"string","example":"published_date","description":"The field by which to order.","enum":["published_date","modified_date","views"],"default":"published_date"}},"allOf":[{"$ref":"#/definitions/CommonSearch"}],"x-tag":"projects"};
         defs["PublicFile"] = {"type":"object","required":["computed_md5","download_url","id","is_link_only","name","size","supplied_md5"],"properties":{"id":{"type":"integer","format":"int64","example":3000002,"description":"File id"},"name":{"type":"string","example":"test.xls","description":"File name"},"size":{"type":"integer","format":"int64","example":14848,"description":"File size"},"is_link_only":{"type":"boolean","example":false,"description":"True if file is hosted somewhere else"},"download_url":{"type":"string","format":"url","example":"https://ndownloader.figshare.com/files/3000002","description":"Url for file download"},"supplied_md5":{"type":"string","example":"043a51806d646e88cafbf19e7b82846f","description":"File supplied md5"},"computed_md5":{"type":"string","example":"043a51806d646e88cafbf19e7b82846f","description":"File computed md5"},"mimetype":{"type":"string","example":"application/pdf","description":"MIME Type of the file, it defaults to an empty string"}},"x-tag":"common"};
-        defs["RelatedMaterial"] = {"type":"object","properties":{"id":{"type":"integer","format":"int64","example":10432,"description":"The ID of the related material; can be used to add existing materials of the same account to items."},"identifier":{"type":"string","example":"10.6084/m9.figshare.1407024","description":"The related material identifier (e.g., DOI, Handle, ISBN). Mandatory if creating a new material."},"title":{"type":"string","example":"Rooter: A Methodology for the Typical Unification of Access Points and Redundancy","description":"The related material title"},"relation":{"type":"string","example":"IsSupplementTo","description":"The relation between the item and the related material; defaults to 'References'. Mandatory if creating a new material.","default":"References","enum":["IsCitedBy","Cites","IsSupplementTo","IsSupplementedBy","IsContinuedBy","Continues","Describes","IsDescribedBy","HasMetadata","IsMetadataFor","HasVersion","IsVersionOf","IsNewVersionOf","IsPreviousVersionOf","IsPartOf","HasPart","IsPublishedIn","IsReferencedBy","References","IsDocumentedBy","Documents","IsCompiledBy","Compiles","IsVariantFormOf","IsOriginalFormOf","IsIdenticalTo","IsReviewedBy","Reviews","IsDerivedFrom","IsSourceOf","IsRequiredBy","Requires","IsObsoletedBy","Obsoletes"]},"identifier_type":{"type":"string","example":"DOI","description":"The type of the identifier of the related material; defaults to 'URL'. Mandatory if creating a new material.","default":"URL","enum":["ARK","arXiv","bibcode","DOI","EAN13","EISSN","Handle","IGSN","ISBN","ISSN","ISTC","LISSN","LSID","PMID","PURL","UPC","URL","URN","w3id"]},"is_linkout":{"type":"boolean","example":true,"description":"Flag for highlighting this related material in the call-out box"},"link":{"type":"string","example":"https://doi.org/10.6084/m9.figshare.1407024","description":"The full hyperlink for the identifier. Automatically generated by Figshare.","readOnly":true}}};
+        defs["RelatedMaterial"] = {"type":"object","properties":{"id":{"type":"integer","format":"int64","example":10432,"description":"The ID of the related material; can be used to add existing materials of the same account to items."},"identifier":{"type":"string","example":"10.6084/m9.figshare.1407024","description":"The related material identifier (e.g., DOI, Handle, ISBN). Mandatory if creating a new material."},"title":{"type":"string","example":"Rooter: A Methodology for the Typical Unification of Access Points and Redundancy","description":"The related material title"},"relation":{"type":"string","example":"IsSupplementTo","description":"The relation between the item and the related material; defaults to 'References'. Mandatory if creating a new material.","enum":["IsCitedBy","Cites","IsSupplementTo","IsSupplementedBy","IsContinuedBy","Continues","Describes","IsDescribedBy","HasMetadata","IsMetadataFor","HasVersion","IsVersionOf","IsNewVersionOf","IsPreviousVersionOf","IsPartOf","HasPart","IsPublishedIn","IsReferencedBy","References","IsDocumentedBy","Documents","IsCompiledBy","Compiles","IsVariantFormOf","IsOriginalFormOf","IsIdenticalTo","IsReviewedBy","Reviews","IsDerivedFrom","IsSourceOf","IsRequiredBy","Requires","IsObsoletedBy","Obsoletes"],"default":"References"},"identifier_type":{"type":"string","example":"DOI","description":"The type of the identifier of the related material; defaults to 'URL'. Mandatory if creating a new material.","enum":["ARK","arXiv","bibcode","DOI","EAN13","EISSN","Handle","IGSN","ISBN","ISSN","ISTC","LISSN","LSID","PMID","PURL","UPC","URL","URN","w3id"],"default":"URL"},"is_linkout":{"type":"boolean","example":true,"description":"Flag for highlighting this related material in the call-out box"},"link":{"type":"string","example":"https://doi.org/10.6084/m9.figshare.1407024","description":"The full hyperlink for the identifier. Automatically generated by Figshare.","readOnly":true}}};
         defs["Resource"] = {"type":"object","properties":{"id":{"type":"string","example":"aaaa23512","description":"ID of resource item","maxLength":255,"default":""},"title":{"type":"string","example":"Test title","description":"Title of resource item","maxLength":1000,"default":""},"doi":{"type":"string","description":"DOI of resource item","default":""},"link":{"type":"string","example":"https://docs.figshare.com","description":"Link of resource item","maxLength":255,"default":""},"status":{"type":"string","example":"frozen","description":"Status of resource item","maxLength":100,"default":""},"version":{"type":"integer","format":"int64","example":1,"description":"Version of resource item","default":0}},"x-tag":"resource"};
         defs["ResponseMessage"] = {"type":"object","required":["message"],"properties":{"message":{"type":"string","example":"Project 1 has been published","description":"Response message text"}},"x-tag":"common"};
         defs["Role"] = {"type":"object","required":["category","description","id","name"],"properties":{"id":{"type":"integer","format":"int64","example":1,"description":"Role id"},"name":{"type":"string","example":"Curator","description":"Role name"},"category":{"type":"string","example":"group","description":"Role category"},"description":{"type":"string","description":"Role description"}},"x-tag":"institutions"};
@@ -900,6 +900,9 @@ margin-bottom: 20px;
                     <li data-group="Articles" data-name="privateArticleDetails" class="">
                       <a href="#api-Articles-privateArticleDetails">privateArticleDetails</a>
                     </li>
+                    <li data-group="Articles" data-name="privateArticleDownload" class="">
+                      <a href="#api-Articles-privateArticleDownload">privateArticleDownload</a>
+                    </li>
                     <li data-group="Articles" data-name="privateArticleEmbargoDelete" class="">
                       <a href="#api-Articles-privateArticleEmbargoDelete">privateArticleEmbargoDelete</a>
                     </li>
@@ -953,6 +956,12 @@ margin-bottom: 20px;
                     </li>
                     <li data-group="Articles" data-name="privateArticlesSearch" class="">
                       <a href="#api-Articles-privateArticlesSearch">privateArticlesSearch</a>
+                    </li>
+                    <li data-group="Articles" data-name="publicArticleDownload" class="">
+                      <a href="#api-Articles-publicArticleDownload">publicArticleDownload</a>
+                    </li>
+                    <li data-group="Articles" data-name="publicArticleVersionDownload" class="">
+                      <a href="#api-Articles-publicArticleVersionDownload">publicArticleVersionDownload</a>
                     </li>
                   <li class="nav-header" data-group="Authors"><a href="#api-Authors">API Methods - Authors</a></li>
                     <li data-group="Authors" data-name="privateAuthorDetails" class="">
@@ -12738,6 +12747,338 @@ except ApiException as e:
                         </article>
                       </div>
                       <hr>
+                    <div id="api-Articles-privateArticleDownload">
+                      <article id="api-Articles-privateArticleDownload-0" data-group="User" data-name="privateArticleDownload" data-version="0">
+                        <div class="pull-left">
+                          <h1>privateArticleDownload</h1>
+                          <p>Private Article Download</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Download files from a private article preserving the folder structure</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/account/articles/{article_id}/download</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Articles-privateArticleDownload-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Articles-privateArticleDownload-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Articles-privateArticleDownload-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Articles-privateArticleDownload-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Articles-privateArticleDownload-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Articles-privateArticleDownload-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Articles-privateArticleDownload-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Articles-privateArticleDownload-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Articles-privateArticleDownload-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Articles-privateArticleDownload-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Articles-privateArticleDownload-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Articles-privateArticleDownload-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X GET "https://api.figinternal.dev/v2/account/articles/{article_id}/download?folder_path="</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Articles-privateArticleDownload-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.ArticlesApi;
+
+import java.io.File;
+import java.util.*;
+
+public class ArticlesApiExample {
+
+    public static void main(String[] args) {
+        ApiClient defaultClient = Configuration.getDefaultApiClient();
+        
+        // Configure OAuth2 access token for authorization: OAuth2
+        OAuth OAuth2 = (OAuth) defaultClient.getAuthentication("OAuth2");
+        OAuth2.setAccessToken("YOUR ACCESS TOKEN");
+
+        ArticlesApi apiInstance = new ArticlesApi();
+        Long articleId = 789; // Long | Article unique identifier
+        String folderPath = folderPath_example; // String | Folder path to download. If not provided, all files from the article will be downloaded
+        try {
+            apiInstance.privateArticleDownload(articleId, folderPath);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ArticlesApi#privateArticleDownload");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Articles-privateArticleDownload-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.ArticlesApi;
+
+public class ArticlesApiExample {
+
+    public static void main(String[] args) {
+        ArticlesApi apiInstance = new ArticlesApi();
+        Long articleId = 789; // Long | Article unique identifier
+        String folderPath = folderPath_example; // String | Folder path to download. If not provided, all files from the article will be downloaded
+        try {
+            apiInstance.privateArticleDownload(articleId, folderPath);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ArticlesApi#privateArticleDownload");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Articles-privateArticleDownload-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Articles-privateArticleDownload-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Configuration *apiConfig = [Configuration sharedConfig];
+
+// Configure OAuth2 access token for authorization: (authentication scheme: OAuth2)
+[apiConfig setAccessToken:@"YOUR_ACCESS_TOKEN"];
+
+Long *articleId = 789; // Article unique identifier
+String *folderPath = folderPath_example; // Folder path to download. If not provided, all files from the article will be downloaded (optional)
+
+ArticlesApi *apiInstance = [[ArticlesApi alloc] init];
+
+// Private Article Download
+[apiInstance privateArticleDownloadWith:articleId
+    folderPath:folderPath
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Articles-privateArticleDownload-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var FigshareApi = require('figshare_api');
+var defaultClient = FigshareApi.ApiClient.instance;
+
+// Configure OAuth2 access token for authorization: OAuth2
+var OAuth2 = defaultClient.authentications['OAuth2'];
+OAuth2.accessToken = "YOUR ACCESS TOKEN"
+
+var api = new FigshareApi.ArticlesApi()
+
+var articleId = 789; // {Long} Article unique identifier
+
+var opts = { 
+  'folderPath': folderPath_example // {String} Folder path to download. If not provided, all files from the article will be downloaded
+};
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.privateArticleDownload(articleId, opts, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Articles-privateArticleDownload-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Articles-privateArticleDownload-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class privateArticleDownloadExample
+    {
+        public void main()
+        {
+            
+            // Configure OAuth2 access token for authorization: OAuth2
+            Configuration.Default.AccessToken = "YOUR_ACCESS_TOKEN";
+
+            var apiInstance = new ArticlesApi();
+            var articleId = 789;  // Long | Article unique identifier
+            var folderPath = folderPath_example;  // String | Folder path to download. If not provided, all files from the article will be downloaded (optional) 
+
+            try
+            {
+                // Private Article Download
+                apiInstance.privateArticleDownload(articleId, folderPath);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling ArticlesApi.privateArticleDownload: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Articles-privateArticleDownload-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+// Configure OAuth2 access token for authorization: OAuth2
+Swagger\Client\Configuration::getDefaultConfiguration()->setAccessToken('YOUR_ACCESS_TOKEN');
+
+$api_instance = new Swagger\Client\Api\ArticlesApi();
+$articleId = 789; // Long | Article unique identifier
+$folderPath = folderPath_example; // String | Folder path to download. If not provided, all files from the article will be downloaded
+
+try {
+    $api_instance->privateArticleDownload($articleId, $folderPath);
+} catch (Exception $e) {
+    echo 'Exception when calling ArticlesApi->privateArticleDownload: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Articles-privateArticleDownload-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::ArticlesApi;
+
+# Configure OAuth2 access token for authorization: OAuth2
+$WWW::SwaggerClient::Configuration::access_token = 'YOUR_ACCESS_TOKEN';
+
+my $api_instance = WWW::SwaggerClient::ArticlesApi->new();
+my $articleId = 789; # Long | Article unique identifier
+my $folderPath = folderPath_example; # String | Folder path to download. If not provided, all files from the article will be downloaded
+
+eval { 
+    $api_instance->privateArticleDownload(articleId => $articleId, folderPath => $folderPath);
+};
+if ($@) {
+    warn "Exception when calling ArticlesApi->privateArticleDownload: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Articles-privateArticleDownload-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# Configure OAuth2 access token for authorization: OAuth2
+swagger_client.configuration.access_token = 'YOUR_ACCESS_TOKEN'
+
+# create an instance of the API class
+api_instance = swagger_client.ArticlesApi()
+articleId = 789 # Long | Article unique identifier
+folderPath = folderPath_example # String | Folder path to download. If not provided, all files from the article will be downloaded (optional)
+
+try: 
+    # Private Article Download
+    api_instance.private_article_download(articleId, folderPath=folderPath)
+except ApiException as e:
+    print("Exception when calling ArticlesApi->privateArticleDownload: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">article_id*</td>
+<td>
+
+
+    <div id="d2e199_privateArticleDownload_articleId">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Long
+                </span>
+                    <span class="format">
+                        (int64)
+                    </span>
+
+                    <div class="inner description">
+                        Article unique identifier
+                    </div>
+            </div>
+                <div class="inner required">
+                    Required
+                </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
+
+
+
+
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">folder_path</td>
+<td>
+
+
+    <div id="d2e199_privateArticleDownload_folderPath">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+                    <div class="inner description">
+                        Folder path to download. If not provided, all files from the article will be downloaded
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - OK </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                            <h3> Status: 403 - Insufficient permissions </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                            <h3> Status: 500 - Internal Server Error </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
                     <div id="api-Articles-privateArticleEmbargoDelete">
                       <article id="api-Articles-privateArticleEmbargoDelete-0" data-group="User" data-name="privateArticleEmbargoDelete" data-version="0">
                         <div class="pull-left">
@@ -20471,6 +20812,636 @@ $(document).ready(function() {
                                   </div>
                                   <input id='responses-privateArticlesSearch-403-schema-data' type='hidden' value=''></input>
                                 </div>
+                            </div>
+
+                            <h3> Status: 500 - Internal Server Error </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-Articles-publicArticleDownload">
+                      <article id="api-Articles-publicArticleDownload-0" data-group="User" data-name="publicArticleDownload" data-version="0">
+                        <div class="pull-left">
+                          <h1>publicArticleDownload</h1>
+                          <p>Public Article Download</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Download files from a public article preserving the folder structure</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/articles/{article_id}/download</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Articles-publicArticleDownload-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Articles-publicArticleDownload-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Articles-publicArticleDownload-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Articles-publicArticleDownload-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Articles-publicArticleDownload-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Articles-publicArticleDownload-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Articles-publicArticleDownload-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Articles-publicArticleDownload-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Articles-publicArticleDownload-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Articles-publicArticleDownload-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Articles-publicArticleDownload-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Articles-publicArticleDownload-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X GET "https://api.figinternal.dev/v2/articles/{article_id}/download?folder_path="</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Articles-publicArticleDownload-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.ArticlesApi;
+
+import java.io.File;
+import java.util.*;
+
+public class ArticlesApiExample {
+
+    public static void main(String[] args) {
+        
+        ArticlesApi apiInstance = new ArticlesApi();
+        Long articleId = 789; // Long | Article unique identifier
+        String folderPath = folderPath_example; // String | Folder path to download. If not provided, all files from the article will be downloaded
+        try {
+            apiInstance.publicArticleDownload(articleId, folderPath);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ArticlesApi#publicArticleDownload");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Articles-publicArticleDownload-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.ArticlesApi;
+
+public class ArticlesApiExample {
+
+    public static void main(String[] args) {
+        ArticlesApi apiInstance = new ArticlesApi();
+        Long articleId = 789; // Long | Article unique identifier
+        String folderPath = folderPath_example; // String | Folder path to download. If not provided, all files from the article will be downloaded
+        try {
+            apiInstance.publicArticleDownload(articleId, folderPath);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ArticlesApi#publicArticleDownload");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Articles-publicArticleDownload-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Articles-publicArticleDownload-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Long *articleId = 789; // Article unique identifier
+String *folderPath = folderPath_example; // Folder path to download. If not provided, all files from the article will be downloaded (optional)
+
+ArticlesApi *apiInstance = [[ArticlesApi alloc] init];
+
+// Public Article Download
+[apiInstance publicArticleDownloadWith:articleId
+    folderPath:folderPath
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Articles-publicArticleDownload-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var FigshareApi = require('figshare_api');
+
+var api = new FigshareApi.ArticlesApi()
+
+var articleId = 789; // {Long} Article unique identifier
+
+var opts = { 
+  'folderPath': folderPath_example // {String} Folder path to download. If not provided, all files from the article will be downloaded
+};
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.publicArticleDownload(articleId, opts, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Articles-publicArticleDownload-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Articles-publicArticleDownload-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class publicArticleDownloadExample
+    {
+        public void main()
+        {
+            
+            var apiInstance = new ArticlesApi();
+            var articleId = 789;  // Long | Article unique identifier
+            var folderPath = folderPath_example;  // String | Folder path to download. If not provided, all files from the article will be downloaded (optional) 
+
+            try
+            {
+                // Public Article Download
+                apiInstance.publicArticleDownload(articleId, folderPath);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling ArticlesApi.publicArticleDownload: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Articles-publicArticleDownload-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+$api_instance = new Swagger\Client\Api\ArticlesApi();
+$articleId = 789; // Long | Article unique identifier
+$folderPath = folderPath_example; // String | Folder path to download. If not provided, all files from the article will be downloaded
+
+try {
+    $api_instance->publicArticleDownload($articleId, $folderPath);
+} catch (Exception $e) {
+    echo 'Exception when calling ArticlesApi->publicArticleDownload: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Articles-publicArticleDownload-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::ArticlesApi;
+
+my $api_instance = WWW::SwaggerClient::ArticlesApi->new();
+my $articleId = 789; # Long | Article unique identifier
+my $folderPath = folderPath_example; # String | Folder path to download. If not provided, all files from the article will be downloaded
+
+eval { 
+    $api_instance->publicArticleDownload(articleId => $articleId, folderPath => $folderPath);
+};
+if ($@) {
+    warn "Exception when calling ArticlesApi->publicArticleDownload: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Articles-publicArticleDownload-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# create an instance of the API class
+api_instance = swagger_client.ArticlesApi()
+articleId = 789 # Long | Article unique identifier
+folderPath = folderPath_example # String | Folder path to download. If not provided, all files from the article will be downloaded (optional)
+
+try: 
+    # Public Article Download
+    api_instance.public_article_download(articleId, folderPath=folderPath)
+except ApiException as e:
+    print("Exception when calling ArticlesApi->publicArticleDownload: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">article_id*</td>
+<td>
+
+
+    <div id="d2e199_publicArticleDownload_articleId">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Long
+                </span>
+                    <span class="format">
+                        (int64)
+                    </span>
+
+                    <div class="inner description">
+                        Article unique identifier
+                    </div>
+            </div>
+                <div class="inner required">
+                    Required
+                </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
+
+
+
+
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">folder_path</td>
+<td>
+
+
+    <div id="d2e199_publicArticleDownload_folderPath">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+                    <div class="inner description">
+                        Folder path to download. If not provided, all files from the article will be downloaded
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - OK </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                            <h3> Status: 500 - Internal Server Error </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
+                            </div>
+
+                        </article>
+                      </div>
+                      <hr>
+                    <div id="api-Articles-publicArticleVersionDownload">
+                      <article id="api-Articles-publicArticleVersionDownload-0" data-group="User" data-name="publicArticleVersionDownload" data-version="0">
+                        <div class="pull-left">
+                          <h1>publicArticleVersionDownload</h1>
+                          <p>Public Article Version Download</p>
+                        </div>
+                        <div class="pull-right"></div>
+                        <div class="clearfix"></div>
+                        <p></p>
+                        <p class="marked">Download files from a certain version of an public article preserving the folder structure</p>
+                        <p></p>
+                        <br />
+                        <pre class="prettyprint language-html prettyprinted" data-type="get"><code><span class="pln">/articles/{article_id}/versions/{v_number}/download</span></code></pre>
+                        <p>
+                          <h3>Usage and SDK Samples</h3>
+                        </p>
+                        <ul class="nav nav-tabs nav-tabs-examples">
+                          <li class="active"><a href="#examples-Articles-publicArticleVersionDownload-0-curl">Curl</a></li>
+                          <li class=""><a href="#examples-Articles-publicArticleVersionDownload-0-java">Java</a></li>
+                          <li class=""><a href="#examples-Articles-publicArticleVersionDownload-0-android">Android</a></li>
+                          <!--<li class=""><a href="#examples-Articles-publicArticleVersionDownload-0-groovy">Groovy</a></li>-->
+                          <li class=""><a href="#examples-Articles-publicArticleVersionDownload-0-objc">Obj-C</a></li>
+                          <li class=""><a href="#examples-Articles-publicArticleVersionDownload-0-javascript">JavaScript</a></li>
+                          <!--<li class=""><a href="#examples-Articles-publicArticleVersionDownload-0-angular">Angular</a></li>-->
+                          <li class=""><a href="#examples-Articles-publicArticleVersionDownload-0-csharp">C#</a></li>
+                          <li class=""><a href="#examples-Articles-publicArticleVersionDownload-0-php">PHP</a></li>
+                          <li class=""><a href="#examples-Articles-publicArticleVersionDownload-0-perl">Perl</a></li>
+                          <li class=""><a href="#examples-Articles-publicArticleVersionDownload-0-python">Python</a></li>
+                        </ul>
+
+                        <div class="tab-content">
+                          <div class="tab-pane active" id="examples-Articles-publicArticleVersionDownload-0-curl">
+                            <pre class="prettyprint"><code class="language-bsh">curl -X GET "https://api.figinternal.dev/v2/articles/{article_id}/versions/{v_number}/download?folder_path="</code></pre>
+                          </div>
+                          <div class="tab-pane" id="examples-Articles-publicArticleVersionDownload-0-java">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.*;
+import io.swagger.client.auth.*;
+import io.swagger.client.model.*;
+import io.swagger.client.api.ArticlesApi;
+
+import java.io.File;
+import java.util.*;
+
+public class ArticlesApiExample {
+
+    public static void main(String[] args) {
+        
+        ArticlesApi apiInstance = new ArticlesApi();
+        Long articleId = 789; // Long | Article unique identifier
+        Long vNumber = 789; // Long | Version Number
+        String folderPath = folderPath_example; // String | Folder path to download. If not provided, all files from the article will be downloaded
+        try {
+            apiInstance.publicArticleVersionDownload(articleId, vNumber, folderPath);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ArticlesApi#publicArticleVersionDownload");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+
+                          <div class="tab-pane" id="examples-Articles-publicArticleVersionDownload-0-android">
+                            <pre class="prettyprint"><code class="language-java">import io.swagger.client.api.ArticlesApi;
+
+public class ArticlesApiExample {
+
+    public static void main(String[] args) {
+        ArticlesApi apiInstance = new ArticlesApi();
+        Long articleId = 789; // Long | Article unique identifier
+        Long vNumber = 789; // Long | Version Number
+        String folderPath = folderPath_example; // String | Folder path to download. If not provided, all files from the article will be downloaded
+        try {
+            apiInstance.publicArticleVersionDownload(articleId, vNumber, folderPath);
+        } catch (ApiException e) {
+            System.err.println("Exception when calling ArticlesApi#publicArticleVersionDownload");
+            e.printStackTrace();
+        }
+    }
+}</code></pre>
+                          </div>
+  <!--
+  <div class="tab-pane" id="examples-Articles-publicArticleVersionDownload-0-groovy">
+  <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+  </div> -->
+                            <div class="tab-pane" id="examples-Articles-publicArticleVersionDownload-0-objc">
+                              <pre class="prettyprint"><code class="language-cpp">Long *articleId = 789; // Article unique identifier
+Long *vNumber = 789; // Version Number
+String *folderPath = folderPath_example; // Folder path to download. If not provided, all files from the article will be downloaded (optional)
+
+ArticlesApi *apiInstance = [[ArticlesApi alloc] init];
+
+// Public Article Version Download
+[apiInstance publicArticleVersionDownloadWith:articleId
+    vNumber:vNumber
+    folderPath:folderPath
+              completionHandler: ^(NSError* error) {
+                            if (error) {
+                                NSLog(@"Error: %@", error);
+                            }
+                        }];
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Articles-publicArticleVersionDownload-0-javascript">
+                              <pre class="prettyprint"><code class="language-js">var FigshareApi = require('figshare_api');
+
+var api = new FigshareApi.ArticlesApi()
+
+var articleId = 789; // {Long} Article unique identifier
+
+var vNumber = 789; // {Long} Version Number
+
+var opts = { 
+  'folderPath': folderPath_example // {String} Folder path to download. If not provided, all files from the article will be downloaded
+};
+
+var callback = function(error, data, response) {
+  if (error) {
+    console.error(error);
+  } else {
+    console.log('API called successfully.');
+  }
+};
+api.publicArticleVersionDownload(articleId, vNumber, opts, callback);
+</code></pre>
+                            </div>
+
+                            <!--<div class="tab-pane" id="examples-Articles-publicArticleVersionDownload-0-angular">
+              <pre class="prettyprint language-json prettyprinted" data-type="json"><code>Coming Soon!</code></pre>
+            </div>-->
+                            <div class="tab-pane" id="examples-Articles-publicArticleVersionDownload-0-csharp">
+                              <pre class="prettyprint"><code class="language-cs">using System;
+using System.Diagnostics;
+using IO.Swagger.Api;
+using IO.Swagger.Client;
+using IO.Swagger.Model;
+
+namespace Example
+{
+    public class publicArticleVersionDownloadExample
+    {
+        public void main()
+        {
+            
+            var apiInstance = new ArticlesApi();
+            var articleId = 789;  // Long | Article unique identifier
+            var vNumber = 789;  // Long | Version Number
+            var folderPath = folderPath_example;  // String | Folder path to download. If not provided, all files from the article will be downloaded (optional) 
+
+            try
+            {
+                // Public Article Version Download
+                apiInstance.publicArticleVersionDownload(articleId, vNumber, folderPath);
+            }
+            catch (Exception e)
+            {
+                Debug.Print("Exception when calling ArticlesApi.publicArticleVersionDownload: " + e.Message );
+            }
+        }
+    }
+}
+</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Articles-publicArticleVersionDownload-0-php">
+                              <pre class="prettyprint"><code class="language-php"><&#63;php
+require_once(__DIR__ . '/vendor/autoload.php');
+
+$api_instance = new Swagger\Client\Api\ArticlesApi();
+$articleId = 789; // Long | Article unique identifier
+$vNumber = 789; // Long | Version Number
+$folderPath = folderPath_example; // String | Folder path to download. If not provided, all files from the article will be downloaded
+
+try {
+    $api_instance->publicArticleVersionDownload($articleId, $vNumber, $folderPath);
+} catch (Exception $e) {
+    echo 'Exception when calling ArticlesApi->publicArticleVersionDownload: ', $e->getMessage(), PHP_EOL;
+}
+?></code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Articles-publicArticleVersionDownload-0-perl">
+                              <pre class="prettyprint"><code class="language-perl">use Data::Dumper;
+use WWW::SwaggerClient::Configuration;
+use WWW::SwaggerClient::ArticlesApi;
+
+my $api_instance = WWW::SwaggerClient::ArticlesApi->new();
+my $articleId = 789; # Long | Article unique identifier
+my $vNumber = 789; # Long | Version Number
+my $folderPath = folderPath_example; # String | Folder path to download. If not provided, all files from the article will be downloaded
+
+eval { 
+    $api_instance->publicArticleVersionDownload(articleId => $articleId, vNumber => $vNumber, folderPath => $folderPath);
+};
+if ($@) {
+    warn "Exception when calling ArticlesApi->publicArticleVersionDownload: $@\n";
+}</code></pre>
+                            </div>
+
+                            <div class="tab-pane" id="examples-Articles-publicArticleVersionDownload-0-python">
+                              <pre class="prettyprint"><code class="language-python">from __future__ import print_statement
+import time
+import swagger_client
+from swagger_client.rest import ApiException
+from pprint import pprint
+
+# create an instance of the API class
+api_instance = swagger_client.ArticlesApi()
+articleId = 789 # Long | Article unique identifier
+vNumber = 789 # Long | Version Number
+folderPath = folderPath_example # String | Folder path to download. If not provided, all files from the article will be downloaded (optional)
+
+try: 
+    # Public Article Version Download
+    api_instance.public_article_version_download(articleId, vNumber, folderPath=folderPath)
+except ApiException as e:
+    print("Exception when calling ArticlesApi->publicArticleVersionDownload: %s\n" % e)</code></pre>
+                            </div>
+                          </div>
+
+                          <h2>Parameters</h2>
+
+                            <div class="methodsubtabletitle">Path parameters</div>
+                            <table id="methodsubtable">
+                                <tr>
+                                  <th width="150px">Name</th>
+                                  <th>Description</th>
+                                </tr>
+                                  <tr><td style="width:150px;">article_id*</td>
+<td>
+
+
+    <div id="d2e199_publicArticleVersionDownload_articleId">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Long
+                </span>
+                    <span class="format">
+                        (int64)
+                    </span>
+
+                    <div class="inner description">
+                        Article unique identifier
+                    </div>
+            </div>
+                <div class="inner required">
+                    Required
+                </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                                  <tr><td style="width:150px;">v_number*</td>
+<td>
+
+
+    <div id="d2e199_publicArticleVersionDownload_vNumber">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    Long
+                </span>
+                    <span class="format">
+                        (int64)
+                    </span>
+
+                    <div class="inner description">
+                        Version Number
+                    </div>
+            </div>
+                <div class="inner required">
+                    Required
+                </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
+
+
+
+
+                            <div class="methodsubtabletitle">Query parameters</div>
+                            <table id="methodsubtable">
+                              <tr>
+                                <th width="150px">Name</th>
+                                <th>Description</th>
+                              </tr>
+                                <tr><td style="width:150px;">folder_path</td>
+<td>
+
+
+    <div id="d2e199_publicArticleVersionDownload_folderPath">
+        <div class="json-schema-view">
+            <div class="primitive">
+                <span class="type">
+                    String
+                </span>
+
+                    <div class="inner description">
+                        Folder path to download. If not provided, all files from the article will be downloaded
+                    </div>
+            </div>
+        </div>
+    </div>
+</td>
+</tr>
+
+                            </table>
+
+                          <h2>Responses</h2>
+                            <h3> Status: 200 - OK </h3>
+
+                            <ul class="nav nav-tabs nav-tabs-examples" >
+                            </ul>
+
+                            <div class="tab-content" style='margin-bottom: 10px;'>
                             </div>
 
                             <h3> Status: 500 - Internal Server Error </h3>
