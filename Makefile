@@ -1,3 +1,9 @@
+DOCKER_EXE:=docker
+DOCKER_BUILD_EXTRA_PARAMS:=
+DOCKER_BUILD_PARAMS:=--ssh default ${DOCKER_BUILD_EXTRA_PARAMS}
+CIMAGE_DEPLOYMENT_TAG:=figshare/user_documentation:deployment
+CIMAGE_LATEST_TAG:=figshare/user_documentation:latest
+
 build:
 	mkdocs build
 .PHONY: build
@@ -26,12 +32,12 @@ swagger_install:
 	cd swagger_documentation && make install
 .PHONY: swagger_install
 
-container_images:
-	docker build --target build -t figshare/user_documentation:build .
-	docker build -t figshare/user_documentation:latest .
+container-images:
+	${DOCKER_EXE} build ${DOCKER_BUILD_PARAMS} -t ${CIMAGE_DEPLOYMENT_TAG} --target deployment .
+	${DOCKER_EXE} build ${DOCKER_BUILD_PARAMS} -t ${CIMAGE_LATEST_TAG} .
 .PHONY: container_images
 
-container_build:
-	docker run --rm -v $(PWD):/app figshare/user_documentation:build make build
-	docker run --rm -v $(PWD):/app figshare/user_documentation:build make swagger_build
+container-build:
+	${DOCKER_EXE} run --rm -v $(PWD):/app ${CIMAGE_DEPLOYMENT_TAG} make build
+	${DOCKER_EXE} run --rm -v $(PWD):/app ${CIMAGE_DEPLOYMENT_TAG} make swagger_build
 .PHONY: container_build
