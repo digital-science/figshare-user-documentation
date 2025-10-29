@@ -12,10 +12,6 @@ publish:
 	mkdocs gh-deploy
 .PHONY: publish
 
-server:
-	cd swagger_documentation && python -m http.server 8000
-.PHONY: server
-
 install:
 	pip install mkdocs
 .PHONY: install
@@ -31,6 +27,11 @@ swagger_build:
 swagger_install:
 	cd swagger_documentation && make install
 .PHONY: swagger_install
+
+server:
+	cd swagger_documentation && python -m http.server 8000
+.PHONY: server
+
 
 container-images:
 	${DOCKER_EXE} build ${DOCKER_BUILD_PARAMS} -t ${CIMAGE_DEPLOYMENT_TAG} --target deployment .
