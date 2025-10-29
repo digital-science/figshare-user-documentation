@@ -49,7 +49,9 @@ Merging into master has to be done with `--ff-only`:
 To be able to build the documentation one needs to install the necessary
 dependencies:
 
-    $ make swagger_install
+    $ python3 -m venv myenv
+    $ source myenv/bin/activate
+    $ make install
 
 To build the documentation:
 

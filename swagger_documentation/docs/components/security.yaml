@@ -1,0 +1,9 @@
+securitySchemes:
+  OAuth2:
+    type: oauth2
+    flows:
+      authorizationCode:
+        authorizationUrl: https://figshare.com/account/applications/authorize
+        tokenUrl: https://api.figshare.com/v2/token
+        scopes:
+          all: Grants all access

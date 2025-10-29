@@ -12,7 +12,7 @@ def get_api_operation_id(name):
 
 sample_code = {}
 
-with open("html2/index.html", "r") as f:
+with open("clients_generated_samples/index.html", "r") as f:
     page = f.read()
 tree = html.fromstring(page)
 sections = tree.get_element_by_id("sections")
