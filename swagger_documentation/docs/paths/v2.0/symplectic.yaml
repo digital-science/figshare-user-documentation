@@ -1,0 +1,322 @@
+paths:
+  /symplectic/articles:
+    get:
+      tags:
+      - symplectic
+      summary: Get changed articles for Symplectic Elements
+      description: Returns a list of articles for Symplectic Elements integration to synchronize article data.
+      operationId: symplectic_changed_articles
+
+      parameters:
+      - name: since
+        in: query
+        description: 'ISO 8601 datetime string indicating the start of the search window (format: YYYY-MM-DD HH:MM:SS)'
+        required: true
+        schema:
+          type: string
+        example: '2015-01-01 00:00:00'
+      - name: offset
+        in: query
+        description: Number of results to skip for pagination
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+      - name: limit
+        in: query
+        description: Maximum number of results to return
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 10
+      - name: status
+        in: query
+        description: Filter by article status
+        required: false
+        schema:
+          type: string
+          enum:
+          - public
+          - private
+          - draft
+      - name: is_embargoed
+        in: query
+        description: Filter by embargo status. When true, only returns articles with EMBARGO_ARTICLE type
+        required: false
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+      responses:
+        '200':
+          description: OK. Returns a list of symplectic articles
+          headers:
+            ETag:
+              description: Hash of the returned articles for caching purposes
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '400':
+          description: Bad Request - Missing or invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '401':
+          description: Unauthorized - Missing or invalid OAuth token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      security:
+      - OAuth2: []
+
+  /symplectic/users/{user_id}:
+    get:
+      tags:
+      - symplectic
+      summary: Get institutional user ID for a user
+      description: Returns the institution user ID for a given user within the authenticated account's institution.
+      operationId: symplectic_user_id
+
+      parameters:
+      - name: user_id
+        in: path
+        description: User ID
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: OK. Returns the institutional user ID
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  institutionUserId:
+                    type: string
+        '401':
+          description: Unauthorized - Missing or invalid OAuth token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found - User not found or user has no account in this institution
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      security:
+      - OAuth2: []
+
+  /symplectic/articles/{article_id}:
+    get:
+      tags:
+      - symplectic
+      summary: Get article details for Symplectic Elements
+      description: Returns detailed information about a specific article for Symplectic Elements integration, including full metadata and author account information.
+      operationId: symplectic_article
+
+      parameters:
+      - name: article_id
+        in: path
+        description: Article ID
+        required: true
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: OK. Returns the article details with full metadata
+          headers:
+            ETag:
+              description: Hash of the returned article for caching purposes
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: object
+        '401':
+          description: Unauthorized - Missing or invalid OAuth token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found - Article not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      security:
+      - OAuth2: []
+
+  /symplectic/accounts/{external_user_id}/articles:
+    get:
+      tags:
+      - symplectic
+      summary: Get articles for a specific account
+      description: Returns a list of articles for a specific user account identified by external_user_id (symplectic_user_id or institution_user_id).
+      operationId: symplectic_account_articles
+
+      parameters:
+      - name: external_user_id
+        in: path
+        description: External user ID (symplectic_user_id or institution_user_id)
+        required: true
+        schema:
+          type: string
+      - name: offset
+        in: query
+        description: Number of results to skip for pagination
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+      - name: limit
+        in: query
+        description: Maximum number of results to return
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 10
+      - name: status
+        in: query
+        description: Filter by article status
+        required: false
+        schema:
+          type: string
+          enum:
+          - public
+          - private
+          - draft
+      - name: is_embargoed
+        in: query
+        description: Filter by embargo status
+        required: false
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+      responses:
+        '200':
+          description: OK. Returns a list of articles for the specified account
+          headers:
+            ETag:
+              description: Hash of the returned articles for caching purposes
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '401':
+          description: Unauthorized - Missing or invalid OAuth token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found - Account not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      security:
+      - OAuth2: []
+
+  /symplectic/accounts:
+    get:
+      tags:
+      - symplectic
+      summary: Get changed accounts for Symplectic Elements
+      description: Returns a list of accounts that have been modified since the specified date for Symplectic Elements integration.
+      operationId: symplectic_accounts_ids
+
+      parameters:
+      - name: since
+        in: query
+        description: 'ISO 8601 datetime string indicating the start of the search window (format: YYYY-MM-DD HH:MM:SS)'
+        required: true
+        schema:
+          type: string
+        example: '2015-01-01 00:00:00'
+      responses:
+        '200':
+          description: OK. Returns a list of modified accounts
+          headers:
+            ETag:
+              description: Hash of the returned accounts for caching purposes
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    institutionUserId:
+                      type: string
+                    modifiedDate:
+                      type: string
+                      format: date-time
+        '400':
+          description: Bad Request - Missing or invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '401':
+          description: Unauthorized - Missing or invalid OAuth token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      security:
+      - OAuth2: []

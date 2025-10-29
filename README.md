@@ -66,3 +66,100 @@ various Jenkins jobs to do that.
 
 :warning: Before creating the pull request make sure you have built
 the documentation.
+
+
+## Versioned Documentation
+
+The documentation system supports multiple API versions with version-specific schemas and paths.
+
+### Directory Structure
+
+```
+swagger_documentation/docs/
+├── swagger-source.yaml           # Base OpenAPI definition
+├── versions_config.yaml          # Version configuration
+├── paths/
+│   ├── v2.0/                    # Version 2.0 paths (base)
+│   │   ├── articles.yaml
+│   │   └── ...
+│   ├── v2.1/                    # Version 2.1 paths
+│   │   ├── exclusions.yaml      # Paths to exclude from v2.0
+│   │   └── articles.yaml        # Override v2.0 paths
+│   └── v2.3/                    # Version 2.3 paths
+│       └── ...
+└── components/
+    ├── v2.0/                    # Version 2.0 components (base)
+    │   ├── schemas.yaml
+    │   └── security.yaml
+    ├── v2.1/                    # Version 2.1 components
+    │   ├── exclusions.yaml      # Schemas to exclude from v2.0
+    │   └── schemas.yaml         # Override/add schemas
+    └── v2.3/                    # Version 2.3 components
+        └── ...
+```
+
+### Schema Operations
+
+You can perform three operations on schemas across versions:
+
+#### 1. **Override** - Replace a schema from the base version
+
+In `components/v2.1/schemas.yaml`:
+```yaml
+schemas:
+  Article:  # This overrides the Article schema from v2.0
+    type: object
+    properties:
+      id:
+        type: integer
+      title:
+        type: string
+      created:  # Changed from 'created_date' in v2.0
+        type: string
+        format: date-time
+```
+
+#### 2. **Add** - Define new schemas not in the base version
+
+In `components/v2.1/schemas.yaml`:
+```yaml
+schemas:
+  NewFeature:  # This schema only exists in v2.1+
+    type: object
+    properties:
+      feature_id:
+        type: integer
+```
+
+#### 3. **Remove** - Exclude schemas from the base version
+
+In `components/v2.1/exclusions.yaml`:
+```yaml
+exclude_schemas:
+  - LegacyMetadata        # Remove specific schema
+  - OldArticleFormat      # Remove another schema
+  - Legacy*               # Remove all schemas starting with "Legacy"
+```
+
+### Path Operations
+
+Similar operations apply to paths:
+
+- **Override**: Define the same path in version-specific directory
+- **Add**: Use `inclusions.yaml` or define new paths
+- **Remove**: Use `exclusions.yaml` with path patterns
+
+Example `paths/v2.1/exclusions.yaml`:
+```yaml
+exclude_paths:
+  - /articles/legacy_format
+  - /articles/*/download_legacy
+  - /legacy/*                    # Exclude all paths under /legacy/
+```
+
+### Example Files
+
+Reference these example files for guidance:
+- `swagger_documentation/docs/paths/legacy.yaml.example`
+- `swagger_documentation/docs/components/schemas.yaml.example`
+- `swagger_documentation/docs/components/exclusions.yaml.example`

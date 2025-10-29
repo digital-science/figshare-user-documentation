@@ -1,0 +1,113 @@
+# ============================================================================
+# PATHS EXCLUSIONS EXAMPLE
+# ============================================================================
+# Location: swagger_documentation/docs/paths/v{version}/exclusions.yaml
+#
+# Purpose: Remove paths that exist in the base version (v2.0) but should NOT
+#          appear in this version's documentation
+#
+# When to use:
+# - An endpoint was deprecated and removed in this version
+# - An endpoint was replaced with a different path structure
+# - A group of endpoints is not available in this version
+#
+# Processing order:
+# 1. Base paths from v2.0 are loaded
+# 2. Paths matching patterns in exclude_paths are removed
+# 3. Then inclusions.yaml paths are added (if file exists)
+# 4. Then other .yaml files override remaining paths
+# ============================================================================
+
+# Exclude specific paths from the documentation
+exclude_paths:
+  # -------------------------------------------------------------------------
+  # Example 1: Remove a single specific endpoint
+  # -------------------------------------------------------------------------
+  - /articles/legacy_format
+  
+  # -------------------------------------------------------------------------
+  # Example 2: Remove an endpoint with path parameter
+  # -------------------------------------------------------------------------
+  - /articles/{id}/download_legacy
+  
+  # -------------------------------------------------------------------------
+  # Example 3: Remove all endpoints under a path prefix using /*
+  # -------------------------------------------------------------------------
+  # This removes /legacy/*, /legacy/users, /legacy/anything, etc.
+  - /legacy/*
+  
+  # -------------------------------------------------------------------------
+  # Example 4: Remove entire resource group
+  # -------------------------------------------------------------------------
+  # Remove all articles endpoints (both public and private)
+  - /articles
+  - /articles/*
+  - /account/articles
+  - /account/articles/*
+  
+  # -------------------------------------------------------------------------
+  # Example 5: Remove nested resource endpoints
+  # -------------------------------------------------------------------------
+  # Remove article-related endpoints within collections
+  - /collections/*/articles
+  - /collections/*/articles/*
+  - /account/collections/*/articles
+  - /account/collections/*/articles/*
+  
+  # -------------------------------------------------------------------------
+  # Example 6: Remove specific HTTP methods (requires separate path definition)
+  # -------------------------------------------------------------------------
+  # Note: To remove just one HTTP method, you need to override the path
+  # and exclude the method. See overrides.yaml.example for details.
+  
+  # -------------------------------------------------------------------------
+  # Example 7: Wildcard patterns
+  # -------------------------------------------------------------------------
+  # Pattern: /prefix/*/suffix removes paths like:
+  #   - /prefix/123/suffix
+  #   - /prefix/abc/suffix
+  # But NOT:
+  #   - /prefix/123/other/suffix (due to [^/]+ regex conversion)
+  
+  # Remove download endpoints across all resources
+  - /*/download
+  - /*/*/download
+  
+  # -------------------------------------------------------------------------
+  # Real-world Example: Removing deprecated v1 compatibility endpoints
+  # -------------------------------------------------------------------------
+  - /v1_compat/*
+  - /articles/*/v1_metadata
+  - /collections/*/v1_format
+
+# ============================================================================
+# PATTERN MATCHING RULES
+# ============================================================================
+# 
+# The system converts wildcard patterns to regex:
+#   - "*" becomes "[^/]+" (matches one path segment, not including /)
+#   - "/*" at the end becomes "/.*" (matches everything after)
+#
+# Examples:
+#   Pattern: /articles/*
+#   Matches: /articles/123, /articles/search, /articles/123/files
+#   
+#   Pattern: /articles/*/files
+#   Matches: /articles/123/files, /articles/abc/files
+#   Does NOT match: /articles/files, /articles/123/456/files
+#
+#   Pattern: /articles/{id}/legacy
+#   Matches: Exact path only: /articles/{id}/legacy
+#   Does NOT use regex matching - literal string match
+# ============================================================================
+
+# ============================================================================
+# TIPS
+# ============================================================================
+#
+# 1. Order doesn't matter - all patterns are processed
+# 2. Be specific to avoid accidentally removing wanted endpoints
+# 3. Test by building docs and checking the output
+# 4. Use /* for entire resource groups
+# 5. List exact paths for single endpoint removal
+# ============================================================================

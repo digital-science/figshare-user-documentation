@@ -1,0 +1,24 @@
+# API Documentation Versions Configuration
+# This file defines all supported API versions and their metadata
+# Similar to apiv1's versioning.py but for documentation purposes
+
+# Default version to display when no version is selected
+default_version: "2.0"
+
+# Supported versions metadata
+versions:
+  "2.0":
+    deprecated: false
+    description: "Current stable API version"
+    
+    
+  # "2.2":
+  #   deprecated: true
+  #   sunset: "30 Jul 2025"
+  #   successor: "2.3"
+  #   doc_url: "https://docs.figshare.com/#versioning/v2.3"
+  #   description: "Deprecated - migrating to 2.3"
+    
+  # "2.3":
+  #   deprecated: false
+  #   description: "Latest API version with enhanced features"

@@ -1,0 +1,574 @@
+# =============================================================================
+# Component Overrides Example
+# =============================================================================
+# This file demonstrates how to OVERRIDE (modify) components that exist in
+# the base version (v2.0) for specific API versions.
+#
+# Location: components/v{version}/overrides.yaml
+#
+# Use this file to:
+# - Modify existing component definitions from the base version
+# - Change field names, types, or constraints
+# - Update descriptions, examples, or validation rules
+# - Keep all component overrides in one consolidated file
+#
+# For ADDING NEW components, use inclusions.yaml
+# For REMOVING components, use exclusions.yaml
+#
+# ALTERNATIVE PATTERN:
+# Instead of using this consolidated overrides.yaml file, you can use
+# component-specific files (schemas.yaml, parameters.yaml, etc.) for overrides.
+# Both patterns are supported.
+#
+# Supported Component Types:
+# - schemas
+# - securitySchemes
+# - parameters
+# - requestBodies
+# - responses
+# - headers
+# - examples
+# - links
+# - callbacks
+#
+# Related Files:
+# - exclusions.yaml: For removing components from base version
+# - inclusions.yaml: For adding NEW components
+# - schemas.yaml, parameters.yaml, etc.: Alternative component-specific override files
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Override Schemas (modify existing schemas from v2.0)
+# -----------------------------------------------------------------------------
+schemas:
+  # OVERRIDE: Modify the existing Article schema from v2.0
+  Article:
+    type: object
+    description: Article schema (modified in v2.3)
+    required:
+      - id
+      - title
+      - published_date  # Changed from 'publication_date' in v2.0
+    properties:
+      id:
+        type: integer
+        format: int64
+      title:
+        type: string
+        minLength: 3
+        maxLength: 1000  # Increased from 500 in v2.0
+      description:
+        type: string
+        maxLength: 10000
+      # CHANGED: Renamed field in v2.3
+      published_date:     # Was 'publication_date' in v2.0
+        type: string
+        format: date-time
+        description: Publication date (field renamed in v2.3)
+      # NEW: Added DOI field in v2.3
+      doi:
+        type: string
+        pattern: '^10\.\d{4,}/.*$'
+        description: Digital Object Identifier (added in v2.3)
+      # CHANGED: Made authors required in v2.3
+      authors:
+        type: array
+        description: List of authors (now required in v2.3)
+        minItems: 1  # New constraint in v2.3
+        items:
+          type: object
+          properties:
+            id:
+              type: integer
+            name:
+              type: string
+            orcid_id:
+              type: string
+      tags:
+        type: array
+        items:
+          type: string
+        maxItems: 20  # Increased from 10 in v2.0
+      categories:
+        type: array
+        items:
+          type: integer
+      # REMOVED: embargo_date field (no longer used in v2.3)
+      # NEW: status field replaces multiple boolean flags
+      status:
+        type: string
+        enum:
+          - draft
+          - private
+          - public
+          - embargoed
+          - under_review
+        description: Article status (replaces is_public, is_embargoed flags in v2.3)
+
+  # OVERRIDE: Simplify Collection schema in v2.3
+  Collection:
+    type: object
+    description: Collection schema (simplified in v2.3)
+    properties:
+      id:
+        type: integer
+        format: int64
+      title:
+        type: string
+      description:
+        type: string
+      # CHANGED: articles is now an array of IDs instead of full objects
+      article_ids:  # Was 'articles' with full objects in v2.0
+        type: array
+        description: Array of article IDs (simplified from full objects in v2.3)
+        items:
+          type: integer
+          format: int64
+      article_count:
+        type: integer
+        description: Total number of articles
+      published_date:
+        type: string
+        format: date-time
+
+  # OVERRIDE: Enhanced User schema with new fields
+  User:
+    type: object
+    description: User profile (enhanced in v2.3)
+    properties:
+      id:
+        type: integer
+        format: int64
+      first_name:
+        type: string
+      last_name:
+        type: string
+      full_name:
+        type: string
+      email:
+        type: string
+        format: email
+      # NEW: ORCID now required for researchers in v2.3
+      orcid_id:
+        type: string
+        pattern: '^\d{4}-\d{4}-\d{4}-\d{3}[0-9X]$'
+        description: ORCID identifier (now validated in v2.3)
+      # NEW: Professional information added in v2.3
+      job_title:
+        type: string
+        description: Current job title (added in v2.3)
+      institution:
+        type: object
+        description: Affiliated institution (enhanced in v2.3)
+        properties:
+          id:
+            type: integer
+          name:
+            type: string
+          ror_id:
+            type: string
+            description: Research Organization Registry ID (new in v2.3)
+      # CHANGED: social_links structure modified
+      social_links:
+        type: object
+        description: Social media links (restructured in v2.3)
+        properties:
+          twitter:
+            type: string
+            format: uri
+          linkedin:
+            type: string
+            format: uri
+          github:
+            type: string
+            format: uri
+          website:
+            type: string
+            format: uri
+
+# -----------------------------------------------------------------------------
+# Override Security Schemes (modify existing auth methods from v2.0)
+# -----------------------------------------------------------------------------
+securitySchemes:
+  # OVERRIDE: Enhanced OAuth2 with additional scopes
+  OAuth2:
+    type: oauth2
+    description: OAuth 2.0 authentication (enhanced scopes in v2.3)
+    flows:
+      authorizationCode:
+        authorizationUrl: https://figshare.com/oauth/authorize
+        tokenUrl: https://api.figshare.com/v2/token
+        # ENHANCED: Added granular scopes in v2.3
+        scopes:
+          read: Read access to public and private data
+          write: Write access to your data
+          delete: Delete your data
+          admin: Full administrative access
+          # NEW scopes in v2.3:
+          read:articles: Read-only access to articles
+          write:articles: Create and modify articles
+          read:collections: Read-only access to collections
+          write:collections: Create and modify collections
+          read:stats: Read article statistics
+          manage:webhooks: Manage webhook subscriptions
+
+  # OVERRIDE: API key with enhanced validation
+  ApiKeyAuth:
+    type: apiKey
+    in: header
+    name: Authorization
+    description: API Key authentication (enhanced validation in v2.3)
+    # Note: In v2.3, API keys must use 'token ' prefix
+
+# -----------------------------------------------------------------------------
+# Override Parameters (modify existing parameters from v2.0)
+# -----------------------------------------------------------------------------
+parameters:
+  # OVERRIDE: Enhanced pagination parameter
+  PageSize:
+    name: page_size
+    in: query
+    description: Number of results per page (limits changed in v2.3)
+    required: false
+    schema:
+      type: integer
+      format: int32
+      minimum: 1
+      maximum: 1000  # Increased from 100 in v2.0
+      default: 20    # Changed from 10 in v2.0
+    example: 50
+
+  # OVERRIDE: Search query with enhanced description
+  SearchQuery:
+    name: search_for
+    in: query
+    description: |
+      Search term to filter results. Supports advanced operators in v2.3:
+      - AND, OR, NOT for boolean logic
+      - "phrase search" for exact matches
+      - field:value for field-specific search
+      - * for wildcards
+    required: false
+    schema:
+      type: string
+      maxLength: 1000  # Increased from 500 in v2.0
+    example: 'climate AND (ocean OR marine) NOT "fresh water"'
+
+  # OVERRIDE: Sort parameter with new options
+  SortBy:
+    name: order_by
+    in: query
+    description: Field to sort results by (new options in v2.3)
+    required: false
+    schema:
+      type: string
+      enum:
+        - published_date
+        - modified_date
+        - views
+        - downloads
+        - citations
+        - title
+        # NEW in v2.3:
+        - relevance      # For search results
+        - popularity     # Combined metric
+        - impact_score   # Citation-based score
+      default: published_date
+    example: "relevance"
+
+# -----------------------------------------------------------------------------
+# Override Request Bodies (modify existing request bodies from v2.0)
+# -----------------------------------------------------------------------------
+requestBodies:
+  # OVERRIDE: Enhanced article creation with new required fields
+  ArticleCreate:
+    description: Request body for creating articles (enhanced in v2.3)
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - title
+            - authors  # Now required in v2.3
+          properties:
+            title:
+              type: string
+              minLength: 3
+              maxLength: 1000  # Increased
+            description:
+              type: string
+              maxLength: 10000
+            # CHANGED: authors now required with minimum 1
+            authors:
+              type: array
+              minItems: 1  # New requirement in v2.3
+              items:
+                type: object
+                required:
+                  - name
+                properties:
+                  name:
+                    type: string
+                  orcid_id:
+                    type: string
+            tags:
+              type: array
+              items:
+                type: string
+              maxItems: 20  # Increased from 10
+            # NEW: funding_statement field
+            funding_statement:
+              type: string
+              description: Funding acknowledgment (new in v2.3)
+              maxLength: 2000
+            # NEW: data_availability field
+            data_availability:
+              type: string
+              description: Data availability statement (new in v2.3)
+              maxLength: 1000
+
+  # OVERRIDE: Simplified article update
+  ArticleUpdate:
+    description: Request body for updating articles (simplified in v2.3)
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          # CHANGED: No longer accepts partial updates for authors in v2.3
+          properties:
+            title:
+              type: string
+            description:
+              type: string
+            tags:
+              type: array
+              items:
+                type: string
+            # CHANGED: Authors must be provided in full if updating
+            authors:
+              type: array
+              description: Full authors list (must include all authors in v2.3)
+              items:
+                type: object
+
+# -----------------------------------------------------------------------------
+# Override Responses (modify existing responses from v2.0)
+# -----------------------------------------------------------------------------
+responses:
+  # OVERRIDE: Enhanced error response with more details
+  BadRequest:
+    description: Invalid request (enhanced error details in v2.3)
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: string
+            # NEW in v2.3: detailed error breakdown
+            errors:
+              type: array
+              items:
+                type: object
+                properties:
+                  field:
+                    type: string
+                  message:
+                    type: string
+                  code:
+                    type: string
+                  # NEW: suggestions for fixes
+                  suggestion:
+                    type: string
+                    description: Hint for resolving the error (new in v2.3)
+            # NEW: request ID for support
+            request_id:
+              type: string
+              description: Unique request identifier (new in v2.3)
+
+  # OVERRIDE: Not found with resource type info
+  NotFound:
+    description: Resource not found (enhanced in v2.3)
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+            code:
+              type: string
+            # NEW: resource context
+            resource_type:
+              type: string
+              description: Type of resource that wasn't found (new in v2.3)
+            resource_id:
+              type: string
+              description: ID that was requested (new in v2.3)
+            # NEW: suggestions
+            suggestions:
+              type: array
+              description: Alternative resources or actions (new in v2.3)
+              items:
+                type: string
+
+# -----------------------------------------------------------------------------
+# Override Headers (modify existing headers from v2.0)
+# -----------------------------------------------------------------------------
+headers:
+  # OVERRIDE: Enhanced rate limit header with more info
+  X-RateLimit-Remaining:
+    description: Remaining API calls in current window (enhanced in v2.3)
+    schema:
+      type: integer
+    # Note: In v2.3, this header is always present (was optional in v2.0)
+
+  # OVERRIDE: ETag with stronger validation
+  ETag:
+    description: Entity tag for cache validation (stronger format in v2.3)
+    schema:
+      type: string
+      pattern: '^"[a-f0-9]{40}"$'  # Now requires SHA-1 format in v2.3
+    example: '"356a192b7913b04c54574d18c28d46e6395428ab"'
+
+# -----------------------------------------------------------------------------
+# Override Examples (modify existing examples from v2.0)
+# -----------------------------------------------------------------------------
+examples:
+  # OVERRIDE: Updated article example with v2.3 fields
+  ArticleComplete:
+    summary: Complete article with v2.3 fields
+    description: Full article example showing v2.3 enhancements
+    value:
+      id: 12345678
+      title: "Impact of Climate Change on Marine Biodiversity"
+      doi: "10.6084/m9.figshare.12345678"  # NEW in v2.3
+      published_date: "2024-01-15T10:00:00Z"  # Renamed from publication_date
+      description: "A comprehensive study analyzing effects of rising temperatures."
+      status: "public"  # NEW in v2.3, replaces is_public flag
+      authors:  # Now required and must have at least one
+        - id: 123456
+          name: "Dr. Jane Smith"
+          orcid_id: "0000-0002-1825-0097"
+      tags:
+        - "climate change"
+        - "marine biology"
+        - "biodiversity"
+      funding_statement: "Funded by NSF Grant #12345"  # NEW in v2.3
+      data_availability: "Data available at doi:10.6084/data.12345"  # NEW in v2.3
+
+# -----------------------------------------------------------------------------
+# Override Links (modify existing links from v2.0)
+# -----------------------------------------------------------------------------
+links:
+  # OVERRIDE: Enhanced GetArticleById with error handling
+  GetArticleById:
+    description: Navigate to article details (enhanced in v2.3)
+    operationId: getArticle
+    parameters:
+      article_id: '$response.body#/id'
+    # Note: In v2.3, this returns 410 Gone for deleted articles (was 404 in v2.0)
+
+# -----------------------------------------------------------------------------
+# Override Callbacks (modify existing callbacks from v2.0)
+# -----------------------------------------------------------------------------
+callbacks:
+  # OVERRIDE: Enhanced ArticlePublished webhook with retry policy
+  ArticlePublished:
+    description: Article published webhook (enhanced in v2.3)
+    '{$request.body#/webhook_url}':
+      post:
+        summary: Article published notification (enhanced in v2.3)
+        description: |
+          Webhook called when an article is published.
+          In v2.3, includes retry policy: 3 attempts with exponential backoff.
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - event_type
+                  - article_id
+                  - timestamp
+                properties:
+                  event_type:
+                    type: string
+                    enum: [article.published]
+                  article_id:
+                    type: integer
+                  doi:
+                    type: string
+                    description: DOI of published article (new in v2.3)
+                  # NEW: enhanced metadata in v2.3
+                  authors_count:
+                    type: integer
+                  files_count:
+                    type: integer
+                  timestamp:
+                    type: string
+                    format: date-time
+                  # NEW: webhook delivery metadata
+                  webhook_id:
+                    type: string
+                    format: uuid
+                  attempt_number:
+                    type: integer
+                    description: Delivery attempt number (for retries)
+        responses:
+          '200':
+            description: Webhook received successfully
+          '204':
+            description: Webhook received, no content
+          '410':
+            description: Webhook endpoint removed (will unsubscribe)
+          # NEW in v2.3: explicit retry handling
+          '500':
+            description: Server error (will retry up to 3 times)
+          '503':
+            description: Service unavailable (will retry)
+
+# =============================================================================
+# Processing Order:
+#
+# 1. Base components from v2.0 are loaded
+# 2. Exclusions are applied (components removed)
+# 3. Inclusions are applied (NEW components added)
+# 4. Overrides are applied (existing components modified) ← This file
+#
+# Example Workflow for v2.3:
+#
+# Step 1 - Load base:
+#   - components/v2.0/schemas.yaml → Article, Collection, User
+#
+# Step 2 - Apply exclusions:
+#   - components/v2.3/exclusions.yaml → Remove LegacyArticleFormat
+#   Result: Article, Collection, User
+#
+# Step 3 - Apply inclusions:
+#   - components/v2.3/inclusions.yaml → Add Dataset, BatchJobStatus
+#   Result: Article, Collection, User, Dataset, BatchJobStatus
+#
+# Step 4 - Apply overrides:
+#   - components/v2.3/overrides.yaml → Modify Article, Collection, User (THIS FILE)
+#   Result: Article (v2.3), Collection (v2.3), User (v2.3), Dataset, BatchJobStatus
+#
+# =============================================================================
+# Alternative Pattern:
+#
+# Instead of using this consolidated overrides.yaml file, you can use
+# component-specific files for better organization:
+#
+# - components/v2.3/schemas.yaml → Override schemas only
+# - components/v2.3/parameters.yaml → Override parameters only
+# - components/v2.3/responses.yaml → Override responses only
+# - etc.
+#
+# Both patterns are supported and can be used together. Component-specific
+# files are processed after this consolidated overrides.yaml file.
+# =============================================================================

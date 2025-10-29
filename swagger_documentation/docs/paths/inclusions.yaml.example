@@ -1,0 +1,233 @@
+# ============================================================================
+# PATHS INCLUSIONS EXAMPLE
+# ============================================================================
+# Location: swagger_documentation/docs/paths/v{version}/inclusions.yaml
+#
+# Purpose: Add NEW paths that only exist in this version and are NOT in the
+#          base version (v2.0)
+#
+# When to use:
+# - A new endpoint was introduced in this version
+# - A new feature requires new API paths
+# - Version-specific endpoints that don't override base paths
+#
+# Processing order:
+# 1. Base paths from v2.0 are loaded
+# 2. Exclusions are applied (if exclusions.yaml exists)
+# 3. Paths from THIS FILE are added
+# 4. Then other .yaml files override paths
+#
+# Note: If a path here already exists (from base or other files),
+#       it will OVERRIDE that path. Use this for truly new endpoints.
+# ============================================================================
+
+paths:
+  # -------------------------------------------------------------------------
+  # Example 1: Add a new endpoint introduced in this version
+  # -------------------------------------------------------------------------
+  /v3/enhanced-search:
+    post:
+      summary: Enhanced search (v2.3+ only)
+      description: |
+        Advanced search endpoint with enhanced filtering capabilities.
+        This endpoint was introduced in v2.3 and is not available in earlier versions.
+      tags:
+        - Search
+        - v2.3
+      operationId: enhancedSearchV2_3
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query:
+                  type: string
+                  description: Search query string
+                  example: "machine learning"
+                filters:
+                  type: object
+                  description: Advanced filter options
+                  properties:
+                    categories:
+                      type: array
+                      items:
+                        type: integer
+                      example: [1, 12, 23]
+                    date_range:
+                      type: object
+                      properties:
+                        start:
+                          type: string
+                          format: date-time
+                          example: "2024-01-01T00:00:00Z"
+                        end:
+                          type: string
+                          format: date-time
+                          example: "2024-12-31T23:59:59Z"
+                    license_types:
+                      type: array
+                      items:
+                        type: string
+                      example: ["CC-BY-4.0", "MIT"]
+      responses:
+        '200':
+          description: Search results
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/SearchResult'
+                  total:
+                    type: integer
+                    example: 42
+                  facets:
+                    type: object
+                    description: Faceted search results
+        '400':
+          description: Invalid search query
+  
+  # -------------------------------------------------------------------------
+  # Example 2: Add a new resource management endpoint
+  # -------------------------------------------------------------------------
+  /account/datasets:
+    get:
+      summary: List user datasets (v2.3+ only)
+      description: |
+        New datasets resource introduced in v2.3.
+        Replaces the old articles-based dataset management.
+      tags:
+        - Datasets
+        - v2.3
+      operationId: listUserDatasetsV2_3
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: page_size
+          in: query
+          schema:
+            type: integer
+            default: 10
+            maximum: 100
+      responses:
+        '200':
+          description: List of datasets
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Dataset'
+    
+    post:
+      summary: Create dataset (v2.3+ only)
+      description: Create a new dataset
+      tags:
+        - Datasets
+        - v2.3
+      operationId: createDatasetV2_3
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatasetCreate'
+      responses:
+        '201':
+          description: Dataset created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dataset'
+  
+  # -------------------------------------------------------------------------
+  # Example 3: Add a new nested resource
+  # -------------------------------------------------------------------------
+  /account/datasets/{dataset_id}/versions:
+    get:
+      summary: List dataset versions (v2.3+ only)
+      description: Get version history for a dataset
+      tags:
+        - Datasets
+        - v2.3
+      operationId: listDatasetVersionsV2_3
+      parameters:
+        - name: dataset_id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Version history
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/DatasetVersion'
+  
+  # -------------------------------------------------------------------------
+  # Example 4: Add a new utility endpoint
+  # -------------------------------------------------------------------------
+  /health/detailed:
+    get:
+      summary: Detailed health check (v2.3+ only)
+      description: |
+        Enhanced health check endpoint with service status details.
+        Available in v2.3+.
+      tags:
+        - Health
+        - v2.3
+      operationId: detailedHealthCheckV2_3
+      responses:
+        '200':
+          description: Service health status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    enum: ["healthy", "degraded", "unhealthy"]
+                    example: "healthy"
+                  services:
+                    type: object
+                    properties:
+                      database:
+                        type: string
+                        example: "healthy"
+                      storage:
+                        type: string
+                        example: "healthy"
+                      cache:
+                        type: string
+                        example: "healthy"
+                  version:
+                    type: string
+                    example: "2.3.0"
+                  uptime:
+                    type: integer
+                    description: Uptime in seconds
+                    example: 86400
+
+# ============================================================================
+# TIPS FOR INCLUSIONS
+# ============================================================================
+#
+# 1. Only include paths that are NEW to this version
+# 2. For overriding existing paths, create separate .yaml files or use overrides.yaml
+# 3. Include version tags (e.g., "v2.3") to make it clear these are version-specific
+# 4. Add clear descriptions noting when the endpoint was introduced
+# 5. Reference new schemas that may also be defined in version-specific schemas.yaml
+# 6. Keep inclusions.yaml focused on additions, not modifications
+# ============================================================================
