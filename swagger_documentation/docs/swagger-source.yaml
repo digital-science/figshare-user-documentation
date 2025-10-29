@@ -1,0 +1,222 @@
+openapi: 3.0.3
+info:
+  title: Figshare API
+  description: Figshare API v2 - Full REST API documentation for managing articles, collections, projects and more.
+  version: 3.0.1
+  contact:
+    name: Figshare Support
+    url: https://support.figshare.com/support/home
+  license:
+    name: Apache 2.0
+    url: https://www.apache.org/licenses/LICENSE-2.0.html
+paths: {}
+components: {}
+x-additional-descriptions:
+- title: Upload files
+  position: bottom
+  subsections:
+  - title: Steps to upload file
+    content: description_upload_steps
+  - title: Uploads API
+    content: description_upload_api
+  - title: Parts API
+    content: description_upload_parts_api
+  - title: Example Upload on figshare
+    content: description_upload_example
+  - title: Output of Script
+    content: description_upload_output
+  - title: Upload Bash Script
+    content: description_upload_bash
+  - title: Upload S3 File to Figshare
+    content: description_upload_from_s3
+- title: Search
+  position: bottom
+  subsections:
+  - title: How to find data on figshare
+    content: description_search_intro
+  - title: Search operators
+    content: description_search_operators
+  - title: Searchable attributes
+    content: description_search_attributes
+  - title: Quick search
+    content: description_search_quick
+  - title: Advanced search
+    content: description_search_advanced
+  - title: Combined field search
+    content: description_search_combined
+  - title: Complex searches
+    content: description_search_complex
+- title: Stats
+  position: bottom
+  subsections:
+  - title: Stats service
+    subsections:
+    - title: Intro
+      content: description_stats_service_intro
+    - title: Authentication
+      content: description_stats_service_auth
+    - title: Errors
+      content: description_stats_service_errors
+    - title: Endpoints
+      content: description_stats_service_endpoints
+  - title: Breakdown
+    subsections:
+    - title: Endpoints for retrieving a breakdown
+      content: description_stats_breakdown_endpoints
+    - title: Authorization
+      content: description_stats_breakdown_auth
+    - title: Endpoint format
+      content: description_stats_breakdown_format
+    - title: Request parameters
+      content: description_stats_breakdown_params
+    - title: Examples
+      content: description_stats_breakdown_examples
+  - title: Timeline
+    subsections:
+    - title: Endpoints for retrieving a timeline
+      content: description_stats_timeline_endpoints
+    - title: Authorization
+      content: description_stats_timeline_auth
+    - title: Endpoint format
+      content: description_stats_timeline_format
+    - title: Request parameters
+      content: description_stats_timeline_params
+    - title: Examples
+      content: description_stats_timeline_examples
+  - title: Tops
+    subsections:
+    - title: Endpoints for retrieving tops
+      content: description_stats_tops_endpoints
+    - title: Authorization
+      content: description_stats_tops_auth
+    - title: Endpoint format
+      content: description_stats_tops_format
+    - title: Request parameters
+      content: description_stats_tops_params
+    - title: Examples
+      content: description_stats_tops_examples
+  - title: Totals
+    subsections:
+    - title: Endpoints for retrieving totals
+      content: description_stats_totals_endpoints
+    - title: Authorization
+      content: description_stats_totals_auth
+    - title: Endpoint format
+      content: description_stats_totals_format
+    - title: Examples
+      content: description_stats_totals_examples
+  - title: Count Articles
+    subsections:
+    - title: Endpoint for retrieving counts
+      content: description_stats_count_endpoints
+    - title: Authorization
+      content: description_stats_count_auth
+    - title: Endpoint format
+      content: description_stats_count_format
+    - title: Example
+      content: description_stats_count_examples
+- title: OAI PMH
+  position: bottom
+  subsections:
+  - title: OAI-PMH
+    content: description_oai_pmh
+  - title: Base URL
+    content: description_oai_baseurl
+  - title: Item equals Article
+    content: description_oai_itemarticle
+  - title: Metadata formats
+    content: description_oai_metadata
+  - title: Datestamps
+    content: description_oai_datestamp
+  - title: Sets
+    content: description_oai_sets
+  - title: Update schedule
+    content: description_oai_update_schedule
+  - title: Pagination and Resumption Token Expiration
+    content: description_oai_pagination
+  - title: Rate limit
+    content: description_oai_ratelimit
+  - title: Future development
+    content: description_oai_futuredev
+  - title: Some examples
+    content: description_oai_someexamples
+- title: HR Feed
+  position: bottom
+  subsections:
+  - title: HR Feed Private Endpoint
+    content: description_hrfeed_endpoint
+  - title: HR Feed examples
+    subsections:
+    - title: Python
+      content: description_hrfeed_examples_python
+    - title: Java
+      content: description_hrfeed_examples_java
+    - title: C Sharp
+      content: description_hrfeed_examples_csharp
+    - title: Curl
+      content: description_hrfeed_examples_curl
+  - title: Response
+    content: description_hrfeed_response
+  - title: Errors
+    content: description_hrfeed_errors
+  - title: Notes
+    content: description_hrfeed_notes
+- title: Custom Fields
+  position: bottom
+  subsections:
+  - title: Custom Fields Private Endpoints
+    content: description_custom_fields_endpoint
+  - title: Custom Fields examples
+    subsections:
+    - title: Python
+      content: description_custom_fields_examples_python
+    - title: Java
+      content: description_custom_fields_examples_java
+    - title: C Sharp
+      content: description_custom_fields_examples_csharp
+    - title: Curl
+      content: description_custom_fields_examples_curl
+  - title: Response
+    content: description_custom_fields_response
+  - title: Errors
+    content: description_custom_fields_errors
+  - title: Notes
+    content: description_custom_fields_notes
+- title: figshare Documentation
+  position: top
+  subsections:
+  - title: figshare Documentation
+    content: description_intro
+  - title: OAuth
+    subsections:
+    - title: Intro
+      content: description_oauth_intro
+    - title: Quick guide
+      content: description_oauth_quick
+    - title: Scope
+      content: description_oauth_scope
+    - title: Grant Types
+      content: description_oauth_grant
+  - title: API description
+    subsections:
+    - title: Feature list
+      content: description_api_features
+    - title: Sending parameters
+      content: description_api_parameters
+    - title: Resource representations
+      content: description_api_resourcerepresentation
+    - title: Authentication
+      content: description_api_auth
+    - title: Errors
+      content: description_api_errors
+    - title: Searching filtering and pagination
+      content: description_api_search
+    - title: Rate limiting
+      content: description_api_ratelimit
+    - title: Conditional requests
+      content: description_api_requests
+    - title: CORS policy
+      content: description_api_cors
+    - title: Impersonation
+      content: description_api_impersonation
+x-original-swagger-version: '2.0'

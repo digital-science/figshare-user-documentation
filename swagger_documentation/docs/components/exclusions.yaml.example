@@ -1,0 +1,225 @@
+# ============================================================================
+# COMPONENTS EXCLUSIONS EXAMPLE
+# ============================================================================
+# Location: swagger_documentation/docs/components/v{version}/exclusions.yaml
+#
+# Purpose: Remove components that exist in the base version (v2.0) but should
+#          NOT appear in this version's documentation
+#
+# Supported component types:
+# - Schemas (exclude_schemas)
+# - Security Schemes (exclude_security_schemes)
+# - Parameters (exclude_parameters)
+# - Request Bodies (exclude_request_bodies)
+# - Responses (exclude_responses)
+# - Headers (exclude_headers)
+# - Examples (exclude_examples)
+# - Links (exclude_links)
+# - Callbacks (exclude_callbacks)
+#
+# Processing order:
+# 1. Base components from v2.0 are loaded
+# 2. Components matching exclusion lists are removed
+# 3. Then version-specific components are merged (overrides/additions)
+# ============================================================================
+
+# ============================================================================
+# SCHEMAS EXCLUSIONS
+# ============================================================================
+exclude_schemas:
+  # -------------------------------------------------------------------------
+  # Example 1: Remove specific legacy schemas by exact name
+  # -------------------------------------------------------------------------
+  - OldArticleFormat
+  - LegacyMetadata
+  - ArticleWithLegacyMetadata
+  
+  # -------------------------------------------------------------------------
+  # Example 2: Remove schemas using wildcard patterns
+  # -------------------------------------------------------------------------
+  # Remove all schemas starting with "Legacy"
+  - Legacy*
+  
+  # Remove all schemas ending with "Deprecated"
+  - *Deprecated
+  
+  # Remove all schemas matching a pattern
+  - Old*Format      # Matches: OldArticleFormat, OldUserFormat, etc.
+  - *V1             # Matches: ArticleV1, CollectionV1, etc.
+  
+  # -------------------------------------------------------------------------
+  # Example 3: Remove request/response schemas that changed
+  # -------------------------------------------------------------------------
+  # When API contracts change, remove old request/response types
+  - ArticleCreateV1
+  - ArticleUpdateV1
+  - ArticleResponseV1
+  
+  # -------------------------------------------------------------------------
+  # Example 4: Remove schemas for deprecated features
+  # -------------------------------------------------------------------------
+  # If a feature was removed, exclude its schemas
+  - ArticleEmbargoOptions     # If embargo feature was removed
+  - LegacyFileUpload          # If upload process changed
+  
+  # -------------------------------------------------------------------------
+  # Example 5: Remove intermediate/helper schemas no longer used
+  # -------------------------------------------------------------------------
+  - ArticlePartialUpdate      # If consolidated into ArticleUpdate
+  - CollectionBulkCreate      # If bulk operations were removed
+  - ProjectNested             # If nesting was removed
+
+# ============================================================================
+# SECURITY SCHEMES EXCLUSIONS
+# ============================================================================
+exclude_security_schemes:
+  # -------------------------------------------------------------------------
+  # Example 1: Remove deprecated authentication methods
+  # -------------------------------------------------------------------------
+  - BasicAuth           # If basic auth was removed
+  - ApiKeyAuth          # If API key auth was deprecated
+  
+  # -------------------------------------------------------------------------
+  # Example 2: Remove old OAuth versions
+  # -------------------------------------------------------------------------
+  - OAuth1              # If OAuth 1.0 support was dropped
+  - OAuthV1*            # Remove all OAuth v1 related schemes
+  
+  # -------------------------------------------------------------------------
+  # Example 3: Use wildcards for related schemes
+  # -------------------------------------------------------------------------
+  - Legacy*             # Remove all legacy auth schemes
+  - *V1                 # Remove all v1 auth schemes
+
+# ============================================================================
+# PARAMETERS EXCLUSIONS
+# ============================================================================
+exclude_parameters:
+  # Remove deprecated parameters
+  - LegacyPagination
+  - OldFilter
+  - DeprecatedSort
+  
+  # Remove parameters from old API versions
+  - V1*
+  - Old*
+
+# ============================================================================
+# REQUEST BODIES EXCLUSIONS
+# ============================================================================
+exclude_request_bodies:
+  # Remove legacy request formats
+  - LegacyArticleCreate
+  - XMLArticleCreate
+  
+  # Remove deprecated request bodies
+  - Legacy*
+  - Deprecated*
+
+# ============================================================================
+# RESPONSES EXCLUSIONS
+# ============================================================================
+exclude_responses:
+  # Remove old response formats
+  - LegacyError
+  - XMLResponse*
+  
+  # Remove deprecated responses
+  - Deprecated*
+  - V1*
+
+# ============================================================================
+# HEADERS EXCLUSIONS
+# ============================================================================
+exclude_headers:
+  # Remove deprecated headers
+  - X-Legacy-Token
+  - X-Old-API-Version
+  
+  # Remove headers from old API versions
+  - X-Deprecated*
+  - X-V1-*
+
+# ============================================================================
+# EXAMPLES EXCLUSIONS
+# ============================================================================
+exclude_examples:
+  # Remove outdated examples
+  - LegacyArticleFormat
+  - DeprecatedExample*
+  
+  # Remove old version examples
+  - V1Example*
+  - XMLExample*
+
+# ============================================================================
+# LINKS EXCLUSIONS
+# ============================================================================
+exclude_links:
+  # Remove deprecated navigation links
+  - LegacyNavigation
+  - OldStyle*
+  
+  # Remove v1 links
+  - V1Link*
+
+# ============================================================================
+# CALLBACKS EXCLUSIONS
+# ============================================================================
+exclude_callbacks:
+  # Remove legacy webhook formats
+  - LegacyWebhook
+  - DeprecatedEvent*
+  
+  # Remove old notification formats
+  - OldNotification*
+
+# ============================================================================
+# WILDCARD PATTERN RULES
+# ============================================================================
+# 
+# Wildcards are converted to regex patterns:
+#   - "Legacy*" becomes "^Legacy.*$" (matches anything starting with "Legacy")
+#   - "*Deprecated" becomes "^.*Deprecated$" (matches anything ending with "Deprecated")
+#   - "Old*Format" becomes "^Old.*Format$" (matches Old + anything + Format)
+#
+# Examples:
+#   Pattern: Legacy*
+#   Matches: LegacyMetadata, LegacyUser, LegacyArticle
+#   
+#   Pattern: *V1
+#   Matches: ArticleV1, CollectionV1, UserV1
+#   
+#   Pattern: Old*Format
+#   Matches: OldArticleFormat, OldUserFormat, OldResponseFormat
+#
+# ============================================================================
+# USAGE EXAMPLES
+# ============================================================================
+#
+# Example 1: Remove all legacy components
+# ----------------------------------------
+# exclude_schemas:
+#   - Legacy*
+# exclude_security_schemes:
+#   - Legacy*
+# exclude_parameters:
+#   - Legacy*
+#
+# Example 2: Clean up v1 to v2 migration
+# ---------------------------------------
+# exclude_schemas:
+#   - *V1
+#   - *Response      # If response format changed
+# exclude_request_bodies:
+#   - *V1
+#
+# Example 3: Remove deprecated features
+# --------------------------------------
+# exclude_schemas:
+#   - ArticleEmbargo*
+#   - *Embargo
+# exclude_callbacks:
+#   - EmbargoExpired
+#
+# ============================================================================

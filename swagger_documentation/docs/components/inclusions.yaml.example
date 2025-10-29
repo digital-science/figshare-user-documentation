@@ -1,0 +1,473 @@
+# =============================================================================
+# Component Inclusions Example
+# =============================================================================
+# This file demonstrates how to ADD NEW components that don't exist in the
+# base version (v2.0) to specific API versions.
+#
+# Location: components/v{version}/inclusions.yaml
+#
+# Use this file to:
+# - Add completely new component definitions introduced in this version
+# - Keep additions separate from overrides for clarity
+# - Document which components are new to this version
+#
+# For OVERRIDING existing components from v2.0, use the specific component
+# type files (schemas.yaml, parameters.yaml, etc.)
+#
+# For REMOVING components, use exclusions.yaml
+#
+# Supported Component Types:
+# - schemas
+# - securitySchemes
+# - parameters
+# - requestBodies
+# - responses
+# - headers
+# - examples
+# - links
+# - callbacks
+#
+# Related Files:
+# - exclusions.yaml: For removing components from base version
+# - schemas.yaml: For OVERRIDING existing schemas
+# - security.yaml: For OVERRIDING existing security schemes
+# - parameters.yaml: For OVERRIDING existing parameters
+# - etc.
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# New Schemas (v2.3+ only)
+# -----------------------------------------------------------------------------
+schemas:
+  # New Dataset schema introduced in v2.3
+  Dataset:
+    type: object
+    description: Dataset schema introduced in API v2.3
+    required:
+      - id
+      - title
+      - dataset_type
+    properties:
+      id:
+        type: integer
+        format: int64
+        description: Unique dataset identifier
+      title:
+        type: string
+        description: Dataset title
+        minLength: 3
+        maxLength: 500
+      description:
+        type: string
+        description: Dataset description
+        maxLength: 10000
+      dataset_type:
+        type: string
+        description: Type of dataset
+        enum:
+          - tabular
+          - geospatial
+          - timeseries
+          - image
+          - video
+          - text
+          - other
+      format:
+        type: string
+        description: Data format
+        enum:
+          - csv
+          - json
+          - xml
+          - parquet
+          - hdf5
+          - netcdf
+      size_bytes:
+        type: integer
+        format: int64
+        description: Total size in bytes
+      rows:
+        type: integer
+        description: Number of rows (for tabular data)
+      columns:
+        type: integer
+        description: Number of columns (for tabular data)
+      metadata:
+        type: object
+        description: Additional metadata
+        additionalProperties: true
+      created_date:
+        type: string
+        format: date-time
+      last_modified:
+        type: string
+        format: date-time
+
+  # Enhanced search filters for v2.3
+  EnhancedSearchFilters:
+    type: object
+    description: Advanced search filters introduced in v2.3
+    properties:
+      facets:
+        type: array
+        description: Faceted search fields
+        items:
+          type: string
+          enum:
+            - resource_type
+            - institution
+            - license
+            - category
+            - author
+            - year
+      date_range:
+        type: object
+        properties:
+          from:
+            type: string
+            format: date-time
+          to:
+            type: string
+            format: date-time
+      geographic_bounds:
+        type: object
+        description: Geographic bounding box
+        properties:
+          north:
+            type: number
+            format: double
+          south:
+            type: number
+            format: double
+          east:
+            type: number
+            format: double
+          west:
+            type: number
+            format: double
+      full_text_search:
+        type: boolean
+        description: Enable full-text search
+        default: false
+
+  # Batch operation status (v2.3+)
+  BatchJobStatus:
+    type: object
+    description: Status of batch operations (v2.3+)
+    required:
+      - job_id
+      - status
+    properties:
+      job_id:
+        type: string
+        format: uuid
+      status:
+        type: string
+        enum:
+          - pending
+          - processing
+          - completed
+          - failed
+          - cancelled
+      progress:
+        type: integer
+        minimum: 0
+        maximum: 100
+        description: Completion percentage
+      total_items:
+        type: integer
+      processed_items:
+        type: integer
+      failed_items:
+        type: integer
+      started_at:
+        type: string
+        format: date-time
+      completed_at:
+        type: string
+        format: date-time
+      error_message:
+        type: string
+
+# -----------------------------------------------------------------------------
+# New Security Schemes (v2.3+ only)
+# -----------------------------------------------------------------------------
+securitySchemes:
+  # JWT Bearer authentication added in v2.3
+  JWTAuth:
+    type: http
+    scheme: bearer
+    bearerFormat: JWT
+    description: JWT-based authentication introduced in v2.3
+
+  # OpenID Connect added in v2.3
+  OpenIDConnect:
+    type: openIdConnect
+    openIdConnectUrl: https://auth.figshare.com/.well-known/openid-configuration
+    description: OpenID Connect authentication (v2.3+)
+
+# -----------------------------------------------------------------------------
+# New Parameters (v2.3+ only)
+# -----------------------------------------------------------------------------
+parameters:
+  # Enhanced pagination with cursor support
+  CursorPagination:
+    name: cursor
+    in: query
+    description: Cursor-based pagination token (v2.3+)
+    required: false
+    schema:
+      type: string
+    example: "eyJpZCI6MTIzNDU2NzgsImRpcmVjdGlvbiI6Im5leHQifQ=="
+
+  # API feature flags
+  FeatureFlags:
+    name: X-Enable-Features
+    in: header
+    description: Comma-separated list of beta features to enable (v2.3+)
+    required: false
+    schema:
+      type: string
+    example: "enhanced-search,batch-operations"
+
+  # Response format preference
+  ResponseFormat:
+    name: Accept-Format
+    in: header
+    description: Preferred response format (v2.3+)
+    required: false
+    schema:
+      type: string
+      enum:
+        - compact
+        - full
+        - minimal
+      default: full
+
+# -----------------------------------------------------------------------------
+# New Request Bodies (v2.3+ only)
+# -----------------------------------------------------------------------------
+requestBodies:
+  # Batch article operations
+  BatchArticleOperation:
+    description: Batch operation on multiple articles (v2.3+)
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          required:
+            - operation
+            - article_ids
+          properties:
+            operation:
+              type: string
+              enum:
+                - publish
+                - unpublish
+                - delete
+                - update_metadata
+            article_ids:
+              type: array
+              items:
+                type: integer
+                format: int64
+              minItems: 1
+              maxItems: 100
+            metadata:
+              type: object
+              description: Metadata to apply (for update_metadata operation)
+              additionalProperties: true
+
+  # Enhanced search request
+  EnhancedSearchRequest:
+    description: Enhanced search with advanced filters (v2.3+)
+    required: true
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            query:
+              type: string
+            filters:
+              $ref: '#/components/schemas/EnhancedSearchFilters'
+            pagination:
+              type: object
+              properties:
+                cursor:
+                  type: string
+                limit:
+                  type: integer
+                  minimum: 1
+                  maximum: 100
+
+# -----------------------------------------------------------------------------
+# New Responses (v2.3+ only)
+# -----------------------------------------------------------------------------
+responses:
+  # Batch operation accepted
+  BatchAccepted:
+    description: Batch operation accepted for processing (v2.3+)
+    content:
+      application/json:
+        schema:
+          $ref: '#/components/schemas/BatchJobStatus'
+    headers:
+      Location:
+        description: URL to check job status
+        schema:
+          type: string
+          format: uri
+
+  # Enhanced search results
+  EnhancedSearchResults:
+    description: Enhanced search results with facets (v2.3+)
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            results:
+              type: array
+              items:
+                type: object
+            facets:
+              type: object
+              additionalProperties:
+                type: array
+                items:
+                  type: object
+            pagination:
+              type: object
+              properties:
+                next_cursor:
+                  type: string
+                has_more:
+                  type: boolean
+
+# -----------------------------------------------------------------------------
+# New Headers (v2.3+ only)
+# -----------------------------------------------------------------------------
+headers:
+  # Cursor for next page
+  X-Next-Cursor:
+    description: Cursor for the next page of results (v2.3+)
+    schema:
+      type: string
+
+  # Feature availability indicator
+  X-Available-Features:
+    description: Comma-separated list of available beta features (v2.3+)
+    schema:
+      type: string
+
+  # API capabilities
+  X-API-Capabilities:
+    description: Comma-separated list of supported capabilities (v2.3+)
+    schema:
+      type: string
+    example: "batch-operations,enhanced-search,cursor-pagination"
+
+# -----------------------------------------------------------------------------
+# New Examples (v2.3+ only)
+# -----------------------------------------------------------------------------
+examples:
+  # Dataset example
+  DatasetExample:
+    summary: Dataset object example (v2.3+)
+    value:
+      id: 88776655
+      title: "Climate Model Output Dataset"
+      dataset_type: "netcdf"
+      format: "netcdf"
+      size_bytes: 5368709120
+      metadata:
+        variables: ["temperature", "precipitation", "pressure"]
+        temporal_resolution: "daily"
+        spatial_resolution: "0.5 degrees"
+
+  # Batch job status example
+  BatchJobExample:
+    summary: Batch job status (v2.3+)
+    value:
+      job_id: "550e8400-e29b-41d4-a716-446655440000"
+      status: "processing"
+      progress: 45
+      total_items: 100
+      processed_items: 45
+      failed_items: 2
+      started_at: "2024-06-15T10:00:00Z"
+
+# -----------------------------------------------------------------------------
+# New Links (v2.3+ only)
+# -----------------------------------------------------------------------------
+links:
+  # Get batch job status
+  GetBatchJobStatus:
+    description: Check status of batch operation (v2.3+)
+    operationId: getBatchJobStatus
+    parameters:
+      job_id: '$response.body#/job_id'
+
+  # Navigate using cursor
+  NextPageByCursor:
+    description: Get next page using cursor pagination (v2.3+)
+    operationId: searchWithCursor
+    parameters:
+      cursor: '$response.body#/pagination/next_cursor'
+
+# -----------------------------------------------------------------------------
+# New Callbacks (v2.3+ only)
+# -----------------------------------------------------------------------------
+callbacks:
+  # Batch operation completed webhook
+  BatchOperationCompleted:
+    description: Webhook called when batch operation completes (v2.3+)
+    '{$request.body#/webhook_url}':
+      post:
+        summary: Batch operation completion notification
+        requestBody:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  event_type:
+                    type: string
+                    enum: [batch.completed]
+                  job_id:
+                    type: string
+                  status:
+                    type: string
+                  result:
+                    $ref: '#/components/schemas/BatchJobStatus'
+        responses:
+          '200':
+            description: Notification acknowledged
+
+# =============================================================================
+# Processing Order:
+#
+# 1. Base components from v2.0 are loaded
+# 2. Exclusions are applied (components removed)
+# 3. Inclusions are applied (NEW components added) ← This file
+# 4. Overrides are applied (existing components modified)
+#
+# Example Workflow for v2.3:
+# 
+# Step 1 - Load base:
+#   - components/v2.0/schemas.yaml → Article, Collection, etc.
+#
+# Step 2 - Apply exclusions:
+#   - components/v2.3/exclusions.yaml → Remove deprecated schemas
+#
+# Step 3 - Apply inclusions:
+#   - components/v2.3/inclusions.yaml → Add Dataset, EnhancedSearchFilters (THIS FILE)
+#
+# Step 4 - Apply overrides:
+#   - components/v2.3/schemas.yaml → Modify existing Article schema
+#
+# Result: v2.3 has all base components (minus exclusions) plus new components
+#         from inclusions, with some existing components modified by overrides.
+# =============================================================================

@@ -1,0 +1,303 @@
+# ============================================================================
+# PATHS OVERRIDES EXAMPLE
+# ============================================================================
+# Location: swagger_documentation/docs/paths/v{version}/<any-name>.yaml
+#          (e.g., overrides.yaml, articles.yaml, collections.yaml, etc.)
+#
+# Purpose: MODIFY existing paths from the base version (v2.0)
+#          by completely replacing them with updated versions
+#
+# When to use:
+# - An endpoint's behavior changed in this version
+# - New parameters were added to an existing endpoint
+# - Response structure changed for an existing endpoint
+# - HTTP methods were added/removed from an existing path
+#
+# Processing order:
+# 1. Base paths from v2.0 are loaded
+# 2. Exclusions are applied (if exclusions.yaml exists)
+# 3. Inclusions are added (if inclusions.yaml exists)
+# 4. Files like THIS ONE override paths (dict.update())
+#
+# Note: Any .yaml file in v{version}/ directory (except exclusions.yaml,
+#       inclusions.yaml, *.example) will override base paths
+# ============================================================================
+
+paths:
+  # -------------------------------------------------------------------------
+  # Example 1: Add new parameters to existing endpoint
+  # -------------------------------------------------------------------------
+  /collections/{collection_id}:
+    get:
+      summary: Collection details (v2.3 enhanced)
+      description: |
+        Get collection details. In v2.3, this endpoint includes:
+        - Additional metadata fields
+        - New query parameters for filtering
+        - Enhanced response structure
+      tags:
+        - collections
+      operationId: getCollectionDetailsV2_3
+      parameters:
+        - name: collection_id
+          in: path
+          required: true
+          description: Collection unique identifier
+          schema:
+            type: integer
+        # NEW in v2.3: include_stats parameter
+        - name: include_stats
+          in: query
+          required: false
+          description: Include collection statistics (v2.3+ only)
+          schema:
+            type: boolean
+            default: false
+        # NEW in v2.3: include_versions parameter
+        - name: include_versions
+          in: query
+          required: false
+          description: Include version history (v2.3+ only)
+          schema:
+            type: boolean
+            default: false
+      responses:
+        '200':
+          description: Collection details with v2.3 enhancements
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Collection'
+                  - type: object
+                    properties:
+                      # NEW in v2.3: additional fields
+                      enhanced_metadata:
+                        type: object
+                        description: Additional metadata available in v2.3
+                      stats:
+                        type: object
+                        description: Statistics (if include_stats=true)
+                        properties:
+                          view_count:
+                            type: integer
+                          download_count:
+                            type: integer
+                      versions:
+                        type: array
+                        description: Version history (if include_versions=true)
+                        items:
+                          $ref: '#/components/schemas/CollectionVersion'
+        '404':
+          description: Collection not found
+  
+  # -------------------------------------------------------------------------
+  # Example 2: Change response structure for existing endpoint
+  # -------------------------------------------------------------------------
+  /account/articles:
+    get:
+      summary: List user articles (v2.3 pagination update)
+      description: |
+        In v2.3, pagination was updated to use cursor-based pagination
+        instead of offset-based pagination.
+      tags:
+        - articles
+      operationId: listUserArticlesV2_3
+      parameters:
+        # CHANGED in v2.3: cursor instead of page
+        - name: cursor
+          in: query
+          required: false
+          description: Pagination cursor (replaces 'page' from v2.0)
+          schema:
+            type: string
+        - name: limit
+          in: query
+          required: false
+          description: Number of results (replaces 'page_size' from v2.0)
+          schema:
+            type: integer
+            default: 10
+            maximum: 100
+      responses:
+        '200':
+          description: List of articles with cursor-based pagination
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Article'
+                  # CHANGED in v2.3: cursor-based pagination metadata
+                  pagination:
+                    type: object
+                    properties:
+                      next_cursor:
+                        type: string
+                        nullable: true
+                        description: Cursor for next page (null if last page)
+                      has_more:
+                        type: boolean
+                        description: Whether more results exist
+  
+  # -------------------------------------------------------------------------
+  # Example 3: Remove an HTTP method from existing path
+  # -------------------------------------------------------------------------
+  # In v2.0, /articles/{id} supported GET, PUT, PATCH, DELETE
+  # In v2.3, we remove PUT (only PATCH for updates)
+  /articles/{id}:
+    get:
+      summary: Get article details
+      description: Retrieve article by ID (unchanged from v2.0)
+      tags:
+        - articles
+      operationId: getArticleV2_3
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Article details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Article'
+    
+    # PUT method removed in v2.3 (not defined here)
+    # Only PATCH is supported for updates
+    
+    patch:
+      summary: Update article (partial update)
+      description: |
+        Update article fields. In v2.3, PUT was removed.
+        Use PATCH for all updates.
+      tags:
+        - articles
+      operationId: updateArticleV2_3
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArticleUpdate'
+      responses:
+        '200':
+          description: Article updated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Article'
+    
+    delete:
+      summary: Delete article
+      description: Delete article (unchanged from v2.0)
+      tags:
+        - articles
+      operationId: deleteArticleV2_3
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Article deleted
+  
+  # -------------------------------------------------------------------------
+  # Example 4: Add new HTTP method to existing path
+  # -------------------------------------------------------------------------
+  # In v2.0, /collections/{id} only had GET
+  # In v2.3, we add DELETE capability
+  /collections/{id}:
+    get:
+      summary: Get collection
+      description: Retrieve collection details (same as v2.0)
+      tags:
+        - collections
+      operationId: getCollectionV2_3
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Collection details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Collection'
+    
+    # NEW in v2.3: DELETE method added
+    delete:
+      summary: Delete collection (v2.3+ only)
+      description: |
+        Delete a collection. This operation was not available in v2.0.
+        Added in v2.3.
+      tags:
+        - collections
+        - v2.3
+      operationId: deleteCollectionV2_3
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '204':
+          description: Collection deleted
+        '404':
+          description: Collection not found
+        '403':
+          description: Not authorized to delete this collection
+
+# ============================================================================
+# ORGANIZING OVERRIDE FILES
+# ============================================================================
+#
+# You can organize overrides in multiple ways:
+#
+# Option 1: Single overrides.yaml file (this example)
+#   - All path modifications in one file
+#   - Easy to see all changes
+#
+# Option 2: Resource-specific files
+#   - articles.yaml (overrides for /articles paths)
+#   - collections.yaml (overrides for /collections paths)
+#   - projects.yaml (overrides for /projects paths)
+#   - Better organization for large changes
+#
+# Option 3: Mixed approach
+#   - overrides.yaml for small tweaks
+#   - Separate files for major resource changes
+#
+# All .yaml files (except exclusions.yaml, inclusions.yaml, *.example)
+# in the version directory will be processed and override base paths.
+# ============================================================================
+
+# ============================================================================
+# TIPS FOR OVERRIDES
+# ============================================================================
+#
+# 1. Include the COMPLETE path definition (all HTTP methods you want)
+# 2. Methods not defined will be removed (vs. v2.0 base)
+# 3. Add comments noting what changed from v2.0
+# 4. Use version tags or operationId suffixes (e.g., V2_3)
+# 5. Update descriptions to mention version-specific behavior
+# 6. Test thoroughly - overrides completely replace base paths
+# ============================================================================

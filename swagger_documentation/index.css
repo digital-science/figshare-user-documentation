@@ -1,0 +1,801 @@
+body {
+    margin: 0;
+    padding: 0;
+    background-color: #f0f0f0;
+}
+
+
+#documentation-sections a[href] {
+  color: #c7254e !important;
+}
+
+.content {
+    padding: 0;
+    background-color: #f0f0f0;
+}
+
+#swagger-ui {
+    width: 70%;
+    margin: 0 auto;
+    background-color: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    display: flex;
+}
+
+.api-sidebar {
+    display: block;
+    width: 20%;
+    min-width: 200px;
+    background-color: #fff;
+    padding: 40px 20px 20px 20px;
+    border-right: 1px solid #e0e0e0;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+}
+
+#custom-auth-ui {
+    padding: 12px;
+}
+
+#custom-auth-ui .auth-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+#custom-auth-ui .auth-header svg {
+    width: 16px;
+    height: 16px;
+    margin-right: 6px;
+    fill: #3b4151;
+}
+
+#custom-auth-ui .reference-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+#custom-auth-ui .reference-header svg {
+    display: none;
+}
+
+#custom-auth-ui h4 {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+    color: #3b4151;
+    flex: 1;
+}
+
+#apiKeyInput {
+    width: 100%;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    border: 1px solid #d1d5da;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: Monaco, 'Courier New', monospace;
+    box-sizing: border-box;
+    background-color: #fff;
+    transition: all 0.2s ease;
+}
+
+#apiKeyInput:focus {
+    outline: none;
+    border-color: #4990e2;
+    box-shadow: 0 0 0 3px rgba(73, 144, 226, 0.1);
+}
+
+#apiKeyInput::placeholder {
+    font-family: system-ui, -apple-system, sans-serif;
+    color: #959da5;
+    font-size: 12px;
+}
+
+#apiKeyInput.has-token {
+    border-color: #49cc90;
+    background-color: #f6ffed;
+}
+
+#SearchDocInput {
+    width: 100%;
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    border: 1px solid #d1d5da;
+    border-radius: 4px;
+    font-size: 12px;
+    font-family: Monaco, 'Courier New', monospace;
+    box-sizing: border-box;
+    background-color: #fff;
+    transition: all 0.2s ease;
+}
+
+#SearchDocInput:focus {
+    outline: none;
+    border-color: #4990e2;
+    box-shadow: 0 0 0 3px rgba(73, 144, 226, 0.1);
+}
+
+#SearchDocInput::placeholder {
+    font-family: system-ui, -apple-system, sans-serif;
+    color: #959da5;
+    font-size: 12px;
+}
+
+#SearchDocInput.has-token {
+    border-color: #49cc90;
+    background-color: #f6ffed;
+}
+
+.api-sidebar h3 {
+    display: block;
+    font-size: 16px;
+    font-weight: 700;
+    color: #3b4151;
+    margin-top: 0;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #434f59;
+}
+
+.api-sidebar ul {
+    display: block;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+}
+
+.api-sidebar li {
+    display: block;
+    margin: 0;
+    padding: 0;
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+}
+
+.api-sidebar a {
+    display: block;
+    padding: 8px 12px;
+    margin: 2px 0;
+    color: #3b4151;
+    text-decoration: none;
+    font-size: 14px;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+    word-wrap: break-word;
+    overflow-wrap: break-word;
+    line-height: 1.4;
+    cursor: pointer;
+}
+
+/* Parent menu items hover */
+.api-sidebar .parent-link:hover,
+.api-sidebar > ul > li > a:hover {
+    background-color: #f0f0f0;
+    color: #434f59;
+    padding-left: 16px;
+}
+
+/* Parent menu items active */
+.api-sidebar .parent-link.active,
+.api-sidebar > ul > li > a.active {
+    background-color: #434f59;
+    color: #fff !important;
+    padding-left: 16px;
+    font-weight: 600;
+}
+
+/* Nested sublists in sidebar */
+.api-sidebar ul ul {
+    padding-left: 16px !important;
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.api-sidebar ul ul li {
+    margin: 0;
+}
+
+/* Child/nested menu items default */
+.api-sidebar .child-link,
+.api-sidebar ul ul a {
+    font-size: 13px;
+    padding: 6px 12px;
+    color: #666;
+    transition: all 0.2s ease;
+}
+
+/* Child/nested menu items hover */
+.api-sidebar .child-link:hover,
+.api-sidebar ul ul a:hover {
+    background-color: #f0f0f0;
+    color: #434f59;
+    padding-left: 16px;
+}
+
+/* Child/nested menu items active */
+.api-sidebar .child-link.active,
+.api-sidebar ul ul a.active {
+    background-color: #434f59 !important;
+    color: #fff !important;
+    padding-left: 16px;
+    font-weight: 500;
+}
+
+
+/* Parent item wrapper to contain toggle and link */
+.parent-item-wrapper {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    margin: 2px 0;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.parent-item-wrapper:hover {
+    background-color: #f0f0f0;
+}
+
+.parent-item-wrapper .parent-link {
+    flex: 1;
+    padding: 0;
+    margin: 0;
+    display: block;
+    cursor: pointer;
+}
+
+/* Hide submenu by default - applies to all nested ul elements */
+.api-sidebar ul ul {
+    display: block;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+}
+
+/* Expanded state for submenus */
+.api-sidebar ul ul.expanded {
+    max-height: 5000px;
+    opacity: 1;
+}
+
+/* Collapsed state for submenus */
+.api-sidebar ul ul.collapsed {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+}
+
+/* When a parent menu is expanded, show its direct children (level 2)
+   but keep nested menus (level 3+) collapsed by default */
+.api-sidebar ul ul.expanded > li > ul {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, opacity 0.3s ease;
+}
+
+/* When a level 3 menu is expanded, show it */
+.api-sidebar ul ul.expanded > li > ul.expanded {
+    max-height: 5000px;
+    opacity: 1;
+}
+
+/* Wrapper for Swagger UI content */
+.swagger-ui-wrapper {
+    width: 90%;
+    padding: 20px;
+    overflow-x: auto;
+}
+
+.swagger-ui .topbar {
+    display: none;
+}
+
+.swagger-ui .filter {
+    display: none !important;
+}
+
+.figsh_loader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(240, 240, 240, 0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+}
+
+.figsh_loader.hide {
+    display: none;
+}
+
+/* Custom theme adjustments */
+/* Hide the default Swagger UI info section that appears in the API content */
+.swagger-ui-wrapper > .information-container {
+    display: none;
+}
+
+/* Show our custom info section in documentation */
+#documentation-sections .information-container {
+    display: block;
+}
+
+/* Style adjustments for info section */
+.swagger-ui .info {
+    display: none !important;
+}
+
+.swagger-ui .scheme-container {
+    background: #fff;
+    box-shadow: none;
+    display: none !important;
+}
+
+
+/* Light gray background for version badges */
+.swagger-ui .info .version-stamp,
+.swagger-ui .info .version-stamp small,
+.swagger-ui .info .version-stamp pre,
+.swagger-ui .info .version-stamp small pre,
+pre.version,
+.swagger-ui .version-stamp pre.version,
+.swagger-ui span.version-stamp,
+.swagger-ui .info .version,
+.swagger-ui .info hgroup.main a,
+.swagger-ui .info .title small,
+.swagger-ui .info hgroup.main a small,
+.swagger-ui .info .version small {
+    background-color: #f0f0f0 !important;
+    color: #000 !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Style contact, license and other links as inline badges */
+.swagger-ui .info .contact,
+.swagger-ui .info .contact a,
+.swagger-ui .info .license,
+.swagger-ui .info .license a,
+.swagger-ui .info .url,
+.swagger-ui .info .url a,
+.swagger-ui .info a.link,
+.swagger-ui .info .link,
+.swagger-ui .information-container .link,
+.swagger-ui .info__contact a,
+.swagger-ui .info__license a,
+.swagger-ui .info__tos a {
+    display: inline-block !important;
+    background-color: #f0f0f0 !important;
+    color: #333 !important;
+    padding: 4px 8px !important;
+    border-radius: 4px !important;
+    margin: 0 5px !important;
+    text-decoration: none !important;
+    font-size: 12px !important;
+}
+
+.swagger-ui .info .contact a:hover,
+.swagger-ui .info .license a:hover,
+.swagger-ui .info .url a:hover,
+.swagger-ui .info a.link:hover {
+    background-color: #e8e8e8 !important;
+}
+
+/* Make info section display items inline */
+.swagger-ui .info hgroup.main {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.swagger-ui .info .title {
+    margin: 0 !important;
+}
+
+.swagger-ui .info .info__contact,
+.swagger-ui .info .info__license,
+.swagger-ui .info .info__tos {
+    display: inline-block !important;
+    margin: 0 !important;
+}
+
+.swagger-ui .info .base-url {
+    display: inline-block !important;
+    margin: 0 5px !important;
+}
+
+.swagger-ui .info .description {
+    margin-top: 20px !important;
+    display: block !important;
+}
+
+
+/* Hide only the swagger.json download link, keep contact and license visible */
+.swagger-ui .info .url,
+.swagger-ui .info .base-url,
+.swagger-ui a[href*="swagger.json"],
+.swagger-ui a[href$=".json"]:not([href*="apache"]):not([href*="license"]) {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* Markdown content styling */
+.markdown-content {
+    font-family: sans-serif;
+    font-size: 14px;
+    color: #3b4151;
+    line-height: 1.5;
+}
+
+.markdown-content h1 {
+    font-size: 36px;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    color: #3b4151;
+    font-family: sans-serif;
+    font-weight: 400;
+}
+
+.markdown-content h2 {
+    font-size: 20px;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    color: #3b4151;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 8px;
+    font-family: sans-serif;
+    font-weight: 700;
+}
+
+.markdown-content h3 {
+    font-size: 16px;
+    margin-top: 20px;
+    margin-bottom: 12px;
+    color: #3b4151;
+    font-family: sans-serif;
+    font-weight: 700;
+}
+
+.markdown-content h4 {
+    font-size: 14px;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    color: #3b4151;
+    font-family: sans-serif;
+    font-weight: 700;
+}
+
+.markdown-content p {
+    margin-bottom: 15px;
+    color: #3b4151;
+    font-size: 14px;
+}
+
+.markdown-content ul, .markdown-content ol {
+    margin-bottom: 15px;
+    padding-left: 30px;
+    font-size: 14px;
+}
+
+.markdown-content li {
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.markdown-content code {
+    background-color: #f5f5f5;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: monospace;
+    font-size: 12px;
+    color: #d14;
+}
+
+.markdown-content pre {
+    background-color: #f5f5f5;
+    padding: 15px;
+    border-radius: 4px;
+    overflow-x: auto;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    font-size: 12px;
+}
+
+.markdown-content pre code {
+    background-color: transparent;
+    padding: 0;
+    color: inherit;
+    font-size: 12px;
+}
+
+.markdown-content a {
+    color: #3b4151;
+    text-decoration: none;
+}
+
+.markdown-content a:hover {
+    text-decoration: underline;
+}
+
+.markdown-content blockquote {
+    border-left: 4px solid #3b4151;
+    padding-left: 20px;
+    margin-left: 0;
+    color: #3b4151;
+    font-style: italic;
+    font-size: 14px;
+}
+
+.markdown-content table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-bottom: 20px;
+    font-size: 14px;
+}
+
+.markdown-content th, .markdown-content td {
+    border: 1px solid #ddd;
+    padding: 8px 12px;
+    text-align: left;
+    font-size: 14px;
+}
+
+.markdown-content th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+}
+
+/* Error Modal Styles - Swagger UI style */
+.universal-modal-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-color: rgba(0, 0, 0, 0.5) !important;
+    z-index: 999999 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.universal-modal-overlay.visible {
+    opacity: 1 !important;
+    visibility: visible !important;
+}
+
+.universal-modal {
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    max-width: 650px;
+    width: 90%;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    transform: translateY(-20px);
+    transition: transform 0.2s ease;
+}
+
+.universal-modal-overlay.visible .universal-modal {
+    transform: translateY(0);
+}
+
+.universal-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 15px 20px;
+    border-bottom: 1px solid #ebebeb;
+    border-radius: 4px 4px 0 0;
+}
+
+.universal-modal-header.type-error {
+    background-color: #f8d7da;
+}
+
+.universal-modal-header.type-success {
+    background-color: #d4edda;
+}
+
+.universal-modal-header.type-info {
+    background-color: #d1ecf1;
+}
+
+.universal-modal-header.type-warning {
+    background-color: #fff3cd;
+}
+
+.universal-modal-header h3 {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.universal-modal-header.type-error h3 {
+    color: #721c24;
+}
+
+.universal-modal-header.type-success h3 {
+    color: #155724;
+}
+
+.universal-modal-header.type-info h3 {
+    color: #0c5460;
+}
+
+.universal-modal-header.type-warning h3 {
+    color: #856404;
+}
+
+.universal-modal-header h3 svg {
+    width: 20px;
+    height: 20px;
+}
+
+.universal-modal-header.type-error h3 svg {
+    fill: #721c24;
+}
+
+.universal-modal-header.type-success h3 svg {
+    fill: #155724;
+}
+
+.universal-modal-header.type-info h3 svg {
+    fill: #0c5460;
+}
+
+.universal-modal-header.type-warning h3 svg {
+    fill: #856404;
+}
+
+.universal-modal-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    opacity: 0.7;
+    transition: opacity 0.2s;
+}
+
+.universal-modal-header.type-error .universal-modal-close {
+    color: #721c24;
+}
+
+.universal-modal-header.type-success .universal-modal-close {
+    color: #155724;
+}
+
+.universal-modal-header.type-info .universal-modal-close {
+    color: #0c5460;
+}
+
+.universal-modal-header.type-warning .universal-modal-close {
+    color: #856404;
+}
+
+.universal-modal-close:hover {
+    opacity: 1;
+}
+
+.universal-modal-body {
+    padding: 20px;
+    overflow-y: auto;
+    max-height: 50vh;
+}
+
+.modal-detail {
+    margin-bottom: 15px;
+}
+
+.modal-detail:last-child {
+    margin-bottom: 0;
+}
+
+.modal-detail-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6c757d;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+}
+
+.modal-detail-value {
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace;
+    font-size: 13px;
+    color: #3b4151;
+    background-color: #f7f7f7;
+    padding: 10px 12px;
+    border-radius: 4px;
+    word-break: break-all;
+    white-space: pre-wrap;
+    border: 1px solid #ebebeb;
+}
+
+.modal-detail-value.error-message {
+    background-color: #fff5f5;
+    border-color: #f5c6cb;
+    color: #721c24;
+}
+
+.universal-modal-footer {
+    padding: 15px 20px;
+    border-top: 1px solid #ebebeb;
+    text-align: right;
+}
+
+.modal-hint {
+    font-size: 12px;
+    color: #6c757d;
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #e2e3e5;
+    border-radius: 4px;
+}
+
+.api-error-hint strong {
+    color: #495057;
+}
+
+
+.site-header{
+    width: 100%;
+    height: 64px;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    border: none;
+}
+
+
+.site-header .navbar {
+    display: flex;
+    width: 70%;
+    align-items: center;
+    border: none !important;
+    margin-bottom: 0;
+}
+
+.site-header .image-section {
+    display: flex;
+    align-items: center;
+    width: 20%;
+    height: 64px;
+    min-width: 200px;
+    background-color: #fff;
+    padding-left: 20px;
+}
+
+.site-header .title-section {
+    display: flex;
+    align-items: center;
+    width: 90%;
+    background-color: #fff;
+    flex-grow: 1;
+    height: 64px;
+    padding-left: 20px;
+}
+
