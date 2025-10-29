@@ -1,0 +1,1143 @@
+paths:
+  /institutions/{institution_string_id}/articles/filter-by:
+    get:
+      tags:
+      - institutions
+      summary: Public Institution Articles
+      description: Returns a list of articles belonging to the institution
+      operationId: institution_articles
+      parameters:
+      - name: institution_string_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: resource_id
+        in: query
+        required: true
+        schema:
+          type: string
+      - name: filename
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK. An array of articles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Article'
+        '500':
+          description: Internal Server Error
+          content: {}
+  /account/institution:
+    get:
+      tags:
+      - institutions
+      summary: Private Account Institutions
+      description: Account institution details
+      operationId: private_institution_details
+      responses:
+        '200':
+          description: OK. An array of institutions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Institution'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+  /account/institution/embargo_options:
+    get:
+      tags:
+      - institutions
+      summary: Private Account Institution embargo options
+      description: Account institution embargo options details
+      operationId: private_institution_embargo_options_details
+      responses:
+        '200':
+          description: OK. An array of embargo options
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GroupEmbargoOptions'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+  /account/institution/articles:
+    get:
+      tags:
+      - institutions
+      summary: Private Institution Articles
+      description: Get Articles from own institution. User must be administrator of the institution
+      operationId: private_institution_articles
+      parameters:
+      - name: page
+        in: query
+        description: Page number. Used for pagination with page_size
+        schema:
+          maximum: 5000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: page_size
+        in: query
+        description: The number of results included on a page. Used for pagination with page
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+          default: 10
+      - name: limit
+        in: query
+        description: Number of results included on a page. Used for pagination with query
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: offset
+        in: query
+        description: Where to start the listing (the offset of the first result). Used for pagination with limit
+        schema:
+          maximum: 5000
+          minimum: 0
+          type: integer
+          format: int64
+      - name: order
+        in: query
+        description: The field by which to order. Default varies by endpoint/resource.
+        schema:
+          type: string
+          default: published_date
+          enum:
+          - published_date
+          - modified_date
+      - name: order_direction
+        in: query
+        schema:
+          type: string
+          default: desc
+          enum:
+          - asc
+          - desc
+      - name: published_since
+        in: query
+        description: Filter by article publishing date. Will only return articles published after the date. date(ISO 8601)
+          YYYY-MM-DD or date-time(ISO 8601) YYYY-MM-DDTHH:mm:ssZ
+        schema:
+          type: string
+      - name: modified_since
+        in: query
+        description: Filter by article modified date. Will only return articles modified after the date. date(ISO 8601) YYYY-MM-DD
+          or date-time(ISO 8601) YYYY-MM-DDTHH:mm:ssZ
+        schema:
+          type: string
+      - name: status
+        in: query
+        description: only return collections with this status
+        schema:
+          type: integer
+          format: int64
+      - name: resource_doi
+        in: query
+        description: only return collections with this resource_doi
+        schema:
+          type: string
+      - name: item_type
+        in: query
+        description: 'Only return articles with the respective type. Mapping for item_type is: 1 - Figure, 2 - Media, 3 -
+          Dataset, 5 - Poster, 6 - Journal contribution, 7 - Presentation, 8 - Thesis, 9 - Software, 11 - Online resource,
+          12 - Preprint, 13 - Book, 14 - Conference contribution, 15 - Chapter, 16 - Peer review, 17 - Educational resource,
+          18 - Report, 19 - Standard, 20 - Composition, 21 - Funding, 22 - Physical object, 23 - Data management plan, 24
+          - Workflow, 25 - Monograph, 26 - Performance, 27 - Event, 28 - Service, 29 - Model'
+        schema:
+          type: integer
+          format: int64
+      - name: group
+        in: query
+        description: only return articles from this group
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. An array of articles belonging to the institution
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Article'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+  /account/institution/custom_fields:
+    get:
+      tags:
+      - institutions
+      summary: Private account institution group custom fields
+      description: Returns the custom fields in the group the user belongs to, or the ones in the group specified, if the
+        user has access.
+      operationId: custom_fields_list
+      parameters:
+      - name: group_id
+        in: query
+        description: Group_id
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. An array of custom fields
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ShortCustomField'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+  /account/institution/custom_fields/{custom_field_id}/items/upload:
+    post:
+      tags:
+      - institutions
+      summary: Custom fields values files upload
+      description: Uploads a CSV containing values for a specific custom field of type <b>dropdown_large_list</b>. More details
+        in the <a href="#custom_fields">Custom Fields section</a>
+      operationId: custom_fields_upload
+      parameters:
+      - name: custom_field_id
+        in: path
+        description: Custom field identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                external_file:
+                  type: string
+                  description: CSV file to be uploaded
+                  format: binary
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  code: 200
+                  message: OK
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '409':
+          description: Conflict
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+  /account/categories:
+    get:
+      tags:
+      - institutions
+      summary: Private Account Categories
+      description: List institution categories (including parent Categories)
+      operationId: private_categories_list
+      responses:
+        '200':
+          description: OK. An array of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CategoryList'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+  /account/institution/groups:
+    get:
+      tags:
+      - institutions
+      summary: Private Account Institution Groups
+      description: Returns the groups for which the account has administrative privileges (assigned and inherited).
+      operationId: private_institution_groups_list
+      responses:
+        '200':
+          description: OK. An array of Groups
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Group'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+  /account/institution/groups/{group_id}/embargo_options:
+    get:
+      tags:
+      - institutions
+      summary: Private Account Institution Group Embargo Options
+      description: Account institution group embargo options details
+      operationId: private_group_embargo_options_details
+      parameters:
+      - name: group_id
+        in: path
+        description: Group identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. An array of embargo options
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/GroupEmbargoOptions'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+  /account/institution/roles:
+    get:
+      tags:
+      - institutions
+      summary: Private Account Institution Roles
+      description: Returns the roles available for groups and the institution group.
+      operationId: private_institution_roles_list
+      responses:
+        '200':
+          description: OK. An array of Roles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Role'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+  /account/institution/accounts:
+    get:
+      tags:
+      - institutions
+      summary: Private Account Institution Accounts
+      description: Returns the accounts for which the account has administrative privileges (assigned and inherited).
+      operationId: private_institution_accounts_list
+      parameters:
+      - name: page
+        in: query
+        description: Page number. Used for pagination with page_size
+        schema:
+          maximum: 5000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: page_size
+        in: query
+        description: The number of results included on a page. Used for pagination with page
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+          default: 10
+      - name: limit
+        in: query
+        description: Number of results included on a page. Used for pagination with query
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: offset
+        in: query
+        description: Where to start the listing (the offset of the first result). Used for pagination with limit
+        schema:
+          maximum: 5000
+          minimum: 0
+          type: integer
+          format: int64
+      - name: is_active
+        in: query
+        description: Filter by active status
+        schema:
+          maximum: 1
+          minimum: 0
+          type: integer
+          format: int64
+      - name: institution_user_id
+        in: query
+        description: Filter by institution_user_id
+        schema:
+          type: string
+      - name: email
+        in: query
+        description: Filter by email
+        schema:
+          type: string
+      - name: id_lte
+        in: query
+        description: Retrieve accounts with an ID lower or equal to the specified value
+        schema:
+          minimum: 0
+          type: integer
+          format: int64
+      - name: id_gte
+        in: query
+        description: Retrieve accounts with an ID greater or equal to the specified value
+        schema:
+          minimum: 0
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. An array of Accounts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ShortAccount'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+    post:
+      tags:
+      - institutions
+      summary: Create new Institution Account
+      description: Create a new Account by sending account information. When the institution_user_id is provided, no verification
+        email will be sent. The email_verified flag will automatically be set to true. If the institution_user_id is not provided,
+        a verification email will be sent. The email_verified flag will be set to true once the account is created.
+      operationId: private_institution_accounts_create
+      requestBody:
+        description: Account description
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountCreate'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountCreateResponse'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-codegen-request-body-name: Account
+  /account/institution/accounts/{account_id}:
+    get:
+      tags:
+      - institutions
+      summary: Private Institution Account information
+      description: Private Institution Account information
+      operationId: private_institution_account
+      parameters:
+      - name: account_id
+        in: path
+        description: Account identifier the user is associated to
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. Account
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+    put:
+      tags:
+      - institutions
+      summary: Update Institution Account
+      description: Update Institution Account
+      operationId: private_institution_accounts_update
+      parameters:
+      - name: account_id
+        in: path
+        description: Account identifier the user is associated to
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        description: Account description
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountUpdate'
+        required: true
+      responses:
+        '205':
+          description: Reset Content
+          headers:
+            Location:
+              description: Location of newly created article
+              schema:
+                type: string
+                format: link
+          content: {}
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-codegen-request-body-name: Account
+  /account/institution/roles/{account_id}:
+    get:
+      tags:
+      - institutions
+      summary: List Institution Account Group Roles
+      description: List Institution Account Group Roles
+      operationId: private_institution_account_group_roles
+      parameters:
+      - name: account_id
+        in: path
+        description: Account identifier the user is associated to
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. Account Group Roles
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountGroupRoles'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+    post:
+      tags:
+      - institutions
+      summary: Add Institution Account Group Roles
+      description: Add Institution Account Group Roles
+      operationId: private_institution_account_group_roles_create
+      parameters:
+      - name: account_id
+        in: path
+        description: Account identifier the user is associated to
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        description: Account description
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AccountGroupRolesCreate'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content: {}
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-codegen-request-body-name: Account
+  /account/institution/roles/{account_id}/{group_id}/{role_id}:
+    delete:
+      tags:
+      - institutions
+      summary: Delete Institution Account Group Role
+      description: Delete Institution Account Group Role
+      operationId: private_institution_account_group_role_delete
+      parameters:
+      - name: account_id
+        in: path
+        description: Account identifier for which to remove the role
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: group_id
+        in: path
+        description: Group identifier for which to remove the role
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: role_id
+        in: path
+        description: Role identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '204':
+          description: No Content
+          content: {}
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+  /account/institution/accounts/search:
+    post:
+      tags:
+      - institutions
+      summary: Private Account Institution Accounts Search
+      description: Returns the accounts for which the account has administrative privileges (assigned and inherited).
+      operationId: private_institution_accounts_search
+      requestBody:
+        description: Search Parameters
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InstitutionAccountsSearch'
+        required: true
+      responses:
+        '200':
+          description: OK. An array of Accounts
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ShortAccount'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-codegen-request-body-name: search
+  /account/institution/users/{account_id}:
+    get:
+      tags:
+      - institutions
+      summary: Private Account Institution User
+      description: Retrieve institution user information using the account_id
+      operationId: private_account_institution_user
+      parameters:
+      - name: account_id
+        in: path
+        description: Account identifier the user is associated to
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. User representation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+  /account/institution/reviews:
+    get:
+      tags:
+      - institutions
+      summary: Institution Curation Reviews
+      description: Retrieve a list of curation reviews for this institution
+      operationId: account_institution_curations
+      parameters:
+      - name: group_id
+        in: query
+        description: Filter by the group ID
+        schema:
+          minimum: 0
+          type: integer
+          format: int64
+      - name: article_id
+        in: query
+        description: Retrieve the reviews for this article
+        schema:
+          minimum: 0
+          type: integer
+          format: int64
+      - name: status
+        in: query
+        description: Filter by the status of the review
+        schema:
+          type: string
+          enum:
+          - pending
+          - approved
+          - rejected
+          - closed
+      - name: limit
+        in: query
+        description: Number of results included on a page. Used for pagination with query
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: offset
+        in: query
+        description: Where to start the listing (the offset of the first result). Used for pagination with limit
+        schema:
+          maximum: 5000
+          minimum: 0
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. A list of curation reviews.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Curation'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+  /account/institution/review/{curation_id}:
+    get:
+      tags:
+      - institutions
+      summary: Institution Curation Review
+      description: Retrieve a certain curation review by its ID
+      operationId: account_institution_curation
+      parameters:
+      - name: curation_id
+        in: path
+        description: ID of the curation
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. A curation review.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurationDetail'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+  /account/institution/review/{curation_id}/comments:
+    get:
+      tags:
+      - institutions
+      summary: Institution Curation Review Comments
+      description: Retrieve a certain curation review's comments.
+      operationId: get_account_institution_curation_comments
+      parameters:
+      - name: curation_id
+        in: path
+        description: ID of the curation
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: limit
+        in: query
+        description: Number of results included on a page. Used for pagination with query
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: offset
+        in: query
+        description: Where to start the listing (the offset of the first result). Used for pagination with limit
+        schema:
+          maximum: 5000
+          minimum: 0
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. A curation review's comments.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CurationComment'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+    post:
+      tags:
+      - institutions
+      summary: POST Institution Curation Review Comment
+      description: Add a new comment to the review.
+      operationId: post_account_institution_curation_comments
+      parameters:
+      - name: curation_id
+        in: path
+        description: ID of the curation
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        description: The content/value of the comment.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CurationCommentCreate'
+        required: true
+      responses:
+        '200':
+          description: OK.
+          content: {}
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-codegen-request-body-name: CurationComment
+  /institution/hrfeed/upload:
+    post:
+      tags:
+      - institutions
+      summary: Private Institution HRfeed Upload
+      description: More info in the <a href="#hr_feed">HR Feed section</a>
+      operationId: institution_hrfeed_upload
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                hrfeed:
+                  type: string
+                  description: You can find an example in the Hr Feed section
+                  format: binary
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMessage'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all

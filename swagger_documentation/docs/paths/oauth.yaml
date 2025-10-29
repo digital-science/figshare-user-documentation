@@ -1,0 +1,58 @@
+paths:
+  /token:
+    get:
+      tags:
+      - oauth
+      summary: Get OAuth token information
+      description: Returns information about the current OAuth token
+      operationId: get_token_info
+      parameters:
+      - name: access_token
+        in: query
+        description: OAuth access token
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK. Token information
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthToken'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      security: []
+    post:
+      tags:
+      - oauth
+      summary: Create OAuth token
+      description: Creates OAuth token using various grant types
+      operationId: create_token
+      requestBody:
+        description: Create OAuth Token Parameters
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOAuthToken'
+        required: false
+      responses:
+        '200':
+          description: OK. Token created successfully <a href='http://tools.ietf.org/html/rfc6749#section-5.1' target='_blank'>RFC
+            6749 Section 5.1</a>.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OAuthToken'
+        '400':
+          description: Bad Request <a href='http://tools.ietf.org/html/rfc6749#section-5.2' target='_blank'>RFC 6749 Section
+            5.2</a>.
+          content: {}
+      security: []
+      x-codegen-request-body-name: body

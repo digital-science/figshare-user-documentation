@@ -1,0 +1,81 @@
+paths:
+  /account/authors/search:
+    post:
+      tags:
+      - authors
+      summary: Search Authors
+      description: Search for authors
+      operationId: private_authors_search
+      requestBody:
+        description: Search Parameters
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PrivateAuthorsSearch'
+        required: false
+      responses:
+        '200':
+          description: OK. An array of authors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuthorComplete'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-codegen-request-body-name: search
+  /account/authors/{author_id}:
+    get:
+      tags:
+      - authors
+      summary: Author details
+      description: View author details
+      operationId: private_author_details
+      parameters:
+      - name: author_id
+        in: path
+        description: Author unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. Article representation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthorComplete'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all

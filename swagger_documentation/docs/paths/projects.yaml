@@ -1,0 +1,1415 @@
+paths:
+  /projects:
+    get:
+      tags:
+      - projects
+      summary: Public Projects
+      description: Returns a list of public projects
+      operationId: projects_list
+      parameters:
+      - name: X-Cursor
+        in: header
+        description: Unique hash used for bypassing the item retrieval limit of 9,000 entities. When using this parameter,
+          please note that the offset parameter will not be available, but the limit parameter will still work as expected.
+        schema:
+          type: string
+          format: uuid
+      - name: page
+        in: query
+        description: Page number. Used for pagination with page_size
+        schema:
+          maximum: 5000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: page_size
+        in: query
+        description: The number of results included on a page. Used for pagination with page
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+          default: 10
+      - name: limit
+        in: query
+        description: Number of results included on a page. Used for pagination with query
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: offset
+        in: query
+        description: Where to start the listing (the offset of the first result). Used for pagination with limit
+        schema:
+          maximum: 5000
+          minimum: 0
+          type: integer
+          format: int64
+      - name: order
+        in: query
+        description: The field by which to order. Default varies by endpoint/resource.
+        schema:
+          type: string
+          default: published_date
+          enum:
+          - published_date
+          - modified_date
+          - views
+      - name: order_direction
+        in: query
+        schema:
+          type: string
+          default: desc
+          enum:
+          - asc
+          - desc
+      - name: institution
+        in: query
+        description: only return collections from this institution
+        schema:
+          type: integer
+          format: int64
+      - name: published_since
+        in: query
+        description: Filter by article publishing date. Will only return articles published after the date. date(ISO 8601)
+          YYYY-MM-DD
+        schema:
+          type: string
+      - name: group
+        in: query
+        description: only return collections from this group
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. An array of projects
+          headers:
+            X-Cursor:
+              description: Unique hash used for bypassing the item retrieval limit of 9,000 entities.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Project'
+        '400':
+          description: Bad Request
+          content: {}
+        '422':
+          description: Bad Request
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+  /projects/search:
+    post:
+      tags:
+      - projects
+      summary: Public Projects Search
+      description: Returns a list of public articles
+      operationId: projects_search
+      parameters:
+      - name: X-Cursor
+        in: header
+        description: Unique hash used for bypassing the item retrieval limit of 9,000 entities. When using this parameter,
+          please note that the offset parameter will not be available, but the limit parameter will still work as expected.
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: Search Parameters
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectsSearch'
+        required: false
+      responses:
+        '200':
+          description: OK. An array of projects
+          headers:
+            X-Cursor:
+              description: Unique hash used for bypassing the item retrieval limit of 9,000 entities.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Project'
+        '400':
+          description: Bad Request
+          content: {}
+        '422':
+          description: Bad Request
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+      x-codegen-request-body-name: search
+  /projects/{project_id}:
+    get:
+      tags:
+      - projects
+      summary: Public Project
+      description: View a project
+      operationId: project_details
+      parameters:
+      - name: project_id
+        in: path
+        description: Project Unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. Project representation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectComplete'
+        '400':
+          description: Bad Request
+          content: {}
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+  /projects/{project_id}/articles:
+    get:
+      tags:
+      - projects
+      summary: Public Project Articles
+      description: List articles in project
+      operationId: project_articles
+      parameters:
+      - name: project_id
+        in: path
+        description: Project Unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: page
+        in: query
+        description: Page number. Used for pagination with page_size
+        schema:
+          maximum: 5000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: page_size
+        in: query
+        description: The number of results included on a page. Used for pagination with page
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+          default: 10
+      - name: limit
+        in: query
+        description: Number of results included on a page. Used for pagination with query
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: offset
+        in: query
+        description: Where to start the listing (the offset of the first result). Used for pagination with limit
+        schema:
+          maximum: 5000
+          minimum: 0
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. Project articles list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Article'
+        '400':
+          description: Bad Request
+          content: {}
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+  /account/projects/search:
+    post:
+      tags:
+      - projects
+      summary: Private Projects search
+      description: Search inside the private projects
+      operationId: private_projects_search
+      requestBody:
+        description: Search Parameters
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectsSearch'
+        required: false
+      responses:
+        '200':
+          description: OK. An array of projects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjectPrivate'
+        '400':
+          description: Bad Request
+          content: {}
+        '422':
+          description: Bad Request
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+      x-codegen-request-body-name: search
+  /account/projects:
+    get:
+      tags:
+      - projects
+      summary: Private Projects
+      description: List private projects
+      operationId: private_projects_list
+      parameters:
+      - name: page
+        in: query
+        description: Page number. Used for pagination with page_size
+        schema:
+          maximum: 5000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: page_size
+        in: query
+        description: The number of results included on a page. Used for pagination with page
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+          default: 10
+      - name: limit
+        in: query
+        description: Number of results included on a page. Used for pagination with query
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: offset
+        in: query
+        description: Where to start the listing (the offset of the first result). Used for pagination with limit
+        schema:
+          maximum: 5000
+          minimum: 0
+          type: integer
+          format: int64
+      - name: order
+        in: query
+        description: The field by which to order.
+        schema:
+          type: string
+          default: published_date
+          enum:
+          - published_date
+          - modified_date
+          - views
+      - name: order_direction
+        in: query
+        schema:
+          type: string
+          default: desc
+          enum:
+          - asc
+          - desc
+      - name: storage
+        in: query
+        description: only return collections from this institution
+        schema:
+          type: string
+          enum:
+          - group
+          - individual
+      - name: roles
+        in: query
+        description: 'Any combination of owner, collaborator, viewer separated by comma. Examples: "owner" or "owner,collaborator".'
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK. An array of projects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjectPrivate'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+    post:
+      tags:
+      - projects
+      summary: Create project
+      description: Create a new project
+      operationId: private_project_create
+      requestBody:
+        description: Project  description
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectCreate'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateProjectResponse'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Project
+      x-codegen-request-body-name: Project
+  /account/projects/{project_id}:
+    get:
+      tags:
+      - projects
+      summary: View project details
+      description: View a private project
+      operationId: private_project_details
+      parameters:
+      - name: project_id
+        in: path
+        description: Project unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. Project representation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectCompletePrivate'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Project
+    put:
+      tags:
+      - projects
+      summary: Update project
+      description: Updating an project by passing body parameters.
+      operationId: private_project_update
+      parameters:
+      - name: project_id
+        in: path
+        description: Project unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        description: Project description
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectUpdate'
+        required: true
+      responses:
+        '205':
+          description: Reset Content
+          headers:
+            Location:
+              description: Location of project
+              schema:
+                type: string
+                format: link
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Project
+      x-codegen-request-body-name: Project
+    delete:
+      tags:
+      - projects
+      summary: Delete project
+      description: 'A project can be deleted only if: - it is not public - it does not have public articles.
+
+
+        When an individual project is deleted, all the articles are moved to my data of each owner.
+
+
+        When a group project is deleted, all the articles and files are deleted as well. Only project owner, group admin and
+        above can delete a project.
+
+        '
+      operationId: private_project_delete
+      parameters:
+      - name: project_id
+        in: path
+        description: Project unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '204':
+          description: No Content
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Project
+    patch:
+      tags:
+      - projects
+      summary: Partially update project
+      description: Partially update a project; only provided fields will be changed.
+      operationId: private_project_partial_update
+      parameters:
+      - name: project_id
+        in: path
+        description: Project unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        description: Fields to update
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectUpdate'
+        required: false
+      responses:
+        '205':
+          description: Reset Content
+          headers:
+            Location:
+              description: Location of project
+              schema:
+                type: string
+                format: link
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Project
+      x-codegen-request-body-name: Project
+  /account/projects/{project_id}/publish:
+    post:
+      tags:
+      - projects
+      summary: Private Project Publish
+      description: Publish a project. Possible after all items inside it are public
+      operationId: private_project_publish
+      parameters:
+      - name: project_id
+        in: path
+        description: Project unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMessage'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+  /account/projects/{project_id}/notes:
+    get:
+      tags:
+      - projects
+      summary: List project notes
+      description: List project notes
+      operationId: private_project_notes_list
+      parameters:
+      - name: project_id
+        in: path
+        description: Project unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: page
+        in: query
+        description: Page number. Used for pagination with page_size
+        schema:
+          maximum: 5000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: page_size
+        in: query
+        description: The number of results included on a page. Used for pagination with page
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+          default: 10
+      - name: limit
+        in: query
+        description: Number of results included on a page. Used for pagination with query
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: offset
+        in: query
+        description: Where to start the listing (the offset of the first result). Used for pagination with limit
+        schema:
+          maximum: 5000
+          minimum: 0
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. List of project notes
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjectNote'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Project Notes
+    post:
+      tags:
+      - projects
+      summary: Create project note
+      description: Create a new project note
+      operationId: private_project_notes_create
+      parameters:
+      - name: project_id
+        in: path
+        description: Project unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        description: Note message
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectNoteCreate'
+        required: true
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              description: Location note
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Project Notes
+      x-codegen-request-body-name: Note
+  /account/projects/{project_id}/notes/{note_id}:
+    get:
+      tags:
+      - projects
+      summary: Project note details
+      operationId: private_project_note
+      parameters:
+      - name: project_id
+        in: path
+        description: Project unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: note_id
+        in: path
+        description: Note unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. Note representation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectNotePrivate'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Project Notes
+    put:
+      tags:
+      - projects
+      summary: Update project note
+      operationId: private_project_note_update
+      parameters:
+      - name: project_id
+        in: path
+        description: Project unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: note_id
+        in: path
+        description: Note unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        description: Note message
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectNoteCreate'
+        required: true
+      responses:
+        '205':
+          description: Reset Content
+          headers:
+            Location:
+              description: Location note
+              schema:
+                type: string
+                format: url
+          content: {}
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Project Notes
+      x-codegen-request-body-name: Note
+    delete:
+      tags:
+      - projects
+      summary: Delete project note
+      operationId: private_project_note_delete
+      parameters:
+      - name: project_id
+        in: path
+        description: Project unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: note_id
+        in: path
+        description: Note unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '204':
+          description: No Content
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Project Notes
+  /account/projects/{project_id}/leave:
+    post:
+      tags:
+      - projects
+      summary: Private Project Leave
+      description: 'Please note: project''s owner cannot leave the project.'
+      operationId: private_project_leave
+      parameters:
+      - name: project_id
+        in: path
+        description: Project unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '204':
+          description: No Content
+          content: {}
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Project Collaborators
+  /account/projects/{project_id}/collaborators:
+    get:
+      tags:
+      - projects
+      summary: List project collaborators
+      description: List Project collaborators and invited users
+      operationId: private_project_collaborators_list
+      parameters:
+      - name: project_id
+        in: path
+        description: Project unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. List of Collaborators
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjectCollaborator'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Project Collaborators
+    post:
+      tags:
+      - projects
+      summary: Invite project collaborators
+      description: Invite users to collaborate on project or view the project
+      operationId: private_project_collaborators_invite
+      parameters:
+      - name: project_id
+        in: path
+        description: Project unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        description: viewer or collaborator role. User user_id or email of user
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectCollaboratorInvite'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResponseMessage'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Project Collaborators
+      x-codegen-request-body-name: Collaborator
+  /account/projects/{project_id}/collaborators/{user_id}:
+    delete:
+      tags:
+      - projects
+      summary: Remove project collaborator
+      description: Remove project collaborator
+      operationId: private_project_collaborator__Delete
+      parameters:
+      - name: project_id
+        in: path
+        description: Project unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: user_id
+        in: path
+        description: User unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '204':
+          description: OK
+          content: {}
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Project Collaborators
+  /account/projects/{project_id}/articles:
+    get:
+      tags:
+      - projects
+      summary: List project articles
+      description: List project articles
+      operationId: private_project_articles_list
+      parameters:
+      - name: project_id
+        in: path
+        description: Project unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. List of articles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Article'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Project Articles
+    post:
+      tags:
+      - projects
+      summary: Create project article
+      description: Create a new Article and associate it with this project
+      operationId: private_project_articles_create
+      parameters:
+      - name: project_id
+        in: path
+        description: Project unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        description: Article description
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArticleProjectCreate'
+        required: true
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              description: Location of article
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Project Articles
+      x-codegen-request-body-name: Article
+  /account/projects/{project_id}/articles/{article_id}:
+    get:
+      tags:
+      - projects
+      summary: Project article details
+      description: Project article details
+      operationId: private_project_article_details
+      parameters:
+      - name: project_id
+        in: path
+        description: Project unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: article_id
+        in: path
+        description: Project Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. Article representation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleCompletePrivate'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Project Articles
+    delete:
+      tags:
+      - projects
+      summary: Delete project article
+      description: Delete project article
+      operationId: private_project_article_delete
+      parameters:
+      - name: project_id
+        in: path
+        description: Project unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: article_id
+        in: path
+        description: Project Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '204':
+          description: No Content
+          content: {}
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Project Articles
+  /account/projects/{project_id}/articles/{article_id}/files:
+    get:
+      tags:
+      - projects
+      summary: Project article list files
+      description: List article files
+      operationId: private_project_article_files
+      parameters:
+      - name: project_id
+        in: path
+        description: Project unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: article_id
+        in: path
+        description: Project Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. List of files
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PrivateFile'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Project Articles
+  /account/projects/{project_id}/articles/{article_id}/files/{file_id}:
+    get:
+      tags:
+      - projects
+      summary: Project article file details
+      description: Project article file details
+      operationId: private_project_article_file
+      parameters:
+      - name: project_id
+        in: path
+        description: Project unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: article_id
+        in: path
+        description: Project Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: file_id
+        in: path
+        description: File unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. File representation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrivateFile'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Project Articles

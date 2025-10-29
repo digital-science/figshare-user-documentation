@@ -1,0 +1,1756 @@
+paths:
+  /collections:
+    get:
+      tags:
+      - collections
+      summary: Public Collections
+      description: Returns a list of public collections
+      operationId: collections_list
+      parameters:
+      - name: X-Cursor
+        in: header
+        description: Unique hash used for bypassing the item retrieval limit of 9,000 entities. When using this parameter,
+          please note that the offset parameter will not be available, but the limit parameter will still work as expected.
+        schema:
+          type: string
+          format: uuid
+      - name: page
+        in: query
+        description: Page number. Used for pagination with page_size
+        schema:
+          maximum: 5000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: page_size
+        in: query
+        description: The number of results included on a page. Used for pagination with page
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+          default: 10
+      - name: limit
+        in: query
+        description: Number of results included on a page. Used for pagination with query
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: offset
+        in: query
+        description: Where to start the listing (the offset of the first result). Used for pagination with limit
+        schema:
+          maximum: 5000
+          minimum: 0
+          type: integer
+          format: int64
+      - name: order
+        in: query
+        description: The field by which to order. Default varies by endpoint/resource.
+        schema:
+          type: string
+          default: published_date
+          enum:
+          - published_date
+          - created_date
+          - modified_date
+          - views
+          - shares
+          - cites
+      - name: order_direction
+        in: query
+        schema:
+          type: string
+          default: desc
+          enum:
+          - asc
+          - desc
+      - name: institution
+        in: query
+        description: only return collections from this institution
+        schema:
+          type: integer
+          format: int64
+      - name: published_since
+        in: query
+        description: Filter by collection publishing date. Will only return collections published after the date. date(ISO
+          8601) YYYY-MM-DD
+        schema:
+          type: string
+      - name: modified_since
+        in: query
+        description: Filter by collection modified date. Will only return collections modified after the date. date(ISO 8601)
+          YYYY-MM-DD
+        schema:
+          type: string
+      - name: group
+        in: query
+        description: only return collections from this group
+        schema:
+          type: integer
+          format: int64
+      - name: resource_doi
+        in: query
+        description: only return collections with this resource_doi
+        schema:
+          type: string
+      - name: doi
+        in: query
+        description: only return collections with this doi
+        schema:
+          type: string
+      - name: handle
+        in: query
+        description: only return collections with this handle
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK. An array of collections
+          headers:
+            X-Cursor:
+              description: Unique hash used for bypassing the item retrieval limit of 9,000 entities.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Collection'
+        '400':
+          description: Bad Request
+          content: {}
+        '422':
+          description: Bad Request
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+  /collections/search:
+    post:
+      tags:
+      - collections
+      summary: Public Collections Search
+      description: Returns a list of public collections
+      operationId: collections_search
+      parameters:
+      - name: X-Cursor
+        in: header
+        description: Unique hash used for bypassing the item retrieval limit of 9,000 entities. When using this parameter,
+          please note that the offset parameter will not be available, but the limit parameter will still work as expected.
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: Search Parameters
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CollectionSearch'
+        required: false
+      responses:
+        '200':
+          description: OK. An array of collections
+          headers:
+            X-Cursor:
+              description: Unique hash used for bypassing the item retrieval limit of 9,000 entities.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Collection'
+        '400':
+          description: Bad Request
+          content: {}
+        '422':
+          description: Bad Request
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+      x-codegen-request-body-name: search
+  /collections/{collection_id}:
+    get:
+      tags:
+      - collections
+      summary: Collection details
+      description: View a collection
+      operationId: collection_details
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection Unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. Collection representation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionComplete'
+        '400':
+          description: Bad Request
+          content: {}
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+      x-subcategory: Public Collection
+  /collections/{collection_id}/versions:
+    get:
+      tags:
+      - collections
+      summary: Collection Versions list
+      description: Returns a list of public collection Versions
+      operationId: collection_versions
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection Unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. An array of versions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CollectionVersions'
+        '400':
+          description: Bad Request
+          content: {}
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+      x-subcategory: Public Collection
+  /collections/{collection_id}/versions/{version_id}:
+    get:
+      tags:
+      - collections
+      summary: Collection Version details
+      description: View details for a certain version of a collection
+      operationId: collection_version_details
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection Unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: version_id
+        in: path
+        description: Version Number
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. Collection for that version
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionComplete'
+        '400':
+          description: Bad Request
+          content: {}
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+      x-subcategory: Public Collection
+  /collections/{collection_id}/articles:
+    get:
+      tags:
+      - collections
+      summary: Public Collection Articles
+      description: Returns a list of public collection articles
+      operationId: collection_articles
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection Unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: page
+        in: query
+        description: Page number. Used for pagination with page_size
+        schema:
+          maximum: 5000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: page_size
+        in: query
+        description: The number of results included on a page. Used for pagination with page
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+          default: 10
+      - name: limit
+        in: query
+        description: Number of results included on a page. Used for pagination with query
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: offset
+        in: query
+        description: Where to start the listing (the offset of the first result). Used for pagination with limit
+        schema:
+          maximum: 5000
+          minimum: 0
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. An array of articles belonging to the collection
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Article'
+        '400':
+          description: Bad Request
+          content: {}
+        '404':
+          description: Not Found
+          content: {}
+        '422':
+          description: Bad Request
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+  /account/collections:
+    get:
+      tags:
+      - collections
+      summary: Private Collections List
+      description: List private collections
+      operationId: private_collections_list
+      parameters:
+      - name: page
+        in: query
+        description: Page number. Used for pagination with page_size
+        schema:
+          maximum: 5000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: page_size
+        in: query
+        description: The number of results included on a page. Used for pagination with page
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+          default: 10
+      - name: limit
+        in: query
+        description: Number of results included on a page. Used for pagination with query
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: offset
+        in: query
+        description: Where to start the listing (the offset of the first result). Used for pagination with limit
+        schema:
+          maximum: 5000
+          minimum: 0
+          type: integer
+          format: int64
+      - name: order
+        in: query
+        description: The field by which to order. Default varies by endpoint/resource.
+        schema:
+          type: string
+          default: published_date
+          enum:
+          - published_date
+          - modified_date
+          - views
+          - shares
+          - cites
+      - name: order_direction
+        in: query
+        schema:
+          type: string
+          default: desc
+          enum:
+          - asc
+          - desc
+      responses:
+        '200':
+          description: OK. An array of collections
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Collection'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+    post:
+      tags:
+      - collections
+      summary: Create collection
+      description: Create a new Collection by sending collection information
+      operationId: private_collection_create
+      requestBody:
+        description: Collection description
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CollectionCreate'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationWarnings'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Collection
+      x-codegen-request-body-name: Collection
+  /account/collections/{collection_id}:
+    get:
+      tags:
+      - collections
+      summary: Collection details
+      description: View a collection
+      operationId: private_collection_details
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection Unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. Collection representation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionCompletePrivate'
+        '400':
+          description: Bad Request
+          content: {}
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Collection
+    put:
+      tags:
+      - collections
+      summary: Update collection
+      description: Update a collection by passing full body parameters.
+      operationId: private_collection_update
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection Unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        description: Collection description
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CollectionUpdate'
+        required: true
+      responses:
+        '205':
+          description: Reset Content
+          headers:
+            Location:
+              description: Location of collection
+              schema:
+                type: string
+                format: link
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationWarningsUpdate'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Collection
+      x-codegen-request-body-name: Collection
+    delete:
+      tags:
+      - collections
+      summary: Delete collection
+      description: Delete n collection
+      operationId: private_collection_delete
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection Unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '204':
+          description: No Content
+          content: {}
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Collection
+    patch:
+      tags:
+      - collections
+      summary: Partially update collection
+      description: Partially update a collection by sending only the fields to change.
+      operationId: private_collection_patch
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection Unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        description: Subset of collection fields to update
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CollectionUpdate'
+        required: true
+      responses:
+        '205':
+          description: Reset Content
+          headers:
+            Location:
+              description: Location of collection
+              schema:
+                type: string
+                format: link
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationWarningsUpdate'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Collection
+      x-codegen-request-body-name: Collection
+  /account/collections/search:
+    post:
+      tags:
+      - collections
+      summary: Private Collections Search
+      description: Returns a list of private Collections
+      operationId: private_collections_search
+      requestBody:
+        description: Search Parameters
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PrivateCollectionSearch'
+        required: true
+      responses:
+        '200':
+          description: OK. An array of collections
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Collection'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-codegen-request-body-name: search
+  /account/collections/{collection_id}/reserve_doi:
+    post:
+      tags:
+      - collections
+      summary: Private Collection Reserve DOI
+      description: Reserve DOI for collection
+      operationId: private_collection_reserve_doi
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection Unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionDOI'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+  /account/collections/{collection_id}/reserve_handle:
+    post:
+      tags:
+      - collections
+      summary: Private Collection Reserve Handle
+      description: Reserve Handle for collection
+      operationId: private_collection_reserve_handle
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection Unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CollectionHandle'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+  /account/collections/{collection_id}/resource:
+    post:
+      tags:
+      - collections
+      summary: Private Collection Resource
+      description: Edit collection resource data.
+      operationId: private_collection_resource
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        description: Resource data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Resource'
+        required: true
+      responses:
+        '205':
+          description: Reset Content
+          headers:
+            Location:
+              description: Location for account collection details
+              schema:
+                type: string
+                format: link
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '422':
+          description: Unprocessable Entity
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-codegen-request-body-name: Resource
+  /account/collections/{collection_id}/publish:
+    post:
+      tags:
+      - collections
+      summary: Private Collection Publish
+      description: When a collection is published, a new public version will be generated. Any further updates to the collection
+        will affect the private collection data. In order to make these changes publicly visible, an explicit publish operation
+        is needed.
+      operationId: private_collection_publish
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection Unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              description: Location of collection
+              schema:
+                type: string
+                format: link
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+  /account/collections/{collection_id}/authors:
+    get:
+      tags:
+      - collections
+      summary: List collection authors
+      description: List collection authors
+      operationId: private_collection_authors_list
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. Embargo for article
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Author'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Collection Authors
+    put:
+      tags:
+      - collections
+      summary: Replace collection authors
+      description: Associate new authors with the collection. This will remove all already associated authors and add these
+        new ones
+      operationId: private_collection_authors_replace
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        description: List of authors
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthorsCreator'
+        required: true
+      responses:
+        '205':
+          description: Reset Content
+          headers:
+            Location:
+              description: Location of list of authors
+              schema:
+                type: string
+                format: url
+          content: {}
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Collection Authors
+      x-codegen-request-body-name: Authors
+    post:
+      tags:
+      - collections
+      summary: Add collection authors
+      description: Associate new authors with the collection. This will add new authors to the list of already associated
+        authors
+      operationId: private_collection_authors_add
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        description: List of authors
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthorsCreator'
+        required: true
+      responses:
+        '201':
+          description: Reset Content
+          headers:
+            Location:
+              description: Location of list of authors
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Collection Authors
+      x-codegen-request-body-name: Authors
+  /account/collections/{collection_id}/authors/{author_id}:
+    delete:
+      tags:
+      - collections
+      summary: Delete collection author
+      description: Delete collection author
+      operationId: private_collection_author_delete
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: author_id
+        in: path
+        description: Collection Author unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '204':
+          description: No Content
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Collection Authors
+  /account/collections/{collection_id}/categories:
+    get:
+      tags:
+      - collections
+      summary: List collection categories
+      description: List collection categories
+      operationId: private_collection_categories_list
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. Categories list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Collection Categories
+    put:
+      tags:
+      - collections
+      summary: Replace collection categories
+      description: Associate new categories with the collection. This will remove all already associated categories and add
+        these new ones
+      operationId: private_collection_categories_replace
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        description: Categories list
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoriesCreator'
+        required: true
+      responses:
+        '205':
+          description: Reset Content
+          headers:
+            Location:
+              description: Location of list of categories
+              schema:
+                type: string
+                format: url
+          content: {}
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Collection Categories
+      x-codegen-request-body-name: categories
+    post:
+      tags:
+      - collections
+      summary: Add collection categories
+      description: Associate new categories with the collection. This will add new categories to the list of already associated
+        categories
+      operationId: private_collection_categories_add
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        description: Categories list
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoriesCreator'
+        required: true
+      responses:
+        '201':
+          description: Reset Content
+          headers:
+            Location:
+              description: Location of list of categories
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Collection Categories
+      x-codegen-request-body-name: categories
+  /account/collections/{collection_id}/categories/{category_id}:
+    delete:
+      tags:
+      - collections
+      summary: Delete collection category
+      description: De-associate category from collection
+      operationId: private_collection_category_delete
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: category_id
+        in: path
+        description: Collection category unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '204':
+          description: No Content
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Collection Categories
+  /account/collections/{collection_id}/articles:
+    get:
+      tags:
+      - collections
+      summary: List collection articles
+      description: List collection articles
+      operationId: private_collection_articles_list
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: page
+        in: query
+        description: Page number. Used for pagination with page_size
+        schema:
+          maximum: 5000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: page_size
+        in: query
+        description: The number of results included on a page. Used for pagination with page
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+          default: 10
+      - name: limit
+        in: query
+        description: Number of results included on a page. Used for pagination with query
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: offset
+        in: query
+        description: Where to start the listing (the offset of the first result). Used for pagination with limit
+        schema:
+          maximum: 5000
+          minimum: 0
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. Articles List
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Article'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Collection Articles
+    put:
+      tags:
+      - collections
+      summary: Replace collection articles
+      description: Associate new articles with the collection. This will remove all already associated articles and add these
+        new ones
+      operationId: private_collection_articles_replace
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        description: Articles List
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArticlesCreator'
+        required: true
+      responses:
+        '205':
+          description: Reset Content
+          headers:
+            Location:
+              description: Location of list of articles
+              schema:
+                type: string
+                format: url
+          content: {}
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Collection Articles
+      x-codegen-request-body-name: articles
+    post:
+      tags:
+      - collections
+      summary: Add collection articles
+      description: Associate new articles with the collection. This will add new articles to the list of already associated
+        articles
+      operationId: private_collection_articles_add
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        description: Articles list
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArticlesCreator'
+        required: true
+      responses:
+        '201':
+          description: Reset Content
+          headers:
+            Location:
+              description: Location of new articles
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Collection Articles
+      x-codegen-request-body-name: articles
+  /account/collections/{collection_id}/articles/{article_id}:
+    delete:
+      tags:
+      - collections
+      summary: Delete collection article
+      description: De-associate article from collection
+      operationId: private_collection_article_delete
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: article_id
+        in: path
+        description: Collection article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '204':
+          description: No Content
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Collection Articles
+  /account/collections/{collection_id}/private_links:
+    get:
+      tags:
+      - collections
+      summary: List collection private links
+      description: List article private links
+      operationId: private_collection_private_links_list
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. Collection private links
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PrivateLink'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Collection Private Links
+    post:
+      tags:
+      - collections
+      summary: Create collection private link
+      description: Create new private link
+      operationId: private_collection_private_link_create
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CollectionPrivateLinkCreator'
+        required: false
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              description: Location of private link
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrivateLinkResponse'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Collection Private Links
+      x-codegen-request-body-name: private_link
+  /account/collections/{collection_id}/private_links/{link_id}:
+    get:
+      tags:
+      - collections
+      summary: View collection private link
+      description: View existing private link for this collection
+      operationId: private_collection_private_link_details
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: link_id
+        in: path
+        description: Private link token
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK. Collection private link
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrivateLink'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Collection Private Links
+    put:
+      tags:
+      - collections
+      summary: Update collection private link
+      description: Update existing private link for this collection
+      operationId: private_collection_private_link_update
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: link_id
+        in: path
+        description: Private link token
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CollectionPrivateLinkCreator'
+        required: false
+      responses:
+        '205':
+          description: Reset Content
+          headers:
+            Location:
+              description: Location of new private link
+              schema:
+                type: string
+                format: url
+          content: {}
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '422':
+          description: Unprocessable Entity
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Collection Private Links
+      x-codegen-request-body-name: private_link
+    delete:
+      tags:
+      - collections
+      summary: Disable private link
+      description: Disable/delete private link for this collection
+      operationId: private_collection_private_link_delete
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: link_id
+        in: path
+        description: Private link token
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+          content: {}
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Collection Private Links
