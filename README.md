@@ -5,7 +5,7 @@ The home of figshare's API user documentation.
 During the evolution of the API documentation there have been various iterations
 and in this latest form we use Swagger to generate the pages and examples.
 
-This system requires the `swagger.json` file (which can be found in the _swagger_documentation_
+This system requires the `openapi.json` file (which can be found in the _swagger_documentation_
 directory) to be in sync with the one found in the [Rest API](https://github.com/figshare/apiv1)
 repository at `figshare_api2/api_docs/`.
 
@@ -49,7 +49,9 @@ Merging into master has to be done with `--ff-only`:
 To be able to build the documentation one needs to install the necessary
 dependencies:
 
-    $ make swagger_install
+    $ python3 -m venv myenv
+    $ source myenv/bin/activate
+    $ make install
 
 To build the documentation:
 
