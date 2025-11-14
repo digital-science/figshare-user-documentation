@@ -1,0 +1,113 @@
+paths:
+  /account/profile:
+    put:
+      tags:
+      - profiles
+      summary: Update public profile
+      description: Updates the fields of the user's public profile.
+      operationId: update_user_profile
+      parameters:
+      - name: user_id
+        in: query
+        description: User ID
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: institution_user_id
+        in: query
+        description: Institutional user ID
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProfileUpdateData'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  code: 200
+                  message: OK
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-codegen-request-body-name: User profile data
+  /account/profile/{user_id}/picture:
+    post:
+      tags:
+      - profiles
+      summary: Update public profile picture
+      description: Updates the profile picture of the user's public profile.
+      operationId: update_user_profile_picture
+      parameters:
+      - name: user_id
+        in: path
+        description: User ID
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              required:
+              - profile_picture
+              type: object
+              properties:
+                profile_picture:
+                  type: string
+                  description: User profile picture
+                  format: binary
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                example:
+                  code: 200
+                  message: OK
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
