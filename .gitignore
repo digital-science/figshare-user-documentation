@@ -1,3 +1,15 @@
 
-site/
 .idea/
+
+# Virtual environments
+myenv/
+venv/
+env/
+.venv/
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
