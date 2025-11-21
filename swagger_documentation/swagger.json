@@ -11441,7 +11441,7 @@
                 },
                 "files": {
                     "type": "array",
-                    "description": "List of up to 10 article files.",
+                    "description": "List of article files.",
                     "items": {
                         "$ref": "#/definitions/PublicFile"
                     }
