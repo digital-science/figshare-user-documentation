@@ -15,7 +15,7 @@
     },
     "servers": [
         {
-            "url": "https://api.figinternal.dev"
+            "url": "https://api.figshare.network"
         }
     ],
     "paths": {

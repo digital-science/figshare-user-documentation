@@ -3,7 +3,7 @@ DOCKER_BUILD_EXTRA_PARAMS:=
 DOCKER_BUILD_PARAMS:=--ssh default ${DOCKER_BUILD_EXTRA_PARAMS}
 CIMAGE_DEPLOYMENT_TAG:=figshare/user_documentation:deployment
 CIMAGE_LATEST_TAG:=figshare/user_documentation:latest
-API_URL:=api.figinternal.dev
+API_URL:=api.figshare.network
 API_SCHEME:=https
 
 
