@@ -29,11 +29,9 @@ ENV ENV_PARAM=${ENV_PARAM}
 ENV API_URL=${API_URL}
 ENV API_SCHEME=${API_SCHEME}
 
-RUN pip install --no-cache-dir mkdocs black
+RUN pip install --no-cache-dir black
 RUN make install ENV=${ENV_PARAM}
-RUN make swagger_install
-RUN make build
-RUN make swagger_build API_URL=${API_URL} API_SCHEME=${API_SCHEME} 
+RUN make swagger_build API_URL=${API_URL} API_SCHEME=${API_SCHEME}
 
 # Stage 2: Serve the static site using Nginx
 FROM 942286566325.dkr.ecr.eu-west-1.amazonaws.com/figshare/nginx:1.18 AS deployment
