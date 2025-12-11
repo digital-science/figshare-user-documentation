@@ -18,10 +18,20 @@ def parse_models(models):
         model = models[model_name]
         new_model = model
         if "allOf" in list(model.keys()):
+            # Ensure new_model has properties key before trying to update it
+            if "properties" not in new_model:
+                new_model["properties"] = OrderedDict()
+
             for reference in model["allOf"]:
-                ref_name = reference["$ref"]
-                ref_name = ref_name[ref_name.rfind("/") + 1 :]
-                new_model["properties"].update(OrderedDict(models[ref_name]["properties"]))
+                if "$ref" in reference:
+                    ref_name = reference["$ref"]
+                    ref_name = ref_name[ref_name.rfind("/") + 1 :]
+                    # Only update if the referenced model has properties
+                    if ref_name in models and "properties" in models[ref_name]:
+                        new_model["properties"].update(OrderedDict(models[ref_name]["properties"]))
+                # Handle inline schemas in allOf
+                elif "properties" in reference:
+                    new_model["properties"].update(OrderedDict(reference["properties"]))
         models[model_name] = new_model
     return models
 
@@ -43,15 +53,16 @@ def parse_paths(paths):
 
 
 def main(argv):
-
     swagger = json_read("swagger.json")
-    swagger["host"] = argv[0]
-    swagger["schemes"] = [argv[1]]
+    swagger["servers"] = [{"url": f"{argv[1]}://{argv[0]}"}]
 
     json_write("/swagger.json", swagger)
 
-    swagger["definitions"] = parse_models(swagger["definitions"])
-    swagger["paths"] = parse_paths(swagger["paths"])
+    if "components" in swagger and "schemas" in swagger["components"]:
+        swagger["components"]["schemas"] = parse_models(swagger["components"]["schemas"])
+
+    if "paths" in swagger:
+        swagger["paths"] = parse_paths(swagger["paths"])
 
     json_write("/swagger_parsed.json", swagger)
 
