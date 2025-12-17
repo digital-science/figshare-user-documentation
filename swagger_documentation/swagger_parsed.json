@@ -186,7 +186,7 @@
                     {
                         "name": "modified_since",
                         "in": "query",
-                        "description": "Filter by article modified date. Will only return articles published after the date. date(ISO 8601) YYYY-MM-DD or date-time(ISO 8601) YYYY-MM-DDTHH:mm:ssZ",
+                        "description": "Filter by article modified date. Will only return articles modified after the date. date(ISO 8601) YYYY-MM-DD or date-time(ISO 8601) YYYY-MM-DDTHH:mm:ssZ",
                         "type": "string",
                         "required": false
                     },
@@ -3523,7 +3523,7 @@
                     {
                         "name": "modified_since",
                         "in": "query",
-                        "description": "Filter by collection modified date. Will only return collections published after the date. date(ISO 8601) YYYY-MM-DD",
+                        "description": "Filter by collection modified date. Will only return collections modified after the date. date(ISO 8601) YYYY-MM-DD",
                         "type": "string",
                         "required": false
                     },
@@ -7992,7 +7992,7 @@
                     {
                         "name": "modified_since",
                         "in": "query",
-                        "description": "Filter by article modified date. Will only return articles published after the date. date(ISO 8601) YYYY-MM-DD or date-time(ISO 8601) YYYY-MM-DDTHH:mm:ssZ",
+                        "description": "Filter by article modified date. Will only return articles modified after the date. date(ISO 8601) YYYY-MM-DD or date-time(ISO 8601) YYYY-MM-DDTHH:mm:ssZ",
                         "type": "string",
                         "required": false
                     },
@@ -10566,7 +10566,7 @@
                     "example": "2017-12-22"
                 },
                 "modified_since": {
-                    "description": "Filter by article modified date. Will only return articles published after the date. date(ISO 8601) YYYY-MM-DD or date-time(ISO 8601) YYYY-MM-DDTHH:mm:ssZ",
+                    "description": "Filter by article modified date. Will only return articles modified after the date. date(ISO 8601) YYYY-MM-DD or date-time(ISO 8601) YYYY-MM-DDTHH:mm:ssZ",
                     "type": "string",
                     "example": "2017-12-22"
                 },
@@ -10658,7 +10658,7 @@
                     "example": "2017-12-22"
                 },
                 "modified_since": {
-                    "description": "Filter by article modified date. Will only return articles published after the date. date(ISO 8601) YYYY-MM-DD or date-time(ISO 8601) YYYY-MM-DDTHH:mm:ssZ",
+                    "description": "Filter by article modified date. Will only return articles modified after the date. date(ISO 8601) YYYY-MM-DD or date-time(ISO 8601) YYYY-MM-DDTHH:mm:ssZ",
                     "type": "string",
                     "example": "2017-12-22"
                 },
@@ -10781,7 +10781,7 @@
                     "example": "2017-12-22"
                 },
                 "modified_since": {
-                    "description": "Filter by article modified date. Will only return articles published after the date. date(ISO 8601) YYYY-MM-DD or date-time(ISO 8601) YYYY-MM-DDTHH:mm:ssZ",
+                    "description": "Filter by article modified date. Will only return articles modified after the date. date(ISO 8601) YYYY-MM-DD or date-time(ISO 8601) YYYY-MM-DDTHH:mm:ssZ",
                     "type": "string",
                     "example": "2017-12-22"
                 },
@@ -10909,7 +10909,7 @@
                     "example": "2017-12-22"
                 },
                 "modified_since": {
-                    "description": "Filter by article modified date. Will only return articles published after the date. date(ISO 8601) YYYY-MM-DD or date-time(ISO 8601) YYYY-MM-DDTHH:mm:ssZ",
+                    "description": "Filter by article modified date. Will only return articles modified after the date. date(ISO 8601) YYYY-MM-DD or date-time(ISO 8601) YYYY-MM-DDTHH:mm:ssZ",
                     "type": "string",
                     "example": "2017-12-22"
                 },
@@ -11019,7 +11019,7 @@
                     "example": "2017-12-22"
                 },
                 "modified_since": {
-                    "description": "Filter by article modified date. Will only return articles published after the date. date(ISO 8601) YYYY-MM-DD or date-time(ISO 8601) YYYY-MM-DDTHH:mm:ssZ",
+                    "description": "Filter by article modified date. Will only return articles modified after the date. date(ISO 8601) YYYY-MM-DD or date-time(ISO 8601) YYYY-MM-DDTHH:mm:ssZ",
                     "type": "string",
                     "example": "2017-12-22"
                 },
@@ -11203,7 +11203,7 @@
                     "example": "2017-12-22"
                 },
                 "modified_since": {
-                    "description": "Filter by article modified date. Will only return articles published after the date. date(ISO 8601) YYYY-MM-DD or date-time(ISO 8601) YYYY-MM-DDTHH:mm:ssZ",
+                    "description": "Filter by article modified date. Will only return articles modified after the date. date(ISO 8601) YYYY-MM-DD or date-time(ISO 8601) YYYY-MM-DDTHH:mm:ssZ",
                     "type": "string",
                     "example": "2017-12-22"
                 },
@@ -13271,7 +13271,7 @@
                 },
                 "files": {
                     "type": "array",
-                    "description": "List of article files.",
+                    "description": "List of article files",
                     "items": {
                         "$ref": "#/definitions/PublicFile"
                     }
@@ -13680,7 +13680,7 @@
                 },
                 "files": {
                     "type": "array",
-                    "description": "List of article files.",
+                    "description": "List of article files",
                     "items": {
                         "$ref": "#/definitions/PublicFile"
                     }
