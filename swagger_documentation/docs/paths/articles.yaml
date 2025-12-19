@@ -1,0 +1,2620 @@
+paths:
+  /articles:
+    get:
+      tags:
+      - articles
+      summary: Public Articles
+      description: Returns a list of public articles
+      operationId: articles_list
+      parameters:
+      - name: X-Cursor
+        in: header
+        description: Unique hash used for bypassing the item retrieval limit of 9,000 entities. When using this parameter,
+          please note that the offset parameter will not be available, but the limit parameter will still work as expected.
+        schema:
+          type: string
+          format: uuid
+      - name: page
+        in: query
+        description: Page number. Used for pagination with page_size
+        schema:
+          maximum: 5000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: page_size
+        in: query
+        description: The number of results included on a page. Used for pagination with page
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+          default: 10
+      - name: limit
+        in: query
+        description: Number of results included on a page. Used for pagination with query
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: offset
+        in: query
+        description: Where to start the listing (the offset of the first result). Used for pagination with limit
+        schema:
+          maximum: 5000
+          minimum: 0
+          type: integer
+          format: int64
+      - name: order
+        in: query
+        description: The field by which to order. Default varies by endpoint/resource.
+        schema:
+          type: string
+          default: published_date
+          enum:
+          - published_date
+          - created_date
+          - modified_date
+          - views
+          - shares
+          - downloads
+          - cites
+      - name: order_direction
+        in: query
+        schema:
+          type: string
+          default: desc
+          enum:
+          - asc
+          - desc
+      - name: institution
+        in: query
+        description: only return articles from this institution
+        schema:
+          type: integer
+          format: int64
+      - name: published_since
+        in: query
+        description: Filter by article publishing date. Will only return articles published after the date. date(ISO 8601)
+          YYYY-MM-DD or date-time(ISO 8601) YYYY-MM-DDTHH:mm:ssZ
+        schema:
+          type: string
+      - name: modified_since
+        in: query
+        description: Filter by article modified date. Will only return articles modified after the date. date(ISO 8601) YYYY-MM-DD
+          or date-time(ISO 8601) YYYY-MM-DDTHH:mm:ssZ
+        schema:
+          type: string
+      - name: group
+        in: query
+        description: only return articles from this group
+        schema:
+          type: integer
+          format: int64
+      - name: resource_doi
+        in: query
+        description: Deprecated by related materials. Only return articles with this resource_doi
+        schema:
+          type: string
+      - name: item_type
+        in: query
+        description: 'Only return articles with the respective type. Mapping for item_type is: 1 - Figure, 2 - Media, 3 -
+          Dataset, 5 - Poster, 6 - Journal contribution, 7 - Presentation, 8 - Thesis, 9 - Software, 11 - Online resource,
+          12 - Preprint, 13 - Book, 14 - Conference contribution, 15 - Chapter, 16 - Peer review, 17 - Educational resource,
+          18 - Report, 19 - Standard, 20 - Composition, 21 - Funding, 22 - Physical object, 23 - Data management plan, 24
+          - Workflow, 25 - Monograph, 26 - Performance, 27 - Event, 28 - Service, 29 - Model'
+        schema:
+          type: integer
+          format: int64
+      - name: doi
+        in: query
+        description: only return articles with this doi
+        schema:
+          type: string
+      - name: handle
+        in: query
+        description: only return articles with this handle
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK. An array of articles
+          headers:
+            X-Cursor:
+              description: Unique hash used for bypassing the item retrieval limit of 9,000 entities.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Article'
+        '400':
+          description: Bad Request
+          content: {}
+        '422':
+          description: Unprocessable Entity. Syntax is correct but one of the parameters isn't correctly processed
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+  /articles/search:
+    post:
+      tags:
+      - articles
+      summary: Public Articles Search
+      description: Returns a list of public articles, filtered by the search parameters
+      operationId: articles_search
+      parameters:
+      - name: X-Cursor
+        in: header
+        description: Unique hash used for bypassing the item retrieval limit of 9,000 entities. When using this parameter,
+          please note that the offset parameter will not be available, but the limit parameter will still work as expected.
+        schema:
+          type: string
+          format: uuid
+      requestBody:
+        description: Search Parameters
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArticleSearch'
+        required: false
+      responses:
+        '200':
+          description: OK. An array of articles
+          headers:
+            X-Cursor:
+              description: Unique hash used for bypassing the item retrieval limit of 9,000 entities.
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ArticleWithProject'
+        '400':
+          description: Bad Request
+          content: {}
+        '422':
+          description: Unprocessable Entity. Syntax is correct but one of the parameters isn't correctly processed
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+      x-codegen-request-body-name: search
+  /articles/{article_id}:
+    get:
+      tags:
+      - articles
+      summary: View article details
+      description: View an article
+      operationId: article_details
+      parameters:
+      - name: article_id
+        in: path
+        description: Article Unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. Article representation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleComplete'
+        '400':
+          description: Bad Request
+          content: {}
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+      x-subcategory: Public Article
+  /articles/{article_id}/versions:
+    get:
+      tags:
+      - articles
+      summary: List article versions
+      description: List public article versions
+      operationId: article_versions
+      parameters:
+      - name: article_id
+        in: path
+        description: Article Unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. Article version representations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ArticleVersions'
+        '400':
+          description: Bad Request. Article ID must be an integer and bigger than 0.
+          content: {}
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+      x-subcategory: Public Article
+  /articles/{article_id}/versions/{version_id}:
+    get:
+      tags:
+      - articles
+      summary: Article details for version
+      description: Article with specified version
+      operationId: article_version_details
+      parameters:
+      - name: article_id
+        in: path
+        description: Article Unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: version_id
+        in: path
+        description: Article Version Number
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. Article representation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleComplete'
+        '400':
+          description: Bad Request
+          content: {}
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+      x-subcategory: Public Article
+  /articles/{article_id}/versions/{version_id}/files:
+    get:
+      tags:
+      - articles
+      summary: Public Article version files
+      description: Article version file details
+      operationId: article_version_files
+      parameters:
+      - name: article_id
+        in: path
+        description: Article Unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: version_id
+        in: path
+        description: Article Version Unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: page
+        in: query
+        description: Page number. Used for pagination with page_size
+        schema:
+          maximum: 5000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: page_size
+        in: query
+        description: The number of results included on a page. Used for pagination with page
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+          default: 10
+      - name: limit
+        in: query
+        description: Number of results included on a page. Used for pagination with query
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: offset
+        in: query
+        description: Where to start the listing (the offset of the first result). Used for pagination with limit
+        schema:
+          maximum: 5000
+          minimum: 0
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. List of article files
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PublicFile'
+        '400':
+          description: Bad Request
+          content: {}
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+      x-subcategory: Public Article files
+  /articles/{article_id}/download:
+    get:
+      tags:
+      - articles
+      summary: Public Article Download
+      description: Download files from a public article preserving the folder structure
+      operationId: public_article_download
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: folder_path
+        in: query
+        description: Folder path to download. If not provided, all files from the article will be downloaded
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+      x-subcategory: Public Article
+  /articles/{article_id}/versions/{version_id}/download:
+    get:
+      tags:
+      - articles
+      summary: Public Article Version Download
+      description: Download files from a certain version of an public article preserving the folder structure
+      operationId: public_article_version_download
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: version_id
+        in: path
+        description: Version Number
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: folder_path
+        in: query
+        description: Folder path to download. If not provided, all files from the article will be downloaded
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+      x-subcategory: Public Article
+  /articles/{article_id}/versions/{version_id}/embargo:
+    get:
+      tags:
+      - articles
+      summary: Public Article Embargo for article version
+      description: Embargo for article version
+      operationId: article_version_embargo
+      parameters:
+      - name: article_id
+        in: path
+        description: Article Unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: version_id
+        in: path
+        description: Version Number
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. Embargo representation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleEmbargo'
+        '400':
+          description: Bad Request
+          content: {}
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+  /articles/{article_id}/versions/{version_id}/confidentiality:
+    get:
+      tags:
+      - articles
+      summary: Public Article Confidentiality for article version
+      description: Confidentiality for article version. The confidentiality feature is now deprecated. This has been replaced
+        by the new extended embargo functionality and all items that used to be confidential have now been migrated to items
+        with a permanent embargo on files. All API endpoints related to this functionality will remain for backwards compatibility,
+        but will now be attached to the new extended embargo workflows.
+      operationId: article_version_confidentiality
+      parameters:
+      - name: article_id
+        in: path
+        description: Article Unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: version_id
+        in: path
+        description: Version Number
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. Confidentiality representation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleConfidentiality'
+        '400':
+          description: Bad Request
+          content: {}
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+  /articles/{article_id}/files:
+    get:
+      tags:
+      - articles
+      summary: List article files
+      description: Files list for article
+      operationId: article_files
+      parameters:
+      - name: article_id
+        in: path
+        description: Article Unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: page
+        in: query
+        description: Page number. Used for pagination with page_size
+        schema:
+          maximum: 5000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: page_size
+        in: query
+        description: The number of results included on a page. Used for pagination with page
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+          default: 10
+      - name: limit
+        in: query
+        description: Number of results included on a page. Used for pagination with query
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: offset
+        in: query
+        description: Where to start the listing (the offset of the first result). Used for pagination with limit
+        schema:
+          maximum: 5000
+          minimum: 0
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. List of article files
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PublicFile'
+        '400':
+          description: Bad Request
+          content: {}
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+      x-subcategory: Public Article files
+  /articles/{article_id}/files/{file_id}:
+    get:
+      tags:
+      - articles
+      summary: Article file details
+      description: File by id
+      operationId: article_file_details
+      parameters:
+      - name: article_id
+        in: path
+        description: Article Unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: file_id
+        in: path
+        description: File Unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. File representation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublicFile'
+        '400':
+          description: Bad Request
+          content: {}
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+      x-subcategory: Public Article files
+  /account/articles/search:
+    post:
+      tags:
+      - articles
+      summary: Private Articles search
+      description: Returns a list of private articles filtered by the search parameters
+      operationId: private_articles_search
+      requestBody:
+        description: Search Parameters
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PrivateArticleSearch'
+        required: true
+      responses:
+        '200':
+          description: OK. An array of articles
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ArticleWithProject'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-codegen-request-body-name: search
+  /account/articles:
+    get:
+      tags:
+      - articles
+      summary: Private Articles
+      description: Get Own Articles
+      operationId: private_articles_list
+      parameters:
+      - name: page
+        in: query
+        description: Page number. Used for pagination with page_size
+        schema:
+          maximum: 5000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: page_size
+        in: query
+        description: The number of results included on a page. Used for pagination with page
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+          default: 10
+      - name: limit
+        in: query
+        description: Number of results included on a page. Used for pagination with query
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: offset
+        in: query
+        description: Where to start the listing (the offset of the first result). Used for pagination with limit
+        schema:
+          maximum: 5000
+          minimum: 0
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. An array of articles belonging to the account
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Article'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+    post:
+      tags:
+      - articles
+      summary: Create new Article
+      description: Create a new Article by sending article information
+      operationId: private_article_create
+      requestBody:
+        description: Article description
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArticleCreate'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationWarnings'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Article
+      x-codegen-request-body-name: Article
+  /account/articles/{article_id}:
+    get:
+      tags:
+      - articles
+      summary: Article details
+      description: View a private article
+      operationId: private_article_details
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. Article representation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleCompletePrivate'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Article
+    put:
+      tags:
+      - articles
+      summary: Update article
+      description: Update an article by passing full body parameters.
+      operationId: private_article_update
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        description: Full article representation
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArticleUpdate'
+        required: true
+      responses:
+        '205':
+          description: Reset Content
+          headers:
+            Location:
+              description: Location of newly created article
+              schema:
+                type: string
+                format: link
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationWarningsUpdate'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Article
+      x-codegen-request-body-name: Article
+    delete:
+      tags:
+      - articles
+      summary: Delete article
+      description: Delete an article
+      operationId: private_article_delete
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '204':
+          description: No Content
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Article
+    patch:
+      tags:
+      - articles
+      summary: Partially update article
+      description: Partially update an article by sending only the fields to change.
+      operationId: private_article_partial_update
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        description: Subset of article fields to update
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArticleUpdate'
+        required: true
+      responses:
+        '205':
+          description: Reset Content
+          headers:
+            Location:
+              description: Location of the updated article
+              schema:
+                type: string
+                format: link
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationWarningsUpdate'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Article
+      x-codegen-request-body-name: Article
+  /account/articles/{article_id}/embargo:
+    get:
+      tags:
+      - articles
+      summary: Article Embargo Details
+      description: View a private article embargo details
+      operationId: private_article_embargo_details
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. Embargo for article
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleEmbargo'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Article Embargo
+    put:
+      tags:
+      - articles
+      summary: Update Article Embargo
+      description: 'Note: setting an article under whole embargo does not imply that the article will be published when the
+        embargo will expire. You must explicitly call the publish endpoint to enable this functionality.'
+      operationId: private_article_embargo_update
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        description: Embargo description
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArticleEmbargoUpdater'
+        required: true
+      responses:
+        '205':
+          description: Reset Content
+          headers:
+            Location:
+              description: Location of embargo
+              schema:
+                type: string
+                format: link
+          content: {}
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Article Embargo
+      x-codegen-request-body-name: Embargo
+    delete:
+      tags:
+      - articles
+      summary: Delete Article Embargo
+      description: Will lift the embargo for the specified article
+      operationId: private_article_embargo_delete
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '204':
+          description: No Content
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Article Embargo
+  /account/articles/{article_id}/resource:
+    post:
+      tags:
+      - articles
+      summary: Private Article Resource
+      description: Edit article resource data.
+      operationId: private_article_resource
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        description: Resource data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Resource'
+        required: true
+      responses:
+        '205':
+          description: Reset Content
+          headers:
+            Location:
+              description: Location for account article details
+              schema:
+                type: string
+                format: link
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '422':
+          description: Unprocessable Entity
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-codegen-request-body-name: Resource
+  /account/articles/{article_id}/publish:
+    post:
+      tags:
+      - articles
+      summary: Private Article Publish
+      description: '- If the whole article is under embargo, it will not be published immediately, but when the embargo expires
+        or is lifted.
+
+        - When an article is published, a new public version will be generated. Any further updates to the article will affect
+        the private article data. In order to make these changes publicly visible, an explicit publish operation is needed.'
+      operationId: account_article_publish
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              description: Location of newly published article
+              schema:
+                type: string
+                format: link
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+  /account/articles/{article_id}/unpublish:
+    post:
+      tags:
+      - articles
+      summary: Public Article Unpublish
+      description: Allows authorized users to unpublish an article.
+      operationId: account_article_unpublish
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        description: Article unpublish data
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArticleUnpublishData'
+        required: true
+      responses:
+        '204':
+          description: No Content
+          content: {}
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-codegen-request-body-name: reason
+  /account/articles/{article_id}/reserve_doi:
+    post:
+      tags:
+      - articles
+      summary: Private Article Reserve DOI
+      description: Reserve DOI for article
+      operationId: private_article_reserve_doi
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleDOI'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+  /account/articles/{article_id}/reserve_handle:
+    post:
+      tags:
+      - articles
+      summary: Private Article Reserve Handle
+      description: Reserve Handle for article
+      operationId: private_article_reserve_handle
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleHandle'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+  /account/articles/{article_id}/download:
+    get:
+      tags:
+      - articles
+      summary: Private Article Download
+      description: Download files from a private article preserving the folder structure
+      operationId: private_article_download
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: folder_path
+        in: query
+        description: Folder path to download. If not provided, all files from the article will be downloaded
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content: {}
+        '403':
+          description: Insufficient permissions
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+  /account/articles/{article_id}/versions/{version_id}:
+    put:
+      tags:
+      - articles
+      summary: Update article version
+      description: Updating an article version by passing body parameters.
+      operationId: article_version_update
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: version_id
+        in: path
+        description: Article version identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        description: Article description
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArticleVersionUpdate'
+        required: true
+      responses:
+        '205':
+          description: Reset Content
+          headers:
+            Location:
+              description: Location of newly created article
+              schema:
+                type: string
+                format: link
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationWarningsUpdate'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Article version private updates
+      x-codegen-request-body-name: Article
+    patch:
+      tags:
+      - articles
+      summary: Partially update article version
+      description: Partially updating an article version by passing only the fields to change.
+      operationId: article_version_partial_update
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: version_id
+        in: path
+        description: Article version identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        description: Subset of article version fields to update
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArticleVersionUpdate'
+        required: true
+      responses:
+        '205':
+          description: Reset Content
+          headers:
+            Location:
+              description: Location of updated article version
+              schema:
+                type: string
+                format: link
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationWarningsUpdate'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Article version private updates
+      x-codegen-request-body-name: Article
+  /account/articles/{article_id}/versions/{version_id}/update_thumb:
+    put:
+      tags:
+      - articles
+      summary: Update article version thumbnail
+      description: For a given public article version update the article thumbnail by choosing one of the associated files
+      operationId: article_version_update_thumb
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: version_id
+        in: path
+        description: Article version identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        description: File ID
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FileId'
+        required: true
+      responses:
+        '205':
+          description: Reset Content
+          headers:
+            Location:
+              description: Location for article version details
+              schema:
+                type: string
+                format: link
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '422':
+          description: Unprocessable Entity
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Article version private updates
+      x-codegen-request-body-name: FileId
+  /account/articles/{article_id}/authors:
+    get:
+      tags:
+      - articles
+      summary: List article authors
+      description: List article authors
+      operationId: private_article_authors_list
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. Authors list for article
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Author'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Article Authors
+    put:
+      tags:
+      - articles
+      summary: Replace article authors
+      description: Associate new authors with the article. This will remove all already associated authors and add these new
+        ones
+      operationId: private_article_authors_replace
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        description: Authors description
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthorsCreator'
+        required: true
+      responses:
+        '205':
+          description: Reset Content
+          headers:
+            Location:
+              description: Location of list of authors
+              schema:
+                type: string
+                format: url
+          content: {}
+        '400':
+          description: Bad Request. Article ID must be an integer and bigger than 0. Author with ID Not Found.
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Article Authors
+      x-codegen-request-body-name: Authors
+    post:
+      tags:
+      - articles
+      summary: Add article authors
+      description: Associate new authors with the article. This will add new authors to the list of already associated authors
+      operationId: private_article_authors_add
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        description: Authors description
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthorsCreator'
+        required: true
+      responses:
+        '205':
+          description: Reset Content
+          headers:
+            Location:
+              description: Location of list of authors
+              schema:
+                type: string
+                format: url
+          content: {}
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Article Authors
+      x-codegen-request-body-name: Authors
+  /account/articles/{article_id}/authors/{author_id}:
+    delete:
+      tags:
+      - articles
+      summary: Delete article author
+      description: De-associate author from article
+      operationId: private_article_author_delete
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: author_id
+        in: path
+        description: Article Author unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '204':
+          description: No Content
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Article Authors
+  /account/articles/{article_id}/categories:
+    get:
+      tags:
+      - articles
+      summary: List article categories
+      description: List article categories
+      operationId: private_article_categories_list
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. Article categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Article Categories
+    put:
+      tags:
+      - articles
+      summary: Replace article categories
+      description: Associate new categories with the article. This will remove all already associated categories and add these
+        new ones
+      operationId: private_article_categories_replace
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoriesCreator'
+        required: true
+      responses:
+        '205':
+          description: Reset Content
+          content: {}
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Article Categories
+      x-codegen-request-body-name: categories
+    post:
+      tags:
+      - articles
+      summary: Add article categories
+      description: Associate new categories with the article. This will add new categories to the list of already associated
+        categories
+      operationId: private_article_categories_add
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoriesCreator'
+        required: true
+      responses:
+        '205':
+          description: Reset Content
+          content: {}
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Article Categories
+      x-codegen-request-body-name: categories
+  /account/articles/{article_id}/categories/{category_id}:
+    delete:
+      tags:
+      - articles
+      summary: Delete article category
+      description: De-associate category from article
+      operationId: private_article_category_delete
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: category_id
+        in: path
+        description: Category unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '204':
+          description: No Content
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Article Categories
+  /account/articles/{article_id}/confidentiality:
+    get:
+      tags:
+      - articles
+      summary: Article confidentiality details
+      description: View confidentiality settings. The confidentiality feature is now deprecated. This has been replaced by
+        the new extended embargo functionality and all items that used to be confidential have now been migrated to items
+        with a permanent embargo on files. All API endpoints related to this functionality will remain for backwards compatibility,
+        but will now be attached to the new extended embargo workflows.
+      operationId: private_article_confidentiality_details
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. Article categories
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArticleConfidentiality'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Article Confidentiality - DEPRECATED
+    put:
+      tags:
+      - articles
+      summary: Update article confidentiality
+      description: Update confidentiality settings. The confidentiality feature is now deprecated. This has been replaced
+        by the new extended embargo functionality and all items that used to be confidential have now been migrated to items
+        with a permanent embargo on files. All API endpoints related to this functionality will remain for backwards compatibility,
+        but will now be attached to the new extended embargo workflows.
+      operationId: private_article_confidentiality_update
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ConfidentialityCreator'
+        required: true
+      responses:
+        '205':
+          description: Reset Content
+          content: {}
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Article Confidentiality - DEPRECATED
+      x-codegen-request-body-name: reason
+    delete:
+      tags:
+      - articles
+      summary: Delete article confidentiality
+      description: Delete confidentiality settings. The confidentiality feature is now deprecated. This has been replaced
+        by the new extended embargo functionality and all items that used to be confidential have now been migrated to items
+        with a permanent embargo on files. All API endpoints related to this functionality will remain for backwards compatibility,
+        but will now be attached to the new extended embargo workflows.
+      operationId: private_article_confidentiality_delete
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '204':
+          description: No Content
+          content: {}
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Article Confidentiality - DEPRECATED
+  /account/articles/{article_id}/private_links:
+    get:
+      tags:
+      - articles
+      summary: List private links
+      description: List private links
+      operationId: private_article_private_link
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. Article private links
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PrivateLink'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Article Private Links
+    post:
+      tags:
+      - articles
+      summary: Create private link
+      description: Create new private link for this article
+      operationId: private_article_private_link_create
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PrivateLinkCreator'
+        required: false
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              description: Location of private link
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrivateLinkResponse'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '422':
+          description: Unprocessable Entity
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Article Private Links
+      x-codegen-request-body-name: private_link
+  /account/articles/{article_id}/private_links/{link_id}:
+    put:
+      tags:
+      - articles
+      summary: Update private link
+      description: Update existing private link for this article
+      operationId: private_article_private_link_update
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: link_id
+        in: path
+        description: Private link token
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PrivateLinkCreator'
+        required: false
+      responses:
+        '205':
+          description: Reset Content
+          headers:
+            Location:
+              description: Location of private link
+              schema:
+                type: string
+                format: url
+          content: {}
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '422':
+          description: Unprocessable Entity
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Article Private Links
+      x-codegen-request-body-name: private_link
+    delete:
+      tags:
+      - articles
+      summary: Disable private link
+      description: Disable/delete private link for this article
+      operationId: private_article_private_link_delete
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: link_id
+        in: path
+        description: Private link token
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: No Content
+          content: {}
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Article Private Links
+  /account/articles/{article_id}/files:
+    get:
+      tags:
+      - articles
+      summary: List article files
+      description: List private files
+      operationId: private_article_files_list
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: page
+        in: query
+        description: Page number. Used for pagination with page_size
+        schema:
+          maximum: 5000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: page_size
+        in: query
+        description: The number of results included on a page. Used for pagination with page
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+          default: 10
+      - name: limit
+        in: query
+        description: Number of results included on a page. Used for pagination with query
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: offset
+        in: query
+        description: Where to start the listing (the offset of the first result). Used for pagination with limit
+        schema:
+          maximum: 5000
+          minimum: 0
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. Article files list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PrivateFile'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Article Files
+    post:
+      tags:
+      - articles
+      summary: Initiate Upload
+      description: Initiate a new file upload within the article. Either use the link property to point to an existing file
+        that resides elsewhere and will not be uploaded to Figshare or use the other 3 parameters (md5, name, size).
+      operationId: private_article_upload_initiate
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: page
+        in: query
+        description: Page number. Used for pagination with page_size
+        schema:
+          maximum: 5000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: page_size
+        in: query
+        description: The number of results included on a page. Used for pagination with page
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+          default: 10
+      - name: limit
+        in: query
+        description: Number of results included on a page. Used for pagination with query
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int64
+      - name: offset
+        in: query
+        description: Where to start the listing (the offset of the first result). Used for pagination with limit
+        schema:
+          maximum: 5000
+          minimum: 0
+          type: integer
+          format: int64
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FileCreator'
+        required: true
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              description: Location of new file
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '422':
+          description: Unprocessable Entity. Parameters missing or incorrect
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Article Files
+      x-codegen-request-body-name: File
+  /account/articles/{article_id}/files/{file_id}:
+    get:
+      tags:
+      - articles
+      summary: Single File
+      description: View details of file for specified article
+      operationId: private_article_file
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: file_id
+        in: path
+        description: File unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. Article private file
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PrivateFile'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Article Files
+    post:
+      tags:
+      - articles
+      summary: Complete Upload
+      description: Complete file upload
+      operationId: private_article_upload_complete
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: file_id
+        in: path
+        description: File unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '202':
+          description: Accepted
+          content: {}
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Article Files
+    delete:
+      tags:
+      - articles
+      summary: File Delete
+      description: Complete file upload
+      operationId: private_article_file_delete
+      parameters:
+      - name: article_id
+        in: path
+        description: Article unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      - name: file_id
+        in: path
+        description: File unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '204':
+          description: No Content
+          content: {}
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Article Files
+  /account/articles/export:
+    get:
+      tags:
+      - articles
+      summary: Account Article Report
+      description: Return status on all reports generated for the account from the oauth credentials
+      operationId: account_article_report
+      parameters:
+      - name: group_id
+        in: query
+        description: A group ID to filter by
+        schema:
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK. An array of account report entries
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AccountReport'
+        '400':
+          description: Bad Request
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+    post:
+      tags:
+      - articles
+      summary: Initiate a new Report
+      description: Initiate a new Article Report for this Account. There is a limit of 1 report per day.
+      operationId: account_article_report_generate
+      responses:
+        '200':
+          description: OK. AccountReport created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountReport'
+        '429':
+          description: Too Many Requests
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all

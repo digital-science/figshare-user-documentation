@@ -1,0 +1,86 @@
+paths:
+  /symplectic/articles:
+    get:
+      tags:
+      - symplectic
+      summary: Get changed articles for Symplectic Elements
+      description: Returns a list of articles for Symplectic Elements integration to synchronize article data.
+      operationId: symplectic_changed_articles
+      x-internal: true
+      parameters:
+      - name: since
+        in: query
+        description: 'ISO 8601 datetime string indicating the start of the search window (format: YYYY-MM-DD HH:MM:SS)'
+        required: true
+        schema:
+          type: string
+        example: '2015-01-01 00:00:00'
+      - name: offset
+        in: query
+        description: Number of results to skip for pagination
+        required: false
+        schema:
+          type: integer
+          minimum: 0
+          default: 0
+      - name: limit
+        in: query
+        description: Maximum number of results to return
+        required: false
+        schema:
+          type: integer
+          minimum: 1
+          default: 10
+      - name: status
+        in: query
+        description: Filter by article status
+        required: false
+        schema:
+          type: string
+          enum:
+          - public
+          - private
+          - draft
+      - name: is_embargoed
+        in: query
+        description: Filter by embargo status. When true, only returns articles with EMBARGO_ARTICLE type
+        required: false
+        schema:
+          type: string
+          enum:
+          - 'true'
+          - 'false'
+      responses:
+        '200':
+          description: OK. Returns a list of symplectic articles
+          headers:
+            ETag:
+              description: Hash of the returned articles for caching purposes
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+        '400':
+          description: Bad Request - Missing or invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '401':
+          description: Unauthorized - Missing or invalid OAuth token
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '403':
+          description: Forbidden - Insufficient permissions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+      security:
+      - OAuth2: []

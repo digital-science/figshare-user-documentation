@@ -1,4 +1,0 @@
-site_name: Figshare User Documentation
-theme: readthedocs
-extra_javascript:
-  - fig.js

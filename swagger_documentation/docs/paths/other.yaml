@@ -1,0 +1,205 @@
+paths:
+  /item_types:
+    get:
+      tags:
+      - other
+      summary: Item Types
+      description: Returns the list of Item Types of the requested group. If no user is authenticated, returns the item types
+        available for Figshare.
+      operationId: item_types_list
+      parameters:
+      - name: group_id
+        in: query
+        description: Identifier of the group for which the item types are requested
+        schema:
+          minimum: 0
+          type: integer
+          format: int64
+          default: 0
+      responses:
+        '200':
+          description: OK. An array of item types
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ItemType'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+  /account/funding/search:
+    post:
+      tags:
+      - other
+      summary: Search Funding
+      description: Search for fundings
+      operationId: private_funding_search
+      requestBody:
+        description: Search Parameters
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FundingSearch'
+        required: false
+      responses:
+        '200':
+          description: OK. An array of funding information
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FundingInformation'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-codegen-request-body-name: search
+  /account:
+    get:
+      tags:
+      - other
+      summary: Private Account information
+      description: Account information for token/personal token
+      operationId: private_account
+      responses:
+        '200':
+          description: OK. Account representation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+  /categories:
+    get:
+      tags:
+      - other
+      summary: Public Categories
+      description: Returns a list of public categories
+      operationId: categories_list
+      responses:
+        '200':
+          description: OK. An array of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CategoryList'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+  /licenses:
+    get:
+      tags:
+      - other
+      summary: Public Licenses
+      description: Returns a list of public licenses
+      operationId: licenses_list
+      responses:
+        '200':
+          description: OK. An array of licenses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/License'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+  /account/licenses:
+    get:
+      tags:
+      - other
+      summary: Private Account Licenses
+      description: This is a private endpoint that requires OAuth. It will return a list with figshare public licenses AND
+        licenses defined for account's institution.
+      operationId: private_licenses_list
+      responses:
+        '200':
+          description: OK. An array of personal licenses
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/License'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+  /file/download/{file_id}:
+    get:
+      tags:
+      - other
+      summary: Public File Download
+      description: Starts the download of a file
+      operationId: file_download
+      parameters:
+      - name: file_id
+        in: path
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
