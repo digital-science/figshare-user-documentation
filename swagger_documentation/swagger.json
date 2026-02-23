@@ -15,6 +15,58 @@
     },
     "servers": [],
     "paths": {
+        "/altmetric/institutions": {
+            "get": {
+                "tags": [
+                    "altmetric"
+                ],
+                "summary": "List Altmetric Institutions",
+                "description": "Returns a list of institutions available for Altmetric reporting",
+                "operationId": "altmetric_institutions_list",
+                "x-internal": true,
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Where to start the listing. The offset of the first item.",
+                        "schema": {
+                            "minimum": 0,
+                            "type": "integer",
+                            "default": 0
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. An array of Altmetric institutions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/AltmetricInstitution"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                }
+            }
+        },
         "/articles": {
             "get": {
                 "tags": [
@@ -10856,7 +10908,6 @@
                 "summary": "Get changed articles for Symplectic Elements",
                 "description": "Returns a list of articles for Symplectic Elements integration to synchronize article data.",
                 "operationId": "symplectic_changed_articles",
-                "x-internal": true,
                 "parameters": [
                     {
                         "name": "since",
@@ -10986,7 +11037,6 @@
                 "summary": "Get institutional user ID for a user",
                 "description": "Returns the institution user ID for a given user within the authenticated account's institution.",
                 "operationId": "symplectic_user_id",
-                "x-internal": true,
                 "parameters": [
                     {
                         "name": "user_id",
@@ -11060,7 +11110,6 @@
                 "summary": "Get article details for Symplectic Elements",
                 "description": "Returns detailed information about a specific article for Symplectic Elements integration, including full metadata and author account information.",
                 "operationId": "symplectic_article",
-                "x-internal": true,
                 "parameters": [
                     {
                         "name": "article_id",
@@ -11137,7 +11186,6 @@
                 "summary": "Get articles for a specific account",
                 "description": "Returns a list of articles for a specific user account identified by external_user_id (symplectic_user_id or institution_user_id).",
                 "operationId": "symplectic_account_articles",
-                "x-internal": true,
                 "parameters": [
                     {
                         "name": "external_user_id",
@@ -11266,7 +11314,6 @@
                 "summary": "Get changed accounts for Symplectic Elements",
                 "description": "Returns a list of accounts that have been modified since the specified date for Symplectic Elements integration.",
                 "operationId": "symplectic_accounts_ids",
-                "x-internal": true,
                 "parameters": [
                     {
                         "name": "since",
@@ -16285,6 +16332,32 @@
                     }
                 },
                 "x-tag": "other"
+            },
+            "AltmetricInstitution": {
+                "required": [
+                    "id",
+                    "name"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "description": "Institution id",
+                        "example": 1
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Institution name",
+                        "example": "My Institution"
+                    },
+                    "custom_domain": {
+                        "type": "string",
+                        "description": "Custom domain for the institution",
+                        "example": "myinstitution.figshare.com",
+                        "nullable": true
+                    }
+                },
+                "x-tag": "altmetric"
             }
         },
         "securitySchemes": {

@@ -6,7 +6,7 @@ paths:
       summary: Get changed articles for Symplectic Elements
       description: Returns a list of articles for Symplectic Elements integration to synchronize article data.
       operationId: symplectic_changed_articles
-      x-internal: true
+
       parameters:
       - name: since
         in: query
@@ -92,7 +92,7 @@ paths:
       summary: Get institutional user ID for a user
       description: Returns the institution user ID for a given user within the authenticated account's institution.
       operationId: symplectic_user_id
-      x-internal: true
+
       parameters:
       - name: user_id
         in: path
@@ -138,7 +138,7 @@ paths:
       summary: Get article details for Symplectic Elements
       description: Returns detailed information about a specific article for Symplectic Elements integration, including full metadata and author account information.
       operationId: symplectic_article
-      x-internal: true
+
       parameters:
       - name: article_id
         in: path
@@ -186,7 +186,7 @@ paths:
       summary: Get articles for a specific account
       description: Returns a list of articles for a specific user account identified by external_user_id (symplectic_user_id or institution_user_id).
       operationId: symplectic_account_articles
-      x-internal: true
+
       parameters:
       - name: external_user_id
         in: path
@@ -271,7 +271,7 @@ paths:
       summary: Get changed accounts for Symplectic Elements
       description: Returns a list of accounts that have been modified since the specified date for Symplectic Elements integration.
       operationId: symplectic_accounts_ids
-      x-internal: true
+
       parameters:
       - name: since
         in: query

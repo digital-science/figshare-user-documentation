@@ -441,6 +441,34 @@
             };
         };
 
+        // Plugin to hide operations marked with x-internal: true from the Swagger UI display.
+        // These operations remain in the spec for server-side (pyramid_openapi3) validation.
+        var HideInternalOperationsPlugin = function() {
+            return {
+                statePlugins: {
+                    spec: {
+                        wrapSelectors: {
+                            taggedOperations: function(oriSelector) {
+                                return function(state) {
+                                    var taggedOps = oriSelector.apply(null, arguments);
+                                    return taggedOps
+                                        .map(function(tagObj) {
+                                            var filtered = tagObj.get('operations').filter(function(op) {
+                                                return !op.getIn(['operation', 'x-internal']);
+                                            });
+                                            return tagObj.set('operations', filtered);
+                                        })
+                                        .filter(function(tagObj) {
+                                            return tagObj.get('operations') && tagObj.get('operations').size > 0;
+                                        });
+                                };
+                            }
+                        }
+                    }
+                }
+            };
+        };
+
         // Initialize Swagger UI
         window.ui = SwaggerUIBundle({
             url: specUrl,
@@ -452,7 +480,8 @@
             ],
             plugins: [
                 SwaggerUIBundle.plugins.DownloadUrl,
-                ClientDownloadsPlugin
+                ClientDownloadsPlugin,
+                HideInternalOperationsPlugin
             ],
             layout: "StandaloneLayout",
             defaultModelsExpandDepth: 1,

@@ -1,0 +1,35 @@
+paths:
+  /altmetric/institutions:
+    get:
+      tags:
+      - altmetric
+      summary: List Altmetric Institutions
+      description: Returns a list of institutions available for Altmetric reporting
+      operationId: altmetric_institutions_list
+      x-internal: true
+      parameters:
+      - name: offset
+        in: query
+        description: Where to start the listing. The offset of the first item.
+        schema:
+          minimum: 0
+          type: integer
+          default: 0
+      responses:
+        '200':
+          description: OK. An array of Altmetric institutions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AltmetricInstitution'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}

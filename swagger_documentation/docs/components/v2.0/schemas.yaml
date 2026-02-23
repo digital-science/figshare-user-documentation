@@ -3798,3 +3798,23 @@ schemas:
         description: Orcid associated to this User
         example: 1234-5678-9123-1234
     x-tag: other
+  AltmetricInstitution:
+    required:
+    - id
+    - name
+    type: object
+    properties:
+      id:
+        type: integer
+        description: Institution id
+        example: 1
+      name:
+        type: string
+        description: Institution name
+        example: My Institution
+      custom_domain:
+        type: string
+        description: Custom domain for the institution
+        example: myinstitution.figshare.com
+        nullable: true
+    x-tag: altmetric
