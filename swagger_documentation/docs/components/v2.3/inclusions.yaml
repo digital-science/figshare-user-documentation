@@ -1,0 +1,21 @@
+# ============================================================================
+# v2.3 COMPONENT INCLUSIONS
+# ============================================================================
+# New schemas introduced in v2.3 that do not exist in v2.0.
+# ============================================================================
+
+schemas:
+  ArticleBatchRequest:
+    required:
+      - ids
+    type: object
+    properties:
+      ids:
+        type: array
+        description: List of article IDs to retrieve (maximum 100)
+        maxItems: 100
+        items:
+          type: integer
+          format: int64
+        example: [1234567, 2345678, 3456789]
+    x-tag: articles
