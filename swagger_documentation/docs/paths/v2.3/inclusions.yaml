@@ -1,0 +1,43 @@
+# ============================================================================
+# v2.3 PATH INCLUSIONS
+# ============================================================================
+# New endpoints introduced in v2.3 that do not exist in v2.0.
+# ============================================================================
+
+paths:
+  /articles/batch:
+    post:
+      tags:
+        - articles
+      summary: Batch retrieve articles
+      description: |
+        Retrieve multiple articles by their IDs in a single request.
+        This endpoint is new in v2.3 and is not available in earlier versions.
+      operationId: articles_batch
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArticleBatchRequest'
+      responses:
+        '200':
+          description: OK. An array of articles matching the supplied IDs
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Article'
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '422':
+          description: Unprocessable Entity - one or more article IDs not found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
