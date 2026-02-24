@@ -1,0 +1,15 @@
+# ============================================================================
+# v2.3 PATH EXCLUSIONS
+# ============================================================================
+# Endpoints removed or replaced in v2.3.
+# These paths exist in v2.0 but are not available in v2.3.
+# ============================================================================
+
+exclude_paths:
+  # The symplectic integration endpoints were deprecated in v2.2 and removed in v2.3.
+  # Use the standard /account/articles endpoints with the symplectic_id filter instead.
+  - /symplectic/articles
+  - /symplectic/articles/{article_id}
+  - /symplectic/accounts
+  - /symplectic/accounts/{external_user_id}/articles
+  - /symplectic/users/{user_id}

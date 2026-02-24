@@ -19,6 +19,6 @@ versions:
   #   doc_url: "https://docs.figshare.com/#versioning/v2.3"
   #   description: "Deprecated - migrating to 2.3"
     
-  # "2.3":
-  #   deprecated: false
-  #   description: "Latest API version with enhanced features"
+  "2.3":
+    deprecated: false
+    description: "Latest API version with enhanced features"

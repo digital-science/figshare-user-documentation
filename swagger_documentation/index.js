@@ -522,6 +522,33 @@
                     return request;
                 }
 
+                // Inject API version via header and URL path prefix to stay in sync
+                // with the version dropdown. The backend (figshare_api2 versioning tween)
+                // reads the revision from X-API-Revision header or ?revision= query param.
+                // The /v{major}/ path prefix handles routing.
+                var versionSelectEl = document.getElementById('apiVersionSelect');
+                var apiVersion = (versionSelectEl && versionSelectEl.value)
+                    || (window.FigshareVersionManager && window.FigshareVersionManager.getCurrentVersion())
+                    || localStorage.getItem('figshare_api_version')
+                    || '2';
+
+                if (apiVersion) {
+                    // Set the X-API-Revision header (used by the versioning tween)
+                    request.headers['X-API-Revision'] = apiVersion;
+
+                    // Ensure the URL path includes the /v{major} prefix
+                    try {
+                        var versionedUrl = new URL(request.url, window.location.origin);
+                        if (!/^\/v\d+(\/|$)/.test(versionedUrl.pathname)) {
+                            var majorVersion = apiVersion.split('.')[0];
+                            versionedUrl.pathname = '/v' + majorVersion + versionedUrl.pathname;
+                        }
+                        request.url = versionedUrl.toString();
+                    } catch (e) {
+                        console.error('Version injection failed:', e, request.url);
+                    }
+                }
+
                 // Get the API key from localStorage if available
                 var apiKey = localStorage.getItem('figshare_api_key');
                 if (apiKey && apiKey.trim() !== "") {
