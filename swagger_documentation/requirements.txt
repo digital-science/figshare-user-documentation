@@ -1,5 +1,5 @@
 # Code formatting
-black==22.10.0
+black==24.3.0
 
 # Swagger/API documentation parsing
 lxml==5.3.0
