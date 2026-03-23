@@ -8427,6 +8427,231 @@
                 ]
             }
         },
+        "/items/fields": {
+            "get": {
+                "tags": [
+                    "other"
+                ],
+                "summary": "Items Fields Config",
+                "description": "Returns the underlying field catalog for the items context. Requires institution membership and the itbm_config feature flag.",
+                "operationId": "items_fields_list",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK. An array of underlying fields",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/UnderlyingField"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/projects/fields": {
+            "get": {
+                "tags": [
+                    "other"
+                ],
+                "summary": "Projects Fields Config",
+                "description": "Returns the underlying field catalog for the projects context. Requires institution membership and the itbm_config feature flag.",
+                "operationId": "projects_fields_list",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK. An array of underlying fields",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/UnderlyingField"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/collections/fields": {
+            "get": {
+                "tags": [
+                    "other"
+                ],
+                "summary": "Collections Fields Config",
+                "description": "Returns the underlying field catalog for the collections context. Requires institution membership and the itbm_config feature flag.",
+                "operationId": "collections_fields_list",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "OK. An array of underlying fields",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/UnderlyingField"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/items/fields/{item_type_id}": {
+            "get": {
+                "tags": [
+                    "other"
+                ],
+                "summary": "Item Type Fields Config",
+                "description": "Returns the concrete fields configured for the given item type, including per-type overrides. Requires institution membership and the itbm_config feature flag.",
+                "operationId": "items_fields_item_type",
+                "parameters": [
+                    {
+                        "name": "item_type_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "group_id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. An array of item type fields",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ItemTypeField"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
         "/account/funding/search": {
             "post": {
                 "tags": [
@@ -11398,6 +11623,95 @@
     },
     "components": {
         "schemas": {
+            "UnderlyingField": {
+                "required": [
+                    "id",
+                    "name",
+                    "field_type",
+                    "internal_type",
+                    "settings"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "description": "Field identifier"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Field name"
+                    },
+                    "field_type": {
+                        "type": "string",
+                        "description": "Field type (e.g. text, dropdown)"
+                    },
+                    "internal_type": {
+                        "type": "string",
+                        "description": "Internal type (core, stock, or custom)"
+                    },
+                    "settings": {
+                        "type": "object",
+                        "description": "Field settings"
+                    }
+                }
+            },
+            "ItemTypeField": {
+                "required": [
+                    "id",
+                    "name",
+                    "field_type",
+                    "internal_type",
+                    "settings"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "description": "Field identifier"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Field name"
+                    },
+                    "field_type": {
+                        "type": "string",
+                        "description": "Field type (e.g. text, dropdown)"
+                    },
+                    "internal_type": {
+                        "type": "string",
+                        "description": "Internal type (core, stock, or custom)"
+                    },
+                    "display_name": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Display name override for this item type"
+                    },
+                    "hint_text": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Hint text shown to the user"
+                    },
+                    "is_mandatory": {
+                        "type": "boolean",
+                        "nullable": true,
+                        "description": "Whether the field is mandatory for this item type"
+                    },
+                    "order": {
+                        "type": "integer",
+                        "nullable": true,
+                        "description": "Display order within the item type"
+                    },
+                    "display_area": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Display area (core, essential, additional, or timeline)"
+                    },
+                    "settings": {
+                        "type": "object",
+                        "description": "Field settings"
+                    }
+                }
+            },
             "Account": {
                 "required": [
                     "active",
@@ -14592,6 +14906,13 @@
                         "type": "string",
                         "description": "The URL name of the item type.",
                         "example": "journal_contribution"
+                    },
+                    "fields": {
+                        "type": "array",
+                        "description": "Fields configured for this item type. Present only when itbm_config is enabled for the institution.",
+                        "items": {
+                            "$ref": "#/components/schemas/ItemTypeField"
+                        }
                     }
                 }
             },
