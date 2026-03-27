@@ -8341,7 +8341,108 @@
                 "x-codegen-request-body-name": "Item"
             }
         },
+        "/items/{item_id}": {
+            "get": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "Public item details",
+                "description": "View a public item. For ITBM-enabled items, the response includes a fields object with stock field values.",
+                "operationId": "public_item_details",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "description": "Item unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. Item representation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ItemComplete"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": []
+            }
+        },
         "/account/items/{item_id}": {
+            "get": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "Item details",
+                "description": "View a private item. For ITBM-enabled items, the response includes a fields object with stock field values.",
+                "operationId": "private_item_details",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "description": "Item unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. Item representation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ItemCompletePrivate"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Item"
+            },
             "put": {
                 "tags": [
                     "items"
@@ -12989,6 +13090,30 @@
                     "publisher_published": {
                         "type": "string",
                         "format": "date"
+                    }
+                },
+                "x-tag": "items"
+            },
+            "ItemComplete": {
+                "description": "Full item representation including ITBM fields (public). Same as ArticleComplete plus optional fields property.",
+                "type": "object",
+                "properties": {
+                    "fields": {
+                        "type": "object",
+                        "additionalProperties": true,
+                        "description": "ITBM field values keyed by field ID. Only present for ITBM-enabled items."
+                    }
+                },
+                "x-tag": "items"
+            },
+            "ItemCompletePrivate": {
+                "description": "Full item representation including ITBM fields (private). Same as ArticleCompletePrivate plus optional fields property.",
+                "type": "object",
+                "properties": {
+                    "fields": {
+                        "type": "object",
+                        "additionalProperties": true,
+                        "description": "ITBM field values keyed by field ID. Only present for ITBM-enabled items."
                     }
                 },
                 "x-tag": "items"

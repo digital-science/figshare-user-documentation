@@ -845,6 +845,24 @@ schemas:
         type: string
         format: date
     x-tag: items
+  ItemComplete:
+    description: Full item representation including ITBM fields (public). Same as ArticleComplete plus optional fields property.
+    type: object
+    properties:
+      fields:
+        type: object
+        additionalProperties: true
+        description: ITBM field values keyed by field ID. Only present for ITBM-enabled items.
+    x-tag: items
+  ItemCompletePrivate:
+    description: Full item representation including ITBM fields (private). Same as ArticleCompletePrivate plus optional fields property.
+    type: object
+    properties:
+      fields:
+        type: object
+        additionalProperties: true
+        description: ITBM field values keyed by field ID. Only present for ITBM-enabled items.
+    x-tag: items
   UnderlyingField:
     type: object
     properties:
