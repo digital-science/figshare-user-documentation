@@ -16563,6 +16563,11 @@
                         "type": "string",
                         "description": "Date when project was created",
                         "example": "2017-05-16T14:52:54Z"
+                    },
+                    "fields": {
+                        "type": "object",
+                        "description": "ITBM stock field values keyed by underlying field ID. Only present when the project belongs to an ITBM-enabled institution.",
+                        "additionalProperties": {}
                     }
                 },
                 "allOf": [
@@ -16659,6 +16664,11 @@
                         "items": {
                             "$ref": "#/components/schemas/ShortCustomField"
                         }
+                    },
+                    "fields": {
+                        "type": "object",
+                        "description": "ITBM stock field values keyed by underlying field ID. Only present when the project belongs to an ITBM-enabled institution.",
+                        "additionalProperties": {}
                     }
                 },
                 "allOf": [
