@@ -6880,13 +6880,76 @@
                 ]
             }
         },
+        "/account/groups/{group_id}/metadata/item": {
+            "get": {
+                "tags": [
+                    "institutions"
+                ],
+                "summary": "Group custom fields",
+                "description": "Returns the custom fields for the specified group. Deprecated in favour of GET /items/fields/{item_type_id}. Will be removed after 2027-01-01.",
+                "operationId": "account_group_custom_fields",
+                "parameters": [
+                    {
+                        "name": "group_id",
+                        "in": "path",
+                        "description": "Group unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. An array of custom fields",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CustomArticleField"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Institution - DEPRECATED"
+            }
+        },
         "/account/institution/custom_fields": {
             "get": {
                 "tags": [
                     "institutions"
                 ],
                 "summary": "Private account institution group custom fields",
-                "description": "Returns the custom fields in the group the user belongs to, or the ones in the group specified, if the user has access.",
+                "description": "Returns the custom fields in the group the user belongs to, or the ones in the group specified, if the user has access. Deprecated in favour of GET /items/fields/{item_type_id}. Will be removed after 2027-01-01.",
                 "operationId": "custom_fields_list",
                 "parameters": [
                     {
@@ -6937,7 +7000,8 @@
                             "all"
                         ]
                     }
-                ]
+                ],
+                "x-subcategory": "Private Institution - DEPRECATED"
             }
         },
         "/account/institution/custom_fields/{custom_field_id}/items/upload": {
@@ -8283,7 +8347,7 @@
                     "items"
                 ],
                 "summary": "Create new Item",
-                "description": "Create a new Item by sending item information. ITBM-enabled institutions can include stock fields (journal, volume, etc.) as top-level properties. Non-ITBM institutions sending stock fields will receive a validation error.",
+                "description": "Create a new Item by sending item information. ITBM-enabled institutions can include stock fields (journal, volume, etc.) inside the `fields` object. Non-ITBM institutions sending stock fields will receive a validation error.",
                 "operationId": "private_item_create",
                 "requestBody": {
                     "description": "Item description",
@@ -8448,7 +8512,7 @@
                     "items"
                 ],
                 "summary": "Update item",
-                "description": "Update an item by passing full body parameters. ITBM-enabled institutions can include stock fields as top-level properties. Non-ITBM institutions sending stock fields will receive a validation error.",
+                "description": "Update an item by passing full body parameters. ITBM-enabled institutions can include stock fields inside the `fields` object. Non-ITBM institutions sending stock fields will receive a validation error.",
                 "operationId": "private_item_update",
                 "parameters": [
                     {
@@ -8533,7 +8597,7 @@
                     "items"
                 ],
                 "summary": "Partially update item",
-                "description": "Partially update an item by sending only the fields to change. ITBM-enabled institutions can include stock fields as top-level properties.",
+                "description": "Partially update an item by sending only the fields to change. ITBM-enabled institutions can include stock fields inside the `fields` object.",
                 "operationId": "private_item_partial_update",
                 "parameters": [
                     {
@@ -12681,415 +12745,65 @@
                 "x-tag": "articles"
             },
             "ItemCreate": {
-                "required": [
-                    "title"
-                ],
                 "type": "object",
+                "description": "Item creation payload. All metadata (core + stock + custom) goes inside the 'fields' object, keyed by underlying field name. System properties (item_type_id, group_id) stay top-level. No backward-compatible fields: defined_type, references, custom_fields are not accepted.",
                 "properties": {
-                    "title": {
-                        "maxLength": 1000,
-                        "minLength": 3,
-                        "type": "string",
-                        "description": "Title of item",
-                        "example": "Test item title"
-                    },
-                    "description": {
-                        "maxLength": 20000,
-                        "type": "string",
-                        "description": "The item description",
-                        "default": ""
-                    },
-                    "is_metadata_record": {
-                        "type": "boolean",
-                        "description": "True if item has no files"
-                    },
-                    "metadata_reason": {
-                        "type": "string",
-                        "description": "Item metadata reason"
-                    },
-                    "tags": {
-                        "type": "array",
-                        "description": "List of tags to be associated with the item. Keywords can be used instead",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "keywords": {
-                        "type": "array",
-                        "description": "List of tags to be associated with the item. Tags can be used instead",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "references": {
-                        "type": "array",
-                        "description": "List of links to be associated with the item",
-                        "items": {
-                            "type": "string",
-                            "format": "link"
-                        }
-                    },
-                    "related_materials": {
-                        "type": "array",
-                        "description": "List of related materials",
-                        "items": {
-                            "$ref": "#/components/schemas/RelatedMaterial"
-                        }
-                    },
-                    "categories": {
-                        "type": "array",
-                        "description": "List of category ids to be associated with the item",
-                        "items": {
-                            "type": "integer"
-                        }
-                    },
-                    "categories_by_source_id": {
-                        "type": "array",
-                        "description": "List of category source ids to be associated with the item",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "authors": {
-                        "type": "array",
-                        "description": "List of authors to be associated with the item",
-                        "items": {
-                            "type": "object",
-                            "properties": {}
-                        }
-                    },
-                    "custom_fields": {
-                        "type": "object",
-                        "properties": {},
-                        "description": "List of key, values pairs to be associated with the item"
-                    },
-                    "custom_fields_list": {
-                        "type": "array",
-                        "description": "List of custom fields values, supersedes custom_fields parameter",
-                        "items": {
-                            "$ref": "#/components/schemas/CustomArticleFieldAdd"
-                        }
-                    },
                     "item_type_id": {
                         "type": "integer",
-                        "description": "Item type identifier (use /item_types to get available types). Alternative to defined_type."
+                        "description": "Item type identifier (use /item_types to get available types)."
                     },
                     "defined_type": {
                         "type": "string",
-                        "description": "Item type name (alternative to item_type_id)"
-                    },
-                    "funding": {
-                        "type": "string",
-                        "description": "Grant number or funding authority",
-                        "default": ""
-                    },
-                    "funding_list": {
-                        "type": "array",
-                        "description": "Funding creation / update items",
-                        "items": {
-                            "$ref": "#/components/schemas/FundingCreate"
-                        }
-                    },
-                    "license": {
-                        "type": "integer",
-                        "description": "License id for this item",
-                        "default": 0
-                    },
-                    "doi": {
-                        "type": "string",
-                        "description": "Not applicable for regular users. In an institutional case, make sure your group supports setting DOIs.",
-                        "default": ""
-                    },
-                    "handle": {
-                        "type": "string",
-                        "description": "Not applicable for regular users. In an institutional case, make sure your group supports setting Handles.",
-                        "default": ""
-                    },
-                    "resource_doi": {
-                        "type": "string",
-                        "description": "Deprecated by related materials.",
-                        "default": ""
-                    },
-                    "resource_title": {
-                        "type": "string",
-                        "description": "Deprecated by related materials.",
-                        "default": ""
-                    },
-                    "timeline": {
-                        "$ref": "#/components/schemas/TimelineUpdate"
+                        "description": "Item type name (alternative to item_type_id, resolved to item_type_id internally)."
                     },
                     "group_id": {
                         "type": "integer",
-                        "description": "Not applicable to regular users. This field is reserved to institutions/publishers with access to assign to specific groups"
+                        "description": "Group to assign the item to."
+                    },
+                    "is_metadata_record": {
+                        "type": "boolean",
+                        "description": "True if item has no files."
                     },
                     "download_disabled": {
                         "type": "boolean",
-                        "description": "Disable download button for this item"
+                        "description": "Disable download button for this item."
                     },
-                    "journal": {
+                    "resource_doi": {
                         "type": "string",
-                        "description": "Journal name (ITBM stock field)"
+                        "description": "Deprecated by related materials (inside fields)."
                     },
-                    "volume": {
+                    "resource_title": {
                         "type": "string",
-                        "description": "Volume number (ITBM stock field)"
+                        "description": "Deprecated by related materials (inside fields)."
                     },
-                    "issue": {
-                        "type": "string",
-                        "description": "Issue number (ITBM stock field)"
-                    },
-                    "publisher": {
-                        "type": "string",
-                        "description": "Publisher name (ITBM stock field)"
-                    },
-                    "medium": {
-                        "type": "string",
-                        "description": "Medium (ITBM stock field)"
-                    },
-                    "series": {
-                        "type": "string",
-                        "description": "Series name (ITBM stock field)"
-                    },
-                    "pagination": {
-                        "type": "string",
-                        "description": "Pagination (ITBM stock field)"
-                    },
-                    "place_of_publication": {
-                        "type": "string",
-                        "description": "Place of publication (ITBM stock field)"
-                    },
-                    "edition": {
-                        "type": "string",
-                        "description": "Edition (ITBM stock field)"
-                    },
-                    "thesis_name": {
-                        "type": "string",
-                        "description": "Thesis name (ITBM stock field)"
-                    },
-                    "name_of_conference": {
-                        "type": "string",
-                        "description": "Conference name (ITBM stock field)"
-                    },
-                    "commissioning_body": {
-                        "type": "string",
-                        "description": "Commissioning body (ITBM stock field)"
-                    },
-                    "article_id": {
-                        "type": "string",
-                        "description": "Article identifier (ITBM stock field)"
-                    },
-                    "language": {
-                        "type": "string",
-                        "description": "Language (ITBM stock field, dropdown value)"
-                    },
-                    "thesis_level": {
-                        "type": "string",
-                        "description": "Thesis level (ITBM stock field). One of: Doctoral, Masters, Undergraduate, Other"
-                    },
-                    "start_date": {
-                        "type": "string",
-                        "format": "date",
-                        "description": "Start date (ITBM stock field, YYYY-MM-DD)"
-                    },
-                    "finish_date": {
-                        "type": "string",
-                        "format": "date",
-                        "description": "Finish date (ITBM stock field, YYYY-MM-DD)"
-                    },
-                    "first_online": {
-                        "type": "string",
-                        "format": "date",
-                        "description": "First online date (ITBM stock field, YYYY-MM-DD). Alternative to timeline.firstOnline."
-                    },
-                    "publisher_accepted": {
-                        "type": "string",
-                        "format": "date",
-                        "description": "Publisher acceptance date (ITBM stock field, YYYY-MM-DD). Alternative to timeline.publisherAcceptance."
-                    },
-                    "publisher_published": {
-                        "type": "string",
-                        "format": "date",
-                        "description": "Publisher publication date (ITBM stock field, YYYY-MM-DD). Alternative to timeline.publisherPublication."
+                    "fields": {
+                        "type": "object",
+                        "description": "All metadata fields keyed by underlying field name. Includes core fields (title, description, keywords, authors, licence, categories, funding_list, related_materials) and stock fields (journal, volume, issue, etc.). Use GET /items/fields/{item_type_id} to discover available fields.",
+                        "additionalProperties": true
                     }
                 },
                 "x-tag": "items"
             },
             "ItemUpdate": {
-                "description": "Item update payload. Same properties as ItemCreate but no required fields.",
+                "description": "Item update payload. Same structure as ItemCreate but no required fields. Use PATCH for partial updates (only send changed fields inside 'fields').",
                 "type": "object",
                 "properties": {
-                    "title": {
-                        "maxLength": 1000,
-                        "minLength": 3,
-                        "type": "string"
-                    },
-                    "description": {
-                        "maxLength": 20000,
-                        "type": "string"
-                    },
-                    "is_metadata_record": {
-                        "type": "boolean"
-                    },
-                    "metadata_reason": {
-                        "type": "string"
-                    },
-                    "tags": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "keywords": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "references": {
-                        "type": "array",
-                        "items": {
-                            "type": "string",
-                            "format": "link"
-                        }
-                    },
-                    "related_materials": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/RelatedMaterial"
-                        }
-                    },
-                    "categories": {
-                        "type": "array",
-                        "items": {
-                            "type": "integer"
-                        }
-                    },
-                    "categories_by_source_id": {
-                        "type": "array",
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "authors": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {}
-                        }
-                    },
-                    "custom_fields": {
-                        "type": "object",
-                        "properties": {}
-                    },
-                    "custom_fields_list": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/CustomArticleFieldAdd"
-                        }
-                    },
                     "item_type_id": {
                         "type": "integer"
-                    },
-                    "defined_type": {
-                        "type": "string"
-                    },
-                    "funding": {
-                        "type": "string"
-                    },
-                    "funding_list": {
-                        "type": "array",
-                        "items": {
-                            "$ref": "#/components/schemas/FundingCreate"
-                        }
-                    },
-                    "license": {
-                        "type": "integer"
-                    },
-                    "doi": {
-                        "type": "string"
-                    },
-                    "handle": {
-                        "type": "string"
-                    },
-                    "resource_doi": {
-                        "type": "string"
-                    },
-                    "resource_title": {
-                        "type": "string"
-                    },
-                    "timeline": {
-                        "$ref": "#/components/schemas/TimelineUpdate"
                     },
                     "group_id": {
                         "type": "integer"
                     },
+                    "is_metadata_record": {
+                        "type": "boolean"
+                    },
                     "download_disabled": {
                         "type": "boolean"
                     },
-                    "journal": {
-                        "type": "string"
-                    },
-                    "volume": {
-                        "type": "string"
-                    },
-                    "issue": {
-                        "type": "string"
-                    },
-                    "publisher": {
-                        "type": "string"
-                    },
-                    "medium": {
-                        "type": "string"
-                    },
-                    "series": {
-                        "type": "string"
-                    },
-                    "pagination": {
-                        "type": "string"
-                    },
-                    "place_of_publication": {
-                        "type": "string"
-                    },
-                    "edition": {
-                        "type": "string"
-                    },
-                    "thesis_name": {
-                        "type": "string"
-                    },
-                    "name_of_conference": {
-                        "type": "string"
-                    },
-                    "commissioning_body": {
-                        "type": "string"
-                    },
-                    "article_id": {
-                        "type": "string"
-                    },
-                    "language": {
-                        "type": "string"
-                    },
-                    "thesis_level": {
-                        "type": "string"
-                    },
-                    "start_date": {
-                        "type": "string",
-                        "format": "date"
-                    },
-                    "finish_date": {
-                        "type": "string",
-                        "format": "date"
-                    },
-                    "first_online": {
-                        "type": "string",
-                        "format": "date"
-                    },
-                    "publisher_accepted": {
-                        "type": "string",
-                        "format": "date"
-                    },
-                    "publisher_published": {
-                        "type": "string",
-                        "format": "date"
+                    "fields": {
+                        "type": "object",
+                        "description": "All metadata fields keyed by underlying field name. Same structure as ItemCreate.",
+                        "additionalProperties": true
                     }
                 },
                 "x-tag": "items"
@@ -13101,7 +12815,7 @@
                     "fields": {
                         "type": "object",
                         "additionalProperties": true,
-                        "description": "ITBM field values keyed by field ID. Only present for ITBM-enabled items."
+                        "description": "ITBM field values keyed by field name (e.g. journal, volume, publisher). Only present for ITBM-enabled items."
                     }
                 },
                 "x-tag": "items"
@@ -13113,7 +12827,7 @@
                     "fields": {
                         "type": "object",
                         "additionalProperties": true,
-                        "description": "ITBM field values keyed by field ID. Only present for ITBM-enabled items."
+                        "description": "ITBM field values keyed by field name (e.g. journal, volume, publisher). Only present for ITBM-enabled items."
                     }
                 },
                 "x-tag": "items"
@@ -14326,6 +14040,11 @@
                     },
                     "timeline": {
                         "$ref": "#/components/schemas/Timeline"
+                    },
+                    "fields": {
+                        "type": "object",
+                        "description": "ITBM stock field values keyed by field name (e.g. publisher, funding_list). Only present when the collection belongs to an ITBM-enabled institution.",
+                        "additionalProperties": {}
                     }
                 },
                 "allOf": [
@@ -14514,6 +14233,11 @@
                     },
                     "timeline": {
                         "$ref": "#/components/schemas/Timeline"
+                    },
+                    "fields": {
+                        "type": "object",
+                        "description": "ITBM stock field values keyed by field name (e.g. publisher, funding_list). Only present when the collection belongs to an ITBM-enabled institution.",
+                        "additionalProperties": {}
                     }
                 },
                 "allOf": [
@@ -14524,9 +14248,6 @@
                 "x-tag": "collections"
             },
             "CollectionCreate": {
-                "required": [
-                    "title"
-                ],
                 "type": "object",
                 "properties": {
                     "funding": {
@@ -14709,6 +14430,19 @@
                     },
                     "timeline": {
                         "$ref": "#/components/schemas/TimelineUpdate"
+                    },
+                    "fields": {
+                        "type": "object",
+                        "description": "ITBM institutions only: all metadata fields keyed by underlying field name (e.g. title, description, keywords, publisher, funding_list). When present, the fields object is the authoritative source for all metadata; top-level metadata keys are ignored.",
+                        "example": {
+                            "title": "My Collection",
+                            "description": "Collection description",
+                            "keywords": [
+                                "keyword1"
+                            ],
+                            "publisher": "Springer Nature"
+                        },
+                        "additionalProperties": true
                     }
                 },
                 "x-tag": "collections"
@@ -15455,11 +15189,11 @@
                 "properties": {
                     "id": {
                         "type": "integer",
-                        "description": "A funding ID as returned by the Funding Search endpoint"
+                        "description": "A funding ID as returned by the Funding Search endpoint. Use either id or title, not both."
                     },
                     "title": {
                         "type": "string",
-                        "description": "The title of the new user created funding"
+                        "description": "The title of the new user created funding. Use either title or id, not both."
                     }
                 },
                 "x-tag": "funding"
@@ -15707,6 +15441,13 @@
                         "type": "string",
                         "description": "The URL name of the item type.",
                         "example": "journal_contribution"
+                    },
+                    "fields": {
+                        "type": "array",
+                        "description": "Available metadata fields for this item type. Only present when the ITBM feature flag is enabled for the institution. Use GET /items/fields/{item_type_id} for full detail.",
+                        "items": {
+                            "$ref": "#/components/schemas/ItemTypeField"
+                        }
                     }
                 }
             },
@@ -16566,7 +16307,7 @@
                     },
                     "fields": {
                         "type": "object",
-                        "description": "ITBM stock field values keyed by underlying field ID. Only present when the project belongs to an ITBM-enabled institution.",
+                        "description": "ITBM stock field values keyed by field name (e.g. funding_list). Only present when the project belongs to an ITBM-enabled institution.",
                         "additionalProperties": {}
                     }
                 },
@@ -16667,7 +16408,7 @@
                     },
                     "fields": {
                         "type": "object",
-                        "description": "ITBM stock field values keyed by underlying field ID. Only present when the project belongs to an ITBM-enabled institution.",
+                        "description": "ITBM stock field values keyed by field name (e.g. funding_list). Only present when the project belongs to an ITBM-enabled institution.",
                         "additionalProperties": {}
                     }
                 },
@@ -16679,9 +16420,6 @@
                 "x-tag": "projects"
             },
             "ProjectCreate": {
-                "required": [
-                    "title"
-                ],
                 "type": "object",
                 "properties": {
                     "title": {
@@ -16728,6 +16466,20 @@
                         "items": {
                             "$ref": "#/components/schemas/CustomArticleFieldAdd"
                         }
+                    },
+                    "fields": {
+                        "type": "object",
+                        "description": "ITBM institutions only: all metadata fields keyed by underlying field name (e.g. title, description, funding_list). When present, the fields object is the authoritative source for all metadata; top-level metadata keys are ignored.",
+                        "example": {
+                            "title": "My Project",
+                            "description": "Project description",
+                            "funding_list": [
+                                {
+                                    "title": "Test Grant"
+                                }
+                            ]
+                        },
+                        "additionalProperties": true
                     }
                 },
                 "x-tag": "projects"
@@ -17302,6 +17054,7 @@
             },
             "TimelineUpdate": {
                 "type": "object",
+                "description": "Legacy timeline input (used by /v2/account/articles). ITBM items do not use this object — pass dates as stock fields inside fields: {} instead.",
                 "properties": {
                     "firstOnline": {
                         "type": "string",
@@ -17314,6 +17067,28 @@
                         "example": "2015-12-31"
                     },
                     "publisherAcceptance": {
+                        "type": "string",
+                        "description": "Date when the item was accepted for publication",
+                        "example": "2015-12-31"
+                    }
+                },
+                "x-tag": "timeline_update"
+            },
+            "ItbmTimeline": {
+                "type": "object",
+                "description": "Timeline object returned in ITBM item and collection responses. Keys are snake_case.",
+                "properties": {
+                    "first_online": {
+                        "type": "string",
+                        "description": "Online posted date",
+                        "example": "2015-12-31"
+                    },
+                    "publisher_publication": {
+                        "type": "string",
+                        "description": "Publish date",
+                        "example": "2015-12-31"
+                    },
+                    "publisher_acceptance": {
                         "type": "string",
                         "description": "Date when the item was accepted for publication",
                         "example": "2015-12-31"
