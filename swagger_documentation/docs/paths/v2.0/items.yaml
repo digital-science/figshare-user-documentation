@@ -6,7 +6,7 @@ paths:
       summary: Create new Item
       description: >-
         Create a new Item by sending item information.
-        ITBM-enabled institutions can include stock fields (journal, volume, etc.) as top-level properties.
+        ITBM-enabled institutions can include stock fields (journal, volume, etc.) inside the `fields` object.
         Non-ITBM institutions sending stock fields will receive a validation error.
       operationId: private_item_create
       requestBody:
@@ -116,7 +116,7 @@ paths:
       summary: Update item
       description: >-
         Update an item by passing full body parameters.
-        ITBM-enabled institutions can include stock fields as top-level properties.
+        ITBM-enabled institutions can include stock fields inside the `fields` object.
         Non-ITBM institutions sending stock fields will receive a validation error.
       operationId: private_item_update
       parameters:
@@ -174,7 +174,7 @@ paths:
       summary: Partially update item
       description: >-
         Partially update an item by sending only the fields to change.
-        ITBM-enabled institutions can include stock fields as top-level properties.
+        ITBM-enabled institutions can include stock fields inside the `fields` object.
       operationId: private_item_partial_update
       parameters:
       - name: item_id

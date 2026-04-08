@@ -208,13 +208,55 @@ paths:
       security:
       - OAuth2:
         - all
+  /account/groups/{group_id}/metadata/item:
+    get:
+      tags:
+      - institutions
+      summary: Group custom fields
+      description: >-
+        Returns the custom fields for the specified group. Deprecated in favour of
+        GET /items/fields/{item_type_id}. Will be removed after 2027-01-01.
+      operationId: account_group_custom_fields
+      parameters:
+      - name: group_id
+        in: path
+        description: Group unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+      responses:
+        '200':
+          description: OK. An array of custom fields
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CustomArticleField'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Institution - DEPRECATED
   /account/institution/custom_fields:
     get:
       tags:
       - institutions
       summary: Private account institution group custom fields
       description: Returns the custom fields in the group the user belongs to, or the ones in the group specified, if the
-        user has access.
+        user has access. Deprecated in favour of GET /items/fields/{item_type_id}. Will be removed after 2027-01-01.
       operationId: custom_fields_list
       parameters:
       - name: group_id
@@ -246,6 +288,7 @@ paths:
       security:
       - OAuth2:
         - all
+      x-subcategory: Private Institution - DEPRECATED
   /account/institution/custom_fields/{custom_field_id}/items/upload:
     post:
       tags:
