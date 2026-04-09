@@ -554,9 +554,9 @@ schemas:
       item_type_id:
         type: integer
         description: Item type identifier (use /item_types to get available types).
-      defined_type:
+      item_type_name:
         type: string
-        description: Item type name (alternative to item_type_id, resolved to item_type_id internally).
+        description: Item type name as alternative to item_type_id (e.g. "dataset"). Resolved to item_type_id internally.
       group_id:
         type: integer
         description: Group to assign the item to.
@@ -589,6 +589,10 @@ schemas:
     properties:
       item_type_id:
         type: integer
+        description: Item type identifier (use /item_types to get available types).
+      item_type_name:
+        type: string
+        description: Item type name as alternative to item_type_id (e.g. "dataset"). Resolved to item_type_id internally.
       group_id:
         type: integer
       is_metadata_record:
@@ -604,6 +608,12 @@ schemas:
     description: Full item representation including ITBM fields (public). Same as ArticleComplete plus optional fields property.
     type: object
     properties:
+      item_type_id:
+        type: integer
+        description: Item type identifier.
+      item_type_name:
+        type: string
+        description: Human-readable item type name (e.g. "dataset", "journal article").
       fields:
         type: object
         additionalProperties: true
@@ -613,6 +623,12 @@ schemas:
     description: Full item representation including ITBM fields (private). Same as ArticleCompletePrivate plus optional fields property.
     type: object
     properties:
+      item_type_id:
+        type: integer
+        description: Item type identifier.
+      item_type_name:
+        type: string
+        description: Human-readable item type name (e.g. "dataset", "journal article").
       fields:
         type: object
         additionalProperties: true
