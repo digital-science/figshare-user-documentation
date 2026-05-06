@@ -578,7 +578,9 @@ schemas:
           All metadata fields keyed by underlying field name. Includes core fields (title,
           description, keywords, authors, licence, categories, funding_list, related_materials)
           and stock fields (journal, volume, issue, etc.). Use GET /items/fields/{item_type_id}
-          to discover available fields.
+          to discover available fields. `categories` is a list of objects with an `id` key
+          (extras ignored); `licence` is a single object with an `id` key (extras ignored).
+          Bare integers are rejected.
         additionalProperties: true
     x-tag: items
   ItemUpdate:
@@ -601,7 +603,10 @@ schemas:
         type: boolean
       fields:
         type: object
-        description: All metadata fields keyed by underlying field name. Same structure as ItemCreate.
+        description: >-
+          All metadata fields keyed by underlying field name. Same structure as ItemCreate —
+          `categories` is a list of objects with an `id` key, `licence` is a single object with
+          an `id` key. Bare integers are rejected.
         additionalProperties: true
     x-tag: items
   ItemComplete:
@@ -617,7 +622,15 @@ schemas:
       fields:
         type: object
         additionalProperties: true
-        description: ITBM field values keyed by field name (e.g. journal, volume, publisher). Only present for ITBM-enabled items.
+        description: >-
+          ITBM field values keyed by field name. Only present for ITBM-enabled items.
+          Scalar/text/date/dropdown stock fields and custom fields are returned as-is.
+          Relational fields are hydrated on GET to the same shapes as the legacy /articles endpoint:
+          authors → [{id, name, first_name, last_name, orcid_id}];
+          funding_list → [{id, title}];
+          related_materials → [{id, title, relation, identifier, identifier_type}];
+          categories → [{id, title, parent_id, path, source_id, taxonomy_id}];
+          licence → {id, value, name, url}.
     x-tag: items
   ItemCompletePrivate:
     description: Full item representation including ITBM fields (private). Same as ArticleCompletePrivate plus optional fields property.
@@ -632,7 +645,15 @@ schemas:
       fields:
         type: object
         additionalProperties: true
-        description: ITBM field values keyed by field name (e.g. journal, volume, publisher). Only present for ITBM-enabled items.
+        description: >-
+          ITBM field values keyed by field name. Only present for ITBM-enabled items.
+          Scalar/text/date/dropdown stock fields and custom fields are returned as-is.
+          Relational fields are hydrated on GET to the same shapes as the legacy /articles endpoint:
+          authors → [{id, name, first_name, last_name, orcid_id}];
+          funding_list → [{id, title}];
+          related_materials → [{id, title, relation, identifier, identifier_type}];
+          categories → [{id, title, parent_id, path, source_id, taxonomy_id}];
+          licence → {id, value, name, url}.
     x-tag: items
   UnderlyingField:
     type: object
@@ -1562,8 +1583,14 @@ schemas:
       fields:
         type: object
         description: >-
-          ITBM stock field values keyed by field name (e.g. publisher, funding_list).
-          Only present when the collection belongs to an ITBM-enabled institution.
+          ITBM field values keyed by field name. Only present when the collection belongs
+          to an ITBM-enabled institution. Scalar/text stock fields (e.g. publisher) and
+          custom fields are returned as-is. Relational fields are hydrated on GET to the
+          same shapes as the legacy /articles endpoint:
+          authors → [{id, name, first_name, last_name, orcid_id}];
+          funding_list → [{id, title}];
+          related_materials → [{id, title, relation, identifier, identifier_type}];
+          categories → [{id, title, parent_id, path, source_id, taxonomy_id}].
         additionalProperties: {}
     allOf:
     - $ref: '#/components/schemas/Collection'
@@ -1713,8 +1740,14 @@ schemas:
       fields:
         type: object
         description: >-
-          ITBM stock field values keyed by field name (e.g. publisher, funding_list).
-          Only present when the collection belongs to an ITBM-enabled institution.
+          ITBM field values keyed by field name. Only present when the collection belongs
+          to an ITBM-enabled institution. Scalar/text stock fields (e.g. publisher) and
+          custom fields are returned as-is. Relational fields are hydrated on GET to the
+          same shapes as the legacy /articles endpoint:
+          authors → [{id, name, first_name, last_name, orcid_id}];
+          funding_list → [{id, title}];
+          related_materials → [{id, title, relation, identifier, identifier_type}];
+          categories → [{id, title, parent_id, path, source_id, taxonomy_id}].
         additionalProperties: {}
     allOf:
     - $ref: '#/components/schemas/Collection'
