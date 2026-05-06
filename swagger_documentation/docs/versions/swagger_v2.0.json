@@ -4614,7 +4614,7 @@
                     "collections"
                 ],
                 "summary": "Create collection",
-                "description": "Create a new Collection by sending collection information",
+                "description": "Create a new collection. Institutions with item-type based metadata enabled wrap metadata in a `fields` object; stock fields are `categories`, `funding_list`, `related_materials`, and `publisher`. `categories` input is a list of objects with an `id` key (`[{\"id\": <int>}]`); bare integers are rejected. `licence` is no longer accepted on collections (removed Apr 2026). Institutions without item-type based metadata can use the legacy flat-payload form.",
                 "operationId": "private_collection_create",
                 "requestBody": {
                     "description": "Collection description",
@@ -4674,7 +4674,7 @@
                     "collections"
                 ],
                 "summary": "Collection details",
-                "description": "View a collection",
+                "description": "View a collection. For collections with item-type based metadata, metadata is returned under a `fields` object with relational fields hydrated: `authors → [{id, name, first_name, last_name, orcid_id}]`, `categories → [{id, title, parent_id, path, source_id, taxonomy_id}]`, `funding_list → [{id, title}]`, `related_materials → [{id, title, relation, identifier, identifier_type}]`, `publisher` returned as-is (string). Collections without item-type based metadata keep the legacy flat shape.",
                 "operationId": "private_collection_details",
                 "parameters": [
                     {
@@ -4726,7 +4726,7 @@
                     "collections"
                 ],
                 "summary": "Update collection",
-                "description": "Update a collection by passing full body parameters.",
+                "description": "Update a collection by passing full body parameters. Institutions with item-type based metadata enabled wrap metadata in a `fields` object; `categories` input is `[{\"id\": <int>}]` (objects with `id`; bare integers rejected). The legacy flat-payload form is also accepted for institutions without item-type based metadata.",
                 "operationId": "private_collection_update",
                 "parameters": [
                     {
@@ -4865,7 +4865,7 @@
                     "collections"
                 ],
                 "summary": "Partially update collection",
-                "description": "Partially update a collection by sending only the fields to change.",
+                "description": "Partially update a collection by sending only the keys to change. For collections with item-type based metadata, send the keys to update inside `fields:{}` — keys not present are preserved. `categories` input is `[{\"id\": <int>}]` (objects with `id`; bare integers rejected).",
                 "operationId": "private_collection_patch",
                 "parameters": [
                     {
@@ -8347,7 +8347,7 @@
                     "items"
                 ],
                 "summary": "Create new Item",
-                "description": "Create a new Item by sending item information. ITBM-enabled institutions can include stock fields (journal, volume, etc.) inside the `fields` object. Non-ITBM institutions sending stock fields will receive a validation error.",
+                "description": "Create a new Item by sending item information. Institutions with item-type based metadata enabled can include stock fields (journal, volume, etc.) inside the `fields` object. Institutions without item-type based metadata sending stock fields will receive a validation error. `categories` input is a list of objects with an `id` key (`[{\"id\": <int>}]`); `licence` input is a single object with an `id` key (`{\"id\": <int>}`). Bare integers are rejected with 422.",
                 "operationId": "private_item_create",
                 "requestBody": {
                     "description": "Item description",
@@ -8411,7 +8411,7 @@
                     "items"
                 ],
                 "summary": "Public item details",
-                "description": "View a public item. For ITBM-enabled items, the response includes a fields object with stock field values.",
+                "description": "View a public item. For items with item-type based metadata, the response includes a fields object with stock field values.",
                 "operationId": "public_item_details",
                 "parameters": [
                     {
@@ -8427,7 +8427,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK. Item representation",
+                        "description": "OK. The item representation. For items with item-type based metadata, metadata is returned under a `fields` object with relational fields hydrated (`authors`, `categories`, `licence`, `funding_list`, `related_materials`).",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -8454,7 +8454,7 @@
                     "items"
                 ],
                 "summary": "Item details",
-                "description": "View a private item. For ITBM-enabled items, the response includes a fields object with stock field values.",
+                "description": "View a private item. For items with item-type based metadata, the response includes a fields object with stock field values.",
                 "operationId": "private_item_details",
                 "parameters": [
                     {
@@ -8470,7 +8470,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK. Item representation",
+                        "description": "OK. The private item representation. For items with item-type based metadata, metadata is returned under a `fields` object with relational fields hydrated (`authors`, `categories`, `licence`, `funding_list`, `related_materials`).",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -8512,7 +8512,7 @@
                     "items"
                 ],
                 "summary": "Update item",
-                "description": "Update an item by passing full body parameters. ITBM-enabled institutions can include stock fields inside the `fields` object. Non-ITBM institutions sending stock fields will receive a validation error.",
+                "description": "Update an item by passing full body parameters. Institutions with item-type based metadata enabled can include stock fields inside the `fields` object. Institutions without item-type based metadata sending stock fields will receive a validation error. `categories` input is `[{\"id\": <int>}]` and `licence` input is `{\"id\": <int>}`; bare integers are rejected.",
                 "operationId": "private_item_update",
                 "parameters": [
                     {
@@ -8597,7 +8597,7 @@
                     "items"
                 ],
                 "summary": "Partially update item",
-                "description": "Partially update an item by sending only the fields to change. ITBM-enabled institutions can include stock fields inside the `fields` object.",
+                "description": "Partially update an item by sending only the keys to change. For items with item-type based metadata, send the keys to update inside `fields:{}` — keys not present are preserved. `categories` and `licence` follow the same object-with-`id` rule as create; bare integers are rejected.",
                 "operationId": "private_item_partial_update",
                 "parameters": [
                     {
@@ -10040,7 +10040,7 @@
                     "projects"
                 ],
                 "summary": "Create project",
-                "description": "Create a new project",
+                "description": "Create a new project. Institutions with item-type based metadata enabled wrap metadata in a `fields` object (`title`, `description`, `funding_list`). Institutions without item-type based metadata can use the legacy flat-payload form. `funding_list` entries accept either `{\"id\": <int>}` (reference an existing record) or `{\"title\": \"...\"}` (mint a new user-defined entry).",
                 "operationId": "private_project_create",
                 "requestBody": {
                     "description": "Project  description",
@@ -10100,7 +10100,7 @@
                     "projects"
                 ],
                 "summary": "View project details",
-                "description": "View a private project",
+                "description": "View a private project. For projects with item-type based metadata, metadata is returned under a `fields` object with `funding_list` hydrated to `[{id, title}]`. Projects without item-type based metadata keep the legacy flat shape.",
                 "operationId": "private_project_details",
                 "parameters": [
                     {
@@ -10162,7 +10162,7 @@
                     "projects"
                 ],
                 "summary": "Update project",
-                "description": "Updating an project by passing body parameters.",
+                "description": "Update a project by passing full body parameters. Institutions with item-type based metadata enabled wrap metadata in a `fields` object; the legacy flat-payload form is also accepted for institutions without item-type based metadata. `funding_list` entries accept `{\"id\": <int>}` or `{\"title\": \"...\"}`.",
                 "operationId": "private_project_update",
                 "parameters": [
                     {
@@ -10287,7 +10287,7 @@
                     "projects"
                 ],
                 "summary": "Partially update project",
-                "description": "Partially update a project; only provided fields will be changed.",
+                "description": "Partially update a project; only provided keys will be changed. For institutions with item-type based metadata enabled, send the keys to update inside `fields:{}` — keys not present are preserved. `funding_list` entries accept `{\"id\": <int>}` or `{\"title\": \"...\"}`.",
                 "operationId": "private_project_partial_update",
                 "parameters": [
                     {
@@ -12809,7 +12809,7 @@
                 "x-tag": "items"
             },
             "ItemComplete": {
-                "description": "Full item representation including ITBM fields (public). Same as ArticleComplete plus optional fields property.",
+                "description": "Full item representation including item-type based metadata fields (public). Same as ArticleComplete plus optional fields property.",
                 "type": "object",
                 "properties": {
                     "item_type_id": {
@@ -12823,13 +12823,13 @@
                     "fields": {
                         "type": "object",
                         "additionalProperties": true,
-                        "description": "ITBM field values keyed by field name. Only present for ITBM-enabled items. Scalar/text/date/dropdown stock fields and custom fields are returned as-is. Relational fields are hydrated on GET to the same shapes as the legacy /articles endpoint: authors → [{id, name, first_name, last_name, orcid_id}]; funding_list → [{id, title}]; related_materials → [{id, title, relation, identifier, identifier_type}]; categories → [{id, title, parent_id, path, source_id, taxonomy_id}]; licence → {id, value, name, url}."
+                        "description": "Item-type based metadata field values keyed by field name. Only present for items with item-type based metadata enabled. Scalar/text/date/dropdown stock fields and custom fields are returned as-is. Relational fields are hydrated on GET to the same shapes as the legacy /articles endpoint: authors → [{id, name, first_name, last_name, orcid_id}]; funding_list → [{id, title}]; related_materials → [{id, title, relation, identifier, identifier_type}]; categories → [{id, title, parent_id, path, source_id, taxonomy_id}]; licence → {id, value, name, url}."
                     }
                 },
                 "x-tag": "items"
             },
             "ItemCompletePrivate": {
-                "description": "Full item representation including ITBM fields (private). Same as ArticleCompletePrivate plus optional fields property.",
+                "description": "Full item representation including item-type based metadata fields (private). Same as ArticleCompletePrivate plus optional fields property.",
                 "type": "object",
                 "properties": {
                     "item_type_id": {
@@ -12843,7 +12843,7 @@
                     "fields": {
                         "type": "object",
                         "additionalProperties": true,
-                        "description": "ITBM field values keyed by field name. Only present for ITBM-enabled items. Scalar/text/date/dropdown stock fields and custom fields are returned as-is. Relational fields are hydrated on GET to the same shapes as the legacy /articles endpoint: authors → [{id, name, first_name, last_name, orcid_id}]; funding_list → [{id, title}]; related_materials → [{id, title, relation, identifier, identifier_type}]; categories → [{id, title, parent_id, path, source_id, taxonomy_id}]; licence → {id, value, name, url}."
+                        "description": "Item-type based metadata field values keyed by field name. Only present for items with item-type based metadata enabled. Scalar/text/date/dropdown stock fields and custom fields are returned as-is. Relational fields are hydrated on GET to the same shapes as the legacy /articles endpoint: authors → [{id, name, first_name, last_name, orcid_id}]; funding_list → [{id, title}]; related_materials → [{id, title, relation, identifier, identifier_type}]; categories → [{id, title, parent_id, path, source_id, taxonomy_id}]; licence → {id, value, name, url}."
                     }
                 },
                 "x-tag": "items"
@@ -14059,7 +14059,7 @@
                     },
                     "fields": {
                         "type": "object",
-                        "description": "ITBM field values keyed by field name. Only present when the collection belongs to an ITBM-enabled institution. Scalar/text stock fields (e.g. publisher) and custom fields are returned as-is. Relational fields are hydrated on GET to the same shapes as the legacy /articles endpoint: authors → [{id, name, first_name, last_name, orcid_id}]; funding_list → [{id, title}]; related_materials → [{id, title, relation, identifier, identifier_type}]; categories → [{id, title, parent_id, path, source_id, taxonomy_id}].",
+                        "description": "Item-type based metadata field values keyed by field name. Only present when the collection belongs to an institution with item-type based metadata enabled. Scalar/text stock fields (e.g. publisher) and custom fields are returned as-is. Relational fields are hydrated on GET to the same shapes as the legacy /articles endpoint: authors → [{id, name, first_name, last_name, orcid_id}]; funding_list → [{id, title}]; related_materials → [{id, title, relation, identifier, identifier_type}]; categories → [{id, title, parent_id, path, source_id, taxonomy_id}].",
                         "additionalProperties": {}
                     }
                 },
@@ -14252,7 +14252,7 @@
                     },
                     "fields": {
                         "type": "object",
-                        "description": "ITBM field values keyed by field name. Only present when the collection belongs to an ITBM-enabled institution. Scalar/text stock fields (e.g. publisher) and custom fields are returned as-is. Relational fields are hydrated on GET to the same shapes as the legacy /articles endpoint: authors → [{id, name, first_name, last_name, orcid_id}]; funding_list → [{id, title}]; related_materials → [{id, title, relation, identifier, identifier_type}]; categories → [{id, title, parent_id, path, source_id, taxonomy_id}].",
+                        "description": "Item-type based metadata field values keyed by field name. Only present when the collection belongs to an institution with item-type based metadata enabled. Scalar/text stock fields (e.g. publisher) and custom fields are returned as-is. Relational fields are hydrated on GET to the same shapes as the legacy /articles endpoint: authors → [{id, name, first_name, last_name, orcid_id}]; funding_list → [{id, title}]; related_materials → [{id, title, relation, identifier, identifier_type}]; categories → [{id, title, parent_id, path, source_id, taxonomy_id}].",
                         "additionalProperties": {}
                     }
                 },
@@ -14449,7 +14449,7 @@
                     },
                     "fields": {
                         "type": "object",
-                        "description": "ITBM institutions only: all metadata fields keyed by underlying field name (e.g. title, description, keywords, publisher, funding_list). When present, the fields object is the authoritative source for all metadata; top-level metadata keys are ignored.",
+                        "description": "Institutions with item-type based metadata only: all metadata fields keyed by underlying field name (e.g. title, description, keywords, publisher, funding_list). When present, the fields object is the authoritative source for all metadata; top-level metadata keys are ignored.",
                         "example": {
                             "title": "My Collection",
                             "description": "Collection description",
@@ -15460,7 +15460,7 @@
                     },
                     "fields": {
                         "type": "array",
-                        "description": "Available metadata fields for this item type. Only present when the ITBM feature flag is enabled for the institution. Use GET /items/fields/{item_type_id} for full detail.",
+                        "description": "Available metadata fields for this item type. Only present when item-type based metadata is enabled for the institution (`itbm_config` feature flag). Use GET /items/fields/{item_type_id} for full detail.",
                         "items": {
                             "$ref": "#/components/schemas/ItemTypeField"
                         }
@@ -16323,7 +16323,7 @@
                     },
                     "fields": {
                         "type": "object",
-                        "description": "ITBM stock field values keyed by field name (e.g. funding_list). Only present when the project belongs to an ITBM-enabled institution.",
+                        "description": "Item-type based metadata stock field values keyed by field name (e.g. funding_list). Only present when the project belongs to an institution with item-type based metadata enabled.",
                         "additionalProperties": {}
                     }
                 },
@@ -16424,7 +16424,7 @@
                     },
                     "fields": {
                         "type": "object",
-                        "description": "ITBM stock field values keyed by field name (e.g. funding_list). Only present when the project belongs to an ITBM-enabled institution.",
+                        "description": "Item-type based metadata stock field values keyed by field name (e.g. funding_list). Only present when the project belongs to an institution with item-type based metadata enabled.",
                         "additionalProperties": {}
                     }
                 },
@@ -16485,7 +16485,7 @@
                     },
                     "fields": {
                         "type": "object",
-                        "description": "ITBM institutions only: all metadata fields keyed by underlying field name (e.g. title, description, funding_list). When present, the fields object is the authoritative source for all metadata; top-level metadata keys are ignored.",
+                        "description": "Institutions with item-type based metadata only: all metadata fields keyed by underlying field name (e.g. title, description, funding_list). When present, the fields object is the authoritative source for all metadata; top-level metadata keys are ignored.",
                         "example": {
                             "title": "My Project",
                             "description": "Project description",
@@ -17070,7 +17070,7 @@
             },
             "TimelineUpdate": {
                 "type": "object",
-                "description": "Legacy timeline input (used by /v2/account/articles). ITBM items do not use this object — pass dates as stock fields inside fields: {} instead.",
+                "description": "Legacy timeline input (used by /v2/account/articles). Items with item-type based metadata do not use this object — pass dates as stock fields inside fields: {} instead.",
                 "properties": {
                     "firstOnline": {
                         "type": "string",
@@ -17092,7 +17092,7 @@
             },
             "ItbmTimeline": {
                 "type": "object",
-                "description": "Timeline object returned in ITBM item and collection responses. Keys are snake_case.",
+                "description": "Timeline object returned in item and collection responses where item-type based metadata is enabled. Keys are snake_case.",
                 "properties": {
                     "first_online": {
                         "type": "string",

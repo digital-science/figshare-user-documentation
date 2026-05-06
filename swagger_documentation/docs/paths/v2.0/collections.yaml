@@ -429,7 +429,13 @@ paths:
       tags:
       - collections
       summary: Create collection
-      description: Create a new Collection by sending collection information
+      description: >-
+        Create a new collection. Institutions with item-type based metadata enabled wrap metadata in a
+        `fields` object; stock fields are `categories`, `funding_list`,
+        `related_materials`, and `publisher`. `categories` input is a list of
+        objects with an `id` key (`[{"id": <int>}]`); bare integers are rejected.
+        `licence` is no longer accepted on collections (removed Apr 2026).
+        Institutions without item-type based metadata can use the legacy flat-payload form.
       operationId: private_collection_create
       requestBody:
         description: Collection description
@@ -467,7 +473,15 @@ paths:
       tags:
       - collections
       summary: Collection details
-      description: View a collection
+      description: >-
+        View a collection. For collections with item-type based metadata, metadata is returned
+        under a `fields` object with relational fields hydrated:
+        `authors → [{id, name, first_name, last_name, orcid_id}]`,
+        `categories → [{id, title, parent_id, path, source_id, taxonomy_id}]`,
+        `funding_list → [{id, title}]`,
+        `related_materials → [{id, title, relation, identifier, identifier_type}]`,
+        `publisher` returned as-is (string). Collections without item-type based metadata keep the
+        legacy flat shape.
       operationId: private_collection_details
       parameters:
       - name: collection_id
@@ -501,7 +515,12 @@ paths:
       tags:
       - collections
       summary: Update collection
-      description: Update a collection by passing full body parameters.
+      description: >-
+        Update a collection by passing full body parameters. Institutions with
+        item-type based metadata enabled wrap metadata in a `fields` object;
+        `categories` input is
+        `[{"id": <int>}]` (objects with `id`; bare integers rejected). The
+        legacy flat-payload form is also accepted for institutions without item-type based metadata.
       operationId: private_collection_update
       parameters:
       - name: collection_id
@@ -592,7 +611,11 @@ paths:
       tags:
       - collections
       summary: Partially update collection
-      description: Partially update a collection by sending only the fields to change.
+      description: >-
+        Partially update a collection by sending only the keys to change.
+        For collections with item-type based metadata, send the keys to update inside `fields:{}`
+        — keys not present are preserved. `categories` input is `[{"id": <int>}]`
+        (objects with `id`; bare integers rejected).
       operationId: private_collection_patch
       parameters:
       - name: collection_id
