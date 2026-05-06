@@ -6,8 +6,11 @@ paths:
       summary: Create new Item
       description: >-
         Create a new Item by sending item information.
-        ITBM-enabled institutions can include stock fields (journal, volume, etc.) inside the `fields` object.
-        Non-ITBM institutions sending stock fields will receive a validation error.
+        Institutions with item-type based metadata enabled can include stock fields (journal, volume, etc.) inside the `fields` object.
+        Institutions without item-type based metadata sending stock fields will receive a validation error.
+        `categories` input is a list of objects with an `id` key (`[{"id": <int>}]`);
+        `licence` input is a single object with an `id` key (`{"id": <int>}`).
+        Bare integers are rejected with 422.
       operationId: private_item_create
       requestBody:
         description: Item description
@@ -48,7 +51,7 @@ paths:
       tags:
       - items
       summary: Public item details
-      description: View a public item. For ITBM-enabled items, the response includes a fields object with stock field values.
+      description: View a public item. For items with item-type based metadata, the response includes a fields object with stock field values.
       operationId: public_item_details
       parameters:
       - name: item_id
@@ -60,7 +63,10 @@ paths:
           type: integer
       responses:
         '200':
-          description: OK. Item representation
+          description: >-
+            OK. The item representation. For items with item-type based metadata, metadata is
+            returned under a `fields` object with relational fields hydrated
+            (`authors`, `categories`, `licence`, `funding_list`, `related_materials`).
           content:
             application/json:
               schema:
@@ -77,7 +83,7 @@ paths:
       tags:
       - items
       summary: Item details
-      description: View a private item. For ITBM-enabled items, the response includes a fields object with stock field values.
+      description: View a private item. For items with item-type based metadata, the response includes a fields object with stock field values.
       operationId: private_item_details
       parameters:
       - name: item_id
@@ -89,7 +95,10 @@ paths:
           type: integer
       responses:
         '200':
-          description: OK. Item representation
+          description: >-
+            OK. The private item representation. For items with item-type based metadata, metadata
+            is returned under a `fields` object with relational fields hydrated
+            (`authors`, `categories`, `licence`, `funding_list`, `related_materials`).
           content:
             application/json:
               schema:
@@ -116,8 +125,10 @@ paths:
       summary: Update item
       description: >-
         Update an item by passing full body parameters.
-        ITBM-enabled institutions can include stock fields inside the `fields` object.
-        Non-ITBM institutions sending stock fields will receive a validation error.
+        Institutions with item-type based metadata enabled can include stock fields inside the `fields` object.
+        Institutions without item-type based metadata sending stock fields will receive a validation error.
+        `categories` input is `[{"id": <int>}]` and `licence` input is `{"id": <int>}`;
+        bare integers are rejected.
       operationId: private_item_update
       parameters:
       - name: item_id
@@ -173,8 +184,10 @@ paths:
       - items
       summary: Partially update item
       description: >-
-        Partially update an item by sending only the fields to change.
-        ITBM-enabled institutions can include stock fields inside the `fields` object.
+        Partially update an item by sending only the keys to change.
+        For items with item-type based metadata, send the keys to update inside `fields:{}` —
+        keys not present are preserved. `categories` and `licence` follow the
+        same object-with-`id` rule as create; bare integers are rejected.
       operationId: private_item_partial_update
       parameters:
       - name: item_id

@@ -610,7 +610,7 @@ schemas:
         additionalProperties: true
     x-tag: items
   ItemComplete:
-    description: Full item representation including ITBM fields (public). Same as ArticleComplete plus optional fields property.
+    description: Full item representation including item-type based metadata fields (public). Same as ArticleComplete plus optional fields property.
     type: object
     properties:
       item_type_id:
@@ -623,7 +623,7 @@ schemas:
         type: object
         additionalProperties: true
         description: >-
-          ITBM field values keyed by field name. Only present for ITBM-enabled items.
+          Item-type based metadata field values keyed by field name. Only present for items with item-type based metadata enabled.
           Scalar/text/date/dropdown stock fields and custom fields are returned as-is.
           Relational fields are hydrated on GET to the same shapes as the legacy /articles endpoint:
           authors → [{id, name, first_name, last_name, orcid_id}];
@@ -633,7 +633,7 @@ schemas:
           licence → {id, value, name, url}.
     x-tag: items
   ItemCompletePrivate:
-    description: Full item representation including ITBM fields (private). Same as ArticleCompletePrivate plus optional fields property.
+    description: Full item representation including item-type based metadata fields (private). Same as ArticleCompletePrivate plus optional fields property.
     type: object
     properties:
       item_type_id:
@@ -646,7 +646,7 @@ schemas:
         type: object
         additionalProperties: true
         description: >-
-          ITBM field values keyed by field name. Only present for ITBM-enabled items.
+          Item-type based metadata field values keyed by field name. Only present for items with item-type based metadata enabled.
           Scalar/text/date/dropdown stock fields and custom fields are returned as-is.
           Relational fields are hydrated on GET to the same shapes as the legacy /articles endpoint:
           authors → [{id, name, first_name, last_name, orcid_id}];
@@ -1583,8 +1583,9 @@ schemas:
       fields:
         type: object
         description: >-
-          ITBM field values keyed by field name. Only present when the collection belongs
-          to an ITBM-enabled institution. Scalar/text stock fields (e.g. publisher) and
+          Item-type based metadata field values keyed by field name. Only present
+          when the collection belongs to an institution with item-type based metadata
+          enabled. Scalar/text stock fields (e.g. publisher) and
           custom fields are returned as-is. Relational fields are hydrated on GET to the
           same shapes as the legacy /articles endpoint:
           authors → [{id, name, first_name, last_name, orcid_id}];
@@ -1740,8 +1741,9 @@ schemas:
       fields:
         type: object
         description: >-
-          ITBM field values keyed by field name. Only present when the collection belongs
-          to an ITBM-enabled institution. Scalar/text stock fields (e.g. publisher) and
+          Item-type based metadata field values keyed by field name. Only present
+          when the collection belongs to an institution with item-type based metadata
+          enabled. Scalar/text stock fields (e.g. publisher) and
           custom fields are returned as-is. Relational fields are hydrated on GET to the
           same shapes as the legacy /articles endpoint:
           authors → [{id, name, first_name, last_name, orcid_id}];
@@ -1895,9 +1897,9 @@ schemas:
         $ref: '#/components/schemas/TimelineUpdate'
       fields:
         type: object
-        description: 'ITBM institutions only: all metadata fields keyed by underlying field name (e.g. title, description,
-          keywords, publisher, funding_list). When present, the fields object is the authoritative source for all metadata;
-          top-level metadata keys are ignored.'
+        description: 'Institutions with item-type based metadata only: all metadata fields keyed by underlying field name
+          (e.g. title, description, keywords, publisher, funding_list). When present, the fields object is the authoritative
+          source for all metadata; top-level metadata keys are ignored.'
         example:
           title: My Collection
           description: Collection description
@@ -2670,8 +2672,9 @@ schemas:
       fields:
         type: array
         description: >-
-          Available metadata fields for this item type. Only present when the ITBM feature flag
-          is enabled for the institution. Use GET /items/fields/{item_type_id} for full detail.
+          Available metadata fields for this item type. Only present when item-type based metadata
+          is enabled for the institution (`itbm_config` feature flag). Use GET /items/fields/{item_type_id}
+          for full detail.
         items:
           $ref: '#/components/schemas/ItemTypeField'
   License:
@@ -3328,8 +3331,8 @@ schemas:
       fields:
         type: object
         description: >-
-          ITBM stock field values keyed by field name (e.g. funding_list).
-          Only present when the project belongs to an ITBM-enabled institution.
+          Item-type based metadata stock field values keyed by field name (e.g. funding_list).
+          Only present when the project belongs to an institution with item-type based metadata enabled.
         additionalProperties: {}
     allOf:
     - $ref: '#/components/schemas/Project'
@@ -3408,8 +3411,8 @@ schemas:
       fields:
         type: object
         description: >-
-          ITBM stock field values keyed by field name (e.g. funding_list).
-          Only present when the project belongs to an ITBM-enabled institution.
+          Item-type based metadata stock field values keyed by field name (e.g. funding_list).
+          Only present when the project belongs to an institution with item-type based metadata enabled.
         additionalProperties: {}
     allOf:
     - $ref: '#/components/schemas/ProjectPrivate'
@@ -3454,9 +3457,9 @@ schemas:
           $ref: '#/components/schemas/CustomArticleFieldAdd'
       fields:
         type: object
-        description: 'ITBM institutions only: all metadata fields keyed by underlying field name (e.g. title, description,
-          funding_list). When present, the fields object is the authoritative source for all metadata; top-level metadata
-          keys are ignored.'
+        description: 'Institutions with item-type based metadata only: all metadata fields keyed by underlying field name
+          (e.g. title, description, funding_list). When present, the fields object is the authoritative source for all
+          metadata; top-level metadata keys are ignored.'
         example:
           title: My Project
           description: Project description
@@ -3915,7 +3918,7 @@ schemas:
     x-tag: timeline
   TimelineUpdate:
     type: object
-    description: 'Legacy timeline input (used by /v2/account/articles). ITBM items do not use this object — pass dates as stock fields inside fields: {} instead.'
+    description: 'Legacy timeline input (used by /v2/account/articles). Items with item-type based metadata do not use this object — pass dates as stock fields inside fields: {} instead.'
     properties:
       firstOnline:
         type: string
@@ -3932,7 +3935,7 @@ schemas:
     x-tag: timeline_update
   ItbmTimeline:
     type: object
-    description: Timeline object returned in ITBM item and collection responses. Keys are snake_case.
+    description: Timeline object returned in item and collection responses where item-type based metadata is enabled. Keys are snake_case.
     properties:
       first_online:
         type: string
