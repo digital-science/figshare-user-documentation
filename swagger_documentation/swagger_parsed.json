@@ -6946,13 +6946,13 @@
                     "institutions"
                 ],
                 "summary": "Custom fields values files upload",
-                "description": "Uploads a CSV containing values for a specific custom field of type <b>dropdown_large_list</b>. More details in the <a href=\"#custom_fields\">Custom Fields section</a>",
+                "description": "Uploads a CSV containing values for a specific custom field of type <b>dropdown_large_list</b>. The <code>custom_field_id</code> path parameter accepts both classic custom field IDs (legacy) and underlying field IDs (v2). The lookup is performed automatically \u2014 no additional parameter is required. More details in the <a href=\"#custom_fields\">Custom Fields section</a>",
                 "operationId": "custom_fields_upload",
                 "parameters": [
                     {
                         "name": "custom_field_id",
                         "in": "path",
-                        "description": "Custom field identifier",
+                        "description": "Identifier of the custom field or underlying field (v2) of type <b>dropdown_large_list</b>",
                         "required": true,
                         "schema": {
                             "minimum": 1,
