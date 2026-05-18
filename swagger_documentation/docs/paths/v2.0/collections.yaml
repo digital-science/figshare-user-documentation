@@ -433,7 +433,9 @@ paths:
         Create a new collection. Institutions with item-type based metadata enabled wrap metadata in a
         `fields` object; stock fields are `categories`, `funding_list`,
         `related_materials`, and `publisher`. `categories` input is a list of
-        objects with an `id` key (`[{"id": <int>}]`); bare integers are rejected.
+        objects, each identified by either `id` (int) or `source_id` (string); mixed entries allowed
+        (`[{"id": 69}, {"source_id": "3001"}]`). Unresolved `source_id` values are reported in
+        the response `warnings` array. Bare integers are rejected.
         `licence` is no longer accepted on collections (removed Apr 2026).
         Institutions without item-type based metadata can use the legacy flat-payload form.
       operationId: private_collection_create
@@ -518,9 +520,10 @@ paths:
       description: >-
         Update a collection by passing full body parameters. Institutions with
         item-type based metadata enabled wrap metadata in a `fields` object;
-        `categories` input is
-        `[{"id": <int>}]` (objects with `id`; bare integers rejected). The
-        legacy flat-payload form is also accepted for institutions without item-type based metadata.
+        `categories` entries accept `id` (int) or `source_id` (string), mixed allowed
+        (bare integers rejected). Unresolved `source_id` values are reported in
+        the response `warnings` array. The legacy flat-payload form is also
+        accepted for institutions without item-type based metadata.
       operationId: private_collection_update
       parameters:
       - name: collection_id
@@ -614,8 +617,9 @@ paths:
       description: >-
         Partially update a collection by sending only the keys to change.
         For collections with item-type based metadata, send the keys to update inside `fields:{}`
-        — keys not present are preserved. `categories` input is `[{"id": <int>}]`
-        (objects with `id`; bare integers rejected).
+        — keys not present are preserved. `categories` entries accept `id` (int) or
+        `source_id` (string), mixed allowed (bare integers rejected). Unresolved
+        `source_id` values are reported in the response `warnings` array.
       operationId: private_collection_patch
       parameters:
       - name: collection_id
