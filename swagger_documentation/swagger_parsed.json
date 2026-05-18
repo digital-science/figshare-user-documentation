@@ -6880,13 +6880,76 @@
                 ]
             }
         },
+        "/account/groups/{group_id}/metadata/item": {
+            "get": {
+                "tags": [
+                    "institutions"
+                ],
+                "summary": "Group custom fields",
+                "description": "Returns the custom fields for the specified group. Deprecated in favour of GET /items/fields/{item_type_id}. Will be removed after 2027-01-01.",
+                "operationId": "account_group_custom_fields",
+                "parameters": [
+                    {
+                        "name": "group_id",
+                        "in": "path",
+                        "description": "Group unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. An array of custom fields",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CustomArticleField"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Institution - DEPRECATED"
+            }
+        },
         "/account/institution/custom_fields": {
             "get": {
                 "tags": [
                     "institutions"
                 ],
                 "summary": "Private account institution group custom fields",
-                "description": "Returns the custom fields in the group the user belongs to, or the ones in the group specified, if the user has access.",
+                "description": "Returns the custom fields in the group the user belongs to, or the ones in the group specified, if the user has access. Deprecated in favour of GET /items/fields/{item_type_id}. Will be removed after 2027-01-01.",
                 "operationId": "custom_fields_list",
                 "parameters": [
                     {
@@ -6937,7 +7000,8 @@
                             "all"
                         ]
                     }
-                ]
+                ],
+                "x-subcategory": "Private Institution - DEPRECATED"
             }
         },
         "/account/institution/custom_fields/{custom_field_id}/items/upload": {
@@ -8245,6 +8309,590 @@
                             "application/json": {
                                 "schema": {
                                     "$ref": "#/components/schemas/ResponseMessage"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/account/items": {
+            "post": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "Create new Item",
+                "description": "Create a new Item by sending item information. ITBM-enabled institutions can include stock fields (journal, volume, etc.) inside the `fields` object. Non-ITBM institutions sending stock fields will receive a validation error.",
+                "operationId": "private_item_create",
+                "requestBody": {
+                    "description": "Item description",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ItemCreate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LocationWarnings"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Item",
+                "x-codegen-request-body-name": "Item"
+            }
+        },
+        "/items/{item_id}": {
+            "get": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "Public item details",
+                "description": "View a public item. For ITBM-enabled items, the response includes a fields object with stock field values.",
+                "operationId": "public_item_details",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "description": "Item unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. Item representation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ItemComplete"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": []
+            }
+        },
+        "/account/items/{item_id}": {
+            "get": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "Item details",
+                "description": "View a private item. For ITBM-enabled items, the response includes a fields object with stock field values.",
+                "operationId": "private_item_details",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "description": "Item unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. Item representation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ItemCompletePrivate"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Item"
+            },
+            "put": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "Update item",
+                "description": "Update an item by passing full body parameters. ITBM-enabled institutions can include stock fields as top-level properties. Non-ITBM institutions sending stock fields will receive a validation error.",
+                "operationId": "private_item_update",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "description": "Item unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Item description",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ItemUpdate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "205": {
+                        "description": "Reset Content",
+                        "headers": {
+                            "Location": {
+                                "description": "Link to the updated item",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LocationWarningsUpdate"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Item"
+            },
+            "patch": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "Partially update item",
+                "description": "Partially update an item by sending only the fields to change. ITBM-enabled institutions can include stock fields as top-level properties.",
+                "operationId": "private_item_partial_update",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "description": "Item unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Item description",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ItemUpdate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "205": {
+                        "description": "Reset Content",
+                        "headers": {
+                            "Location": {
+                                "description": "Link to the updated item",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LocationWarningsUpdate"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Item"
+            }
+        },
+        "/items/fields": {
+            "get": {
+                "tags": [
+                    "other"
+                ],
+                "summary": "Item Field Definitions",
+                "description": "Returns the catalog of underlying field definitions (core, stock, custom) for items. Requires an institutional account with the itbm_config feature flag enabled.",
+                "operationId": "items_fields_catalog",
+                "responses": {
+                    "200": {
+                        "description": "OK. An array of underlying field definitions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/UnderlyingField"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/items/fields/{item_type_id}": {
+            "get": {
+                "tags": [
+                    "other"
+                ],
+                "summary": "Item Type Field Configuration",
+                "description": "Returns the fields configured for a specific item type, including per-type overrides (display_name, hint_text, is_mandatory, order, display_area, settings). Requires an institutional account with the itbm_config feature flag enabled.",
+                "operationId": "items_fields_by_item_type",
+                "parameters": [
+                    {
+                        "name": "item_type_id",
+                        "in": "path",
+                        "description": "Item type unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "group_id",
+                        "in": "query",
+                        "description": "Filter fields by group applicability",
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. An array of item type field configurations",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ItemTypeField"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/projects/fields": {
+            "get": {
+                "tags": [
+                    "other"
+                ],
+                "summary": "Project Field Definitions",
+                "description": "Returns the catalog of underlying field definitions for projects. Requires an institutional account with the itbm_config feature flag enabled.",
+                "operationId": "projects_fields_catalog",
+                "parameters": [
+                    {
+                        "name": "group_id",
+                        "in": "query",
+                        "description": "Filter fields by group applicability",
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. An array of underlying field definitions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/UnderlyingField"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/collections/fields": {
+            "get": {
+                "tags": [
+                    "other"
+                ],
+                "summary": "Collection Field Definitions",
+                "description": "Returns the catalog of underlying field definitions for collections. Requires an institutional account with the itbm_config feature flag enabled.",
+                "operationId": "collections_fields_catalog",
+                "parameters": [
+                    {
+                        "name": "group_id",
+                        "in": "query",
+                        "description": "Filter fields by group applicability",
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. An array of underlying field definitions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/UnderlyingField"
+                                    }
                                 }
                             }
                         }
@@ -12443,6 +13091,182 @@
                 },
                 "x-tag": "articles"
             },
+            "ItemCreate": {
+                "type": "object",
+                "description": "Item creation payload. All metadata (core + stock + custom) goes inside the 'fields' object, keyed by underlying field name. System properties (item_type_id, group_id) stay top-level. No backward-compatible fields: defined_type, references, custom_fields are not accepted.",
+                "properties": {
+                    "item_type_id": {
+                        "type": "integer",
+                        "description": "Item type identifier (use /item_types to get available types)."
+                    },
+                    "defined_type": {
+                        "type": "string",
+                        "description": "Item type name (alternative to item_type_id, resolved to item_type_id internally)."
+                    },
+                    "group_id": {
+                        "type": "integer",
+                        "description": "Group to assign the item to."
+                    },
+                    "is_metadata_record": {
+                        "type": "boolean",
+                        "description": "True if item has no files."
+                    },
+                    "download_disabled": {
+                        "type": "boolean",
+                        "description": "Disable download button for this item."
+                    },
+                    "resource_doi": {
+                        "type": "string",
+                        "description": "Deprecated by related materials (inside fields)."
+                    },
+                    "resource_title": {
+                        "type": "string",
+                        "description": "Deprecated by related materials (inside fields)."
+                    },
+                    "fields": {
+                        "type": "object",
+                        "description": "All metadata fields keyed by underlying field name. Includes core fields (title, description, keywords, authors, licence, categories, funding_list, related_materials) and stock fields (journal, volume, issue, etc.). Use GET /items/fields/{item_type_id} to discover available fields.",
+                        "additionalProperties": true
+                    }
+                },
+                "x-tag": "items"
+            },
+            "ItemUpdate": {
+                "description": "Item update payload. Same structure as ItemCreate but no required fields. Use PATCH for partial updates (only send changed fields inside 'fields').",
+                "type": "object",
+                "properties": {
+                    "item_type_id": {
+                        "type": "integer"
+                    },
+                    "group_id": {
+                        "type": "integer"
+                    },
+                    "is_metadata_record": {
+                        "type": "boolean"
+                    },
+                    "download_disabled": {
+                        "type": "boolean"
+                    },
+                    "fields": {
+                        "type": "object",
+                        "description": "All metadata fields keyed by underlying field name. Same structure as ItemCreate.",
+                        "additionalProperties": true
+                    }
+                },
+                "x-tag": "items"
+            },
+            "ItemComplete": {
+                "description": "Full item representation including ITBM fields (public). Same as ArticleComplete plus optional fields property.",
+                "type": "object",
+                "properties": {
+                    "fields": {
+                        "type": "object",
+                        "additionalProperties": true,
+                        "description": "ITBM field values keyed by field name (e.g. journal, volume, publisher). Only present for ITBM-enabled items."
+                    }
+                },
+                "x-tag": "items"
+            },
+            "ItemCompletePrivate": {
+                "description": "Full item representation including ITBM fields (private). Same as ArticleCompletePrivate plus optional fields property.",
+                "type": "object",
+                "properties": {
+                    "fields": {
+                        "type": "object",
+                        "additionalProperties": true,
+                        "description": "ITBM field values keyed by field name (e.g. journal, volume, publisher). Only present for ITBM-enabled items."
+                    }
+                },
+                "x-tag": "items"
+            },
+            "UnderlyingField": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "description": "Underlying field unique identifier"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Field name (e.g. journal, volume, title)"
+                    },
+                    "field_type": {
+                        "type": "string",
+                        "description": "Field type (e.g. text, dropdown, date, textarea, generic)"
+                    },
+                    "internal_type": {
+                        "type": "string",
+                        "description": "Internal type classification: core, stock, or custom",
+                        "enum": [
+                            "core",
+                            "stock",
+                            "custom"
+                        ]
+                    },
+                    "settings": {
+                        "type": "object",
+                        "description": "Field-specific settings (validation rules, default values, etc.)"
+                    }
+                },
+                "x-tag": "items"
+            },
+            "ItemTypeField": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "description": "Underlying field unique identifier"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Field name"
+                    },
+                    "field_type": {
+                        "type": "string",
+                        "description": "Field type"
+                    },
+                    "internal_type": {
+                        "type": "string",
+                        "description": "Internal type: core, stock, or custom",
+                        "enum": [
+                            "core",
+                            "stock",
+                            "custom"
+                        ]
+                    },
+                    "display_name": {
+                        "type": "string",
+                        "description": "Display name configured for this item type"
+                    },
+                    "hint_text": {
+                        "type": "string",
+                        "description": "Hint text shown to the user"
+                    },
+                    "is_mandatory": {
+                        "type": "boolean",
+                        "description": "Whether this field is mandatory for this item type"
+                    },
+                    "order": {
+                        "type": "integer",
+                        "description": "Display order within the item type"
+                    },
+                    "display_area": {
+                        "type": "string",
+                        "description": "UI display area",
+                        "enum": [
+                            "additional",
+                            "core",
+                            "essential",
+                            "timeline"
+                        ]
+                    },
+                    "settings": {
+                        "type": "object",
+                        "description": "Per-item-type field settings (may include default_value, validations)"
+                    }
+                },
+                "x-tag": "items"
+            },
             "ArticleDOI": {
                 "required": [
                     "doi"
@@ -13769,6 +14593,11 @@
                     "timeline": {
                         "$ref": "#/components/schemas/Timeline"
                     },
+                    "fields": {
+                        "type": "object",
+                        "description": "ITBM stock field values keyed by field name (e.g. publisher, funding_list). Only present when the collection belongs to an ITBM-enabled institution.",
+                        "additionalProperties": {}
+                    },
                     "id": {
                         "type": "integer",
                         "description": "Collection id",
@@ -13982,6 +14811,11 @@
                     "timeline": {
                         "$ref": "#/components/schemas/Timeline"
                     },
+                    "fields": {
+                        "type": "object",
+                        "description": "ITBM stock field values keyed by field name (e.g. publisher, funding_list). Only present when the collection belongs to an ITBM-enabled institution.",
+                        "additionalProperties": {}
+                    },
                     "id": {
                         "type": "integer",
                         "description": "Collection id",
@@ -14016,9 +14850,6 @@
                 "x-tag": "collections"
             },
             "CollectionCreate": {
-                "required": [
-                    "title"
-                ],
                 "type": "object",
                 "properties": {
                     "funding": {
@@ -14201,6 +15032,19 @@
                     },
                     "timeline": {
                         "$ref": "#/components/schemas/TimelineUpdate"
+                    },
+                    "fields": {
+                        "type": "object",
+                        "description": "ITBM institutions only: all metadata fields keyed by underlying field name (e.g. title, description, keywords, publisher, funding_list). When present, the fields object is the authoritative source for all metadata; top-level metadata keys are ignored.",
+                        "example": {
+                            "title": "My Collection",
+                            "description": "Collection description",
+                            "keywords": [
+                                "keyword1"
+                            ],
+                            "publisher": "Springer Nature"
+                        },
+                        "additionalProperties": true
                     }
                 },
                 "x-tag": "collections"
@@ -15065,11 +15909,11 @@
                 "properties": {
                     "id": {
                         "type": "integer",
-                        "description": "A funding ID as returned by the Funding Search endpoint"
+                        "description": "A funding ID as returned by the Funding Search endpoint. Use either id or title, not both."
                     },
                     "title": {
                         "type": "string",
-                        "description": "The title of the new user created funding"
+                        "description": "The title of the new user created funding. Use either title or id, not both."
                     }
                 },
                 "x-tag": "funding"
@@ -15317,6 +16161,13 @@
                         "type": "string",
                         "description": "The URL name of the item type.",
                         "example": "journal_contribution"
+                    },
+                    "fields": {
+                        "type": "array",
+                        "description": "Available metadata fields for this item type. Only present when the ITBM feature flag is enabled for the institution. Use GET /items/fields/{item_type_id} for full detail.",
+                        "items": {
+                            "$ref": "#/components/schemas/ItemTypeField"
+                        }
                     }
                 }
             },
@@ -16641,6 +17492,11 @@
                         "description": "Date when project was created",
                         "example": "2017-05-16T14:52:54Z"
                     },
+                    "fields": {
+                        "type": "object",
+                        "description": "ITBM stock field values keyed by field name (e.g. funding_list). Only present when the project belongs to an ITBM-enabled institution.",
+                        "additionalProperties": {}
+                    },
                     "url": {
                         "type": "string",
                         "description": "Api endpoint",
@@ -16752,6 +17608,11 @@
                             "$ref": "#/components/schemas/ShortCustomField"
                         }
                     },
+                    "fields": {
+                        "type": "object",
+                        "description": "ITBM stock field values keyed by field name (e.g. funding_list). Only present when the project belongs to an ITBM-enabled institution.",
+                        "additionalProperties": {}
+                    },
                     "role": {
                         "type": "string",
                         "description": "Role inside this project",
@@ -16780,9 +17641,6 @@
                 "x-tag": "projects"
             },
             "ProjectCreate": {
-                "required": [
-                    "title"
-                ],
                 "type": "object",
                 "properties": {
                     "title": {
@@ -16829,6 +17687,20 @@
                         "items": {
                             "$ref": "#/components/schemas/CustomArticleFieldAdd"
                         }
+                    },
+                    "fields": {
+                        "type": "object",
+                        "description": "ITBM institutions only: all metadata fields keyed by underlying field name (e.g. title, description, funding_list). When present, the fields object is the authoritative source for all metadata; top-level metadata keys are ignored.",
+                        "example": {
+                            "title": "My Project",
+                            "description": "Project description",
+                            "funding_list": [
+                                {
+                                    "title": "Test Grant"
+                                }
+                            ]
+                        },
+                        "additionalProperties": true
                     }
                 },
                 "x-tag": "projects"
@@ -17539,6 +18411,7 @@
             },
             "TimelineUpdate": {
                 "type": "object",
+                "description": "Legacy timeline input (used by /v2/account/articles). ITBM items do not use this object \u2014 pass dates as stock fields inside fields: {} instead.",
                 "properties": {
                     "firstOnline": {
                         "type": "string",
@@ -17551,6 +18424,28 @@
                         "example": "2015-12-31"
                     },
                     "publisherAcceptance": {
+                        "type": "string",
+                        "description": "Date when the item was accepted for publication",
+                        "example": "2015-12-31"
+                    }
+                },
+                "x-tag": "timeline_update"
+            },
+            "ItbmTimeline": {
+                "type": "object",
+                "description": "Timeline object returned in ITBM item and collection responses. Keys are snake_case.",
+                "properties": {
+                    "first_online": {
+                        "type": "string",
+                        "description": "Online posted date",
+                        "example": "2015-12-31"
+                    },
+                    "publisher_publication": {
+                        "type": "string",
+                        "description": "Publish date",
+                        "example": "2015-12-31"
+                    },
+                    "publisher_acceptance": {
                         "type": "string",
                         "description": "Date when the item was accepted for publication",
                         "example": "2015-12-31"

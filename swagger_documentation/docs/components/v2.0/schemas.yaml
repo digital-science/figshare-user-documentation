@@ -544,6 +544,184 @@ schemas:
         description: Not applicable to regular users. This field is reserved to institutions/publishers with access to assign
           to specific groups
     x-tag: articles
+  ItemCreate:
+    type: object
+    description: >-
+      Item creation payload. All metadata (core + stock + custom) goes inside the 'fields' object,
+      keyed by underlying field name. System properties (item_type_id, group_id) stay top-level.
+      No backward-compatible fields: defined_type, references, custom_fields are not accepted.
+    properties:
+      item_type_id:
+        type: integer
+        description: Item type identifier (use /item_types to get available types).
+      item_type_name:
+        type: string
+        description: Item type name as alternative to item_type_id (e.g. "dataset"). Resolved to item_type_id internally.
+      group_id:
+        type: integer
+        description: Group to assign the item to.
+      is_metadata_record:
+        type: boolean
+        description: True if item has no files.
+      download_disabled:
+        type: boolean
+        description: Disable download button for this item.
+      resource_doi:
+        type: string
+        description: Deprecated by related materials (inside fields).
+      resource_title:
+        type: string
+        description: Deprecated by related materials (inside fields).
+      fields:
+        type: object
+        description: >-
+          All metadata fields keyed by underlying field name. Includes core fields (title,
+          description, keywords, authors, licence, categories, funding_list, related_materials)
+          and stock fields (journal, volume, issue, etc.). Use GET /items/fields/{item_type_id}
+          to discover available fields. `categories` is a list of objects, each identified by
+          either an `id` (integer) or a `source_id` (string); entries may be mixed. Unresolved
+          `source_id` values are reported in the response `warnings` array.
+          `licence` is a single object with an `id` key (extras ignored). Bare integers are rejected.
+        additionalProperties: true
+    x-tag: items
+  ItemUpdate:
+    description: >-
+      Item update payload. Same structure as ItemCreate but no required fields.
+      Use PATCH for partial updates (only send changed fields inside 'fields').
+    type: object
+    properties:
+      item_type_id:
+        type: integer
+        description: Item type identifier (use /item_types to get available types).
+      item_type_name:
+        type: string
+        description: Item type name as alternative to item_type_id (e.g. "dataset"). Resolved to item_type_id internally.
+      group_id:
+        type: integer
+      is_metadata_record:
+        type: boolean
+      download_disabled:
+        type: boolean
+      fields:
+        type: object
+        description: >-
+          All metadata fields keyed by underlying field name. Same structure as ItemCreate —
+          `categories` entries accept `id` (int) or `source_id` (string), mixed allowed;
+          `licence` is a single object with an `id` key. Bare integers are rejected.
+        additionalProperties: true
+    x-tag: items
+  ItemComplete:
+    description: Full item representation including item-type based metadata fields (public). Same as ArticleComplete plus optional fields property.
+    type: object
+    properties:
+      item_type_id:
+        type: integer
+        description: Item type identifier.
+      item_type_name:
+        type: string
+        description: Human-readable item type name (e.g. "dataset", "journal article").
+      fields:
+        type: object
+        additionalProperties: true
+        description: >-
+          Item-type based metadata field values keyed by field name. Only present for items with item-type based metadata enabled.
+          Scalar/text/date/dropdown stock fields and custom fields are returned as-is.
+          Relational fields are hydrated on GET to the same shapes as the legacy /articles endpoint:
+          authors → [{id, name, first_name, last_name, orcid_id}];
+          funding_list → [{id, title}];
+          related_materials → [{id, title, relation, identifier, identifier_type}];
+          categories → [{id, title, parent_id, path, source_id, taxonomy_id}];
+          licence → {id, value, name, url}.
+    x-tag: items
+  ItemCompletePrivate:
+    description: Full item representation including item-type based metadata fields (private). Same as ArticleCompletePrivate plus optional fields property.
+    type: object
+    properties:
+      item_type_id:
+        type: integer
+        description: Item type identifier.
+      item_type_name:
+        type: string
+        description: Human-readable item type name (e.g. "dataset", "journal article").
+      fields:
+        type: object
+        additionalProperties: true
+        description: >-
+          Item-type based metadata field values keyed by field name. Only present for items with item-type based metadata enabled.
+          Scalar/text/date/dropdown stock fields and custom fields are returned as-is.
+          Relational fields are hydrated on GET to the same shapes as the legacy /articles endpoint:
+          authors → [{id, name, first_name, last_name, orcid_id}];
+          funding_list → [{id, title}];
+          related_materials → [{id, title, relation, identifier, identifier_type}];
+          categories → [{id, title, parent_id, path, source_id, taxonomy_id}];
+          licence → {id, value, name, url}.
+    x-tag: items
+  UnderlyingField:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: Underlying field unique identifier
+      name:
+        type: string
+        description: Field name (e.g. journal, volume, title)
+      field_type:
+        type: string
+        description: Field type (e.g. text, dropdown, date, textarea, generic)
+      internal_type:
+        type: string
+        description: 'Internal type classification: core, stock, or custom'
+        enum:
+        - core
+        - stock
+        - custom
+      settings:
+        type: object
+        description: Field-specific settings (validation rules, default values, etc.)
+    x-tag: items
+  ItemTypeField:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: Underlying field unique identifier
+      name:
+        type: string
+        description: Field name
+      field_type:
+        type: string
+        description: Field type
+      internal_type:
+        type: string
+        description: 'Internal type: core, stock, or custom'
+        enum:
+        - core
+        - stock
+        - custom
+      display_name:
+        type: string
+        description: Display name configured for this item type
+      hint_text:
+        type: string
+        description: Hint text shown to the user
+      is_mandatory:
+        type: boolean
+        description: Whether this field is mandatory for this item type
+      order:
+        type: integer
+        description: Display order within the item type
+      display_area:
+        type: string
+        description: UI display area
+        enum:
+        - additional
+        - core
+        - essential
+        - timeline
+      settings:
+        type: object
+        description: Per-item-type field settings (may include default_value, validations)
+    x-tag: items
   ArticleDOI:
     required:
     - doi
@@ -1403,6 +1581,19 @@ schemas:
         example: '2017-05-15T15:12:26Z'
       timeline:
         $ref: '#/components/schemas/Timeline'
+      fields:
+        type: object
+        description: >-
+          Item-type based metadata field values keyed by field name. Only present
+          when the collection belongs to an institution with item-type based metadata
+          enabled. Scalar/text stock fields (e.g. publisher) and
+          custom fields are returned as-is. Relational fields are hydrated on GET to the
+          same shapes as the legacy /articles endpoint:
+          authors → [{id, name, first_name, last_name, orcid_id}];
+          funding_list → [{id, title}];
+          related_materials → [{id, title, relation, identifier, identifier_type}];
+          categories → [{id, title, parent_id, path, source_id, taxonomy_id}].
+        additionalProperties: {}
     allOf:
     - $ref: '#/components/schemas/Collection'
     x-tag: collections
@@ -1548,12 +1739,23 @@ schemas:
         example: '2017-05-15T15:12:26Z'
       timeline:
         $ref: '#/components/schemas/Timeline'
+      fields:
+        type: object
+        description: >-
+          Item-type based metadata field values keyed by field name. Only present
+          when the collection belongs to an institution with item-type based metadata
+          enabled. Scalar/text stock fields (e.g. publisher) and
+          custom fields are returned as-is. Relational fields are hydrated on GET to the
+          same shapes as the legacy /articles endpoint:
+          authors → [{id, name, first_name, last_name, orcid_id}];
+          funding_list → [{id, title}];
+          related_materials → [{id, title, relation, identifier, identifier_type}];
+          categories → [{id, title, parent_id, path, source_id, taxonomy_id}].
+        additionalProperties: {}
     allOf:
     - $ref: '#/components/schemas/Collection'
     x-tag: collections
   CollectionCreate:
-    required:
-    - title
     type: object
     properties:
       funding:
@@ -1694,6 +1896,23 @@ schemas:
           to specific groups
       timeline:
         $ref: '#/components/schemas/TimelineUpdate'
+      fields:
+        type: object
+        description: 'Institutions with item-type based metadata only: all metadata fields keyed by underlying field name
+          (e.g. title, description, keywords, publisher, funding_list). When present, the fields object is the authoritative
+          source for all metadata; top-level metadata keys are ignored. `categories` inside `fields` is a list of objects,
+          each identified by either an `id` (integer) or a `source_id` (string); entries may be mixed. Unresolved
+          `source_id` values are reported in the response `warnings` array.'
+        example:
+          title: My Collection
+          description: Collection description
+          keywords:
+          - keyword1
+          publisher: Springer Nature
+          categories:
+          - id: 69
+          - source_id: '3001'
+        additionalProperties: true
     x-tag: collections
   CollectionDOI:
     required:
@@ -2257,10 +2476,10 @@ schemas:
     properties:
       id:
         type: integer
-        description: A funding ID as returned by the Funding Search endpoint
+        description: 'A funding ID as returned by the Funding Search endpoint. Use either id or title, not both.'
       title:
         type: string
-        description: The title of the new user created funding
+        description: 'The title of the new user created funding. Use either title or id, not both.'
     x-tag: funding
   FundingInformation:
     required:
@@ -2456,6 +2675,14 @@ schemas:
         type: string
         description: The URL name of the item type.
         example: journal_contribution
+      fields:
+        type: array
+        description: >-
+          Available metadata fields for this item type. Only present when item-type based metadata
+          is enabled for the institution (`itbm_config` feature flag). Use GET /items/fields/{item_type_id}
+          for full detail.
+        items:
+          $ref: '#/components/schemas/ItemTypeField'
   License:
     required:
     - name
@@ -3107,6 +3334,12 @@ schemas:
         type: string
         description: Date when project was created
         example: '2017-05-16T14:52:54Z'
+      fields:
+        type: object
+        description: >-
+          Item-type based metadata stock field values keyed by field name (e.g. funding_list).
+          Only present when the project belongs to an institution with item-type based metadata enabled.
+        additionalProperties: {}
     allOf:
     - $ref: '#/components/schemas/Project'
     x-tag: projects
@@ -3181,12 +3414,16 @@ schemas:
         description: Collection custom fields
         items:
           $ref: '#/components/schemas/ShortCustomField'
+      fields:
+        type: object
+        description: >-
+          Item-type based metadata stock field values keyed by field name (e.g. funding_list).
+          Only present when the project belongs to an institution with item-type based metadata enabled.
+        additionalProperties: {}
     allOf:
     - $ref: '#/components/schemas/ProjectPrivate'
     x-tag: projects
   ProjectCreate:
-    required:
-    - title
     type: object
     properties:
       title:
@@ -3224,6 +3461,17 @@ schemas:
         description: List of custom fields values, supersedes custom_fields parameter
         items:
           $ref: '#/components/schemas/CustomArticleFieldAdd'
+      fields:
+        type: object
+        description: 'Institutions with item-type based metadata only: all metadata fields keyed by underlying field name
+          (e.g. title, description, funding_list). When present, the fields object is the authoritative source for all
+          metadata; top-level metadata keys are ignored.'
+        example:
+          title: My Project
+          description: Project description
+          funding_list:
+          - title: Test Grant
+        additionalProperties: true
     x-tag: projects
   ProjectNote:
     required:
@@ -3676,6 +3924,7 @@ schemas:
     x-tag: timeline
   TimelineUpdate:
     type: object
+    description: 'Legacy timeline input (used by /v2/account/articles). Items with item-type based metadata do not use this object — pass dates as stock fields inside fields: {} instead.'
     properties:
       firstOnline:
         type: string
@@ -3686,6 +3935,23 @@ schemas:
         description: Publish date
         example: '2015-12-31'
       publisherAcceptance:
+        type: string
+        description: Date when the item was accepted for publication
+        example: '2015-12-31'
+    x-tag: timeline_update
+  ItbmTimeline:
+    type: object
+    description: Timeline object returned in item and collection responses where item-type based metadata is enabled. Keys are snake_case.
+    properties:
+      first_online:
+        type: string
+        description: Online posted date
+        example: '2015-12-31'
+      publisher_publication:
+        type: string
+        description: Publish date
+        example: '2015-12-31'
+      publisher_acceptance:
         type: string
         description: Date when the item was accepted for publication
         example: '2015-12-31'

@@ -371,7 +371,13 @@ paths:
       tags:
       - projects
       summary: Create project
-      description: Create a new project
+      description: >-
+        Create a new project. Institutions with item-type based metadata enabled
+        wrap metadata in a `fields` object (`title`, `description`, `funding_list`).
+        Institutions without item-type based metadata can use the legacy
+        flat-payload form. `funding_list`
+        entries accept either `{"id": <int>}` (reference an existing record)
+        or `{"title": "..."}` (mint a new user-defined entry).
       operationId: private_project_create
       requestBody:
         description: Project  description
@@ -409,7 +415,10 @@ paths:
       tags:
       - projects
       summary: View project details
-      description: View a private project
+      description: >-
+        View a private project. For projects with item-type based metadata, metadata is returned
+        under a `fields` object with `funding_list` hydrated to `[{id, title}]`.
+        Projects without item-type based metadata keep the legacy flat shape.
       operationId: private_project_details
       parameters:
       - name: project_id
@@ -449,7 +458,12 @@ paths:
       tags:
       - projects
       summary: Update project
-      description: Updating an project by passing body parameters.
+      description: >-
+        Update a project by passing full body parameters. Institutions with
+        item-type based metadata enabled wrap metadata in a `fields` object; the
+        legacy flat-payload form is also accepted for institutions without
+        item-type based metadata. `funding_list` entries accept `{"id": <int>}`
+        or `{"title": "..."}`.
       operationId: private_project_update
       parameters:
       - name: project_id
@@ -540,7 +554,12 @@ paths:
       tags:
       - projects
       summary: Partially update project
-      description: Partially update a project; only provided fields will be changed.
+      description: >-
+        Partially update a project; only provided keys will be changed. For
+        institutions with item-type based metadata enabled, send the keys to
+        update inside `fields:{}` — keys not present are preserved.
+        `funding_list` entries accept
+        `{"id": <int>}` or `{"title": "..."}`.
       operationId: private_project_partial_update
       parameters:
       - name: project_id
