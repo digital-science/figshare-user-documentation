@@ -578,9 +578,10 @@ schemas:
           All metadata fields keyed by underlying field name. Includes core fields (title,
           description, keywords, authors, licence, categories, funding_list, related_materials)
           and stock fields (journal, volume, issue, etc.). Use GET /items/fields/{item_type_id}
-          to discover available fields. `categories` is a list of objects with an `id` key
-          (extras ignored); `licence` is a single object with an `id` key (extras ignored).
-          Bare integers are rejected.
+          to discover available fields. `categories` is a list of objects, each identified by
+          either an `id` (integer) or a `source_id` (string); entries may be mixed. Unresolved
+          `source_id` values are reported in the response `warnings` array.
+          `licence` is a single object with an `id` key (extras ignored). Bare integers are rejected.
         additionalProperties: true
     x-tag: items
   ItemUpdate:
@@ -605,8 +606,8 @@ schemas:
         type: object
         description: >-
           All metadata fields keyed by underlying field name. Same structure as ItemCreate —
-          `categories` is a list of objects with an `id` key, `licence` is a single object with
-          an `id` key. Bare integers are rejected.
+          `categories` entries accept `id` (int) or `source_id` (string), mixed allowed;
+          `licence` is a single object with an `id` key. Bare integers are rejected.
         additionalProperties: true
     x-tag: items
   ItemComplete:
@@ -1899,13 +1900,18 @@ schemas:
         type: object
         description: 'Institutions with item-type based metadata only: all metadata fields keyed by underlying field name
           (e.g. title, description, keywords, publisher, funding_list). When present, the fields object is the authoritative
-          source for all metadata; top-level metadata keys are ignored.'
+          source for all metadata; top-level metadata keys are ignored. `categories` inside `fields` is a list of objects,
+          each identified by either an `id` (integer) or a `source_id` (string); entries may be mixed. Unresolved
+          `source_id` values are reported in the response `warnings` array.'
         example:
           title: My Collection
           description: Collection description
           keywords:
           - keyword1
           publisher: Springer Nature
+          categories:
+          - id: 69
+          - source_id: '3001'
         additionalProperties: true
     x-tag: collections
   CollectionDOI:

@@ -8,7 +8,9 @@ paths:
         Create a new Item by sending item information.
         Institutions with item-type based metadata enabled can include stock fields (journal, volume, etc.) inside the `fields` object.
         Institutions without item-type based metadata sending stock fields will receive a validation error.
-        `categories` input is a list of objects with an `id` key (`[{"id": <int>}]`);
+        `categories` input is a list of objects, each identified by either `id` (int) or `source_id` (string);
+        entries may be mixed (`[{"id": 69}, {"source_id": "3001"}]`). Unresolved `source_id` values are reported
+        in the response `warnings` array.
         `licence` input is a single object with an `id` key (`{"id": <int>}`).
         Bare integers are rejected with 422.
       operationId: private_item_create
@@ -127,8 +129,8 @@ paths:
         Update an item by passing full body parameters.
         Institutions with item-type based metadata enabled can include stock fields inside the `fields` object.
         Institutions without item-type based metadata sending stock fields will receive a validation error.
-        `categories` input is `[{"id": <int>}]` and `licence` input is `{"id": <int>}`;
-        bare integers are rejected.
+        `categories` entries accept `id` (int) or `source_id` (string), mixed allowed;
+        `licence` input is `{"id": <int>}`. Bare integers are rejected.
       operationId: private_item_update
       parameters:
       - name: item_id
@@ -186,8 +188,8 @@ paths:
       description: >-
         Partially update an item by sending only the keys to change.
         For items with item-type based metadata, send the keys to update inside `fields:{}` —
-        keys not present are preserved. `categories` and `licence` follow the
-        same object-with-`id` rule as create; bare integers are rejected.
+        keys not present are preserved. `categories` entries accept `id` (int) or `source_id` (string),
+        mixed allowed; `licence` is `{"id": <int>}`. Bare integers are rejected.
       operationId: private_item_partial_update
       parameters:
       - name: item_id
