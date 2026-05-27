@@ -1,5 +1,212 @@
 paths:
+  /items:
+    get:
+      tags:
+      - items
+      summary: Public ITBM Items
+      description: >-
+        List public items from institutions with item-type based metadata enabled
+        (`itbm_enabled`). Returns the light list shape (system fields + project_id +
+        item_type); fetch `/v2/items/{item_id}` for the full ITBM detail including
+        the `fields` object.
+      operationId: items_public_list
+      parameters:
+      - name: page
+        in: query
+        schema:
+          maximum: 5000
+          minimum: 1
+          type: integer
+      - name: page_size
+        in: query
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          default: 10
+      - name: limit
+        in: query
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+      - name: offset
+        in: query
+        schema:
+          maximum: 5000
+          minimum: 0
+          type: integer
+      - name: order
+        in: query
+        description: ITBM date keys differ from legacy. `posted_date` aliases the underlying `dates.published` field.
+        schema:
+          type: string
+          default: created_date
+          enum:
+          - created_date
+          - modified_date
+          - posted_date
+          - first_online
+          - publisher_published
+          - publisher_accepted
+      - name: order_direction
+        in: query
+        schema:
+          type: string
+          default: desc
+          enum:
+          - asc
+          - desc
+      - name: institution
+        in: query
+        description: Only return items from this institution
+        schema:
+          type: integer
+      - name: group
+        in: query
+        description: Only return items from this group
+        schema:
+          type: integer
+      - name: item_type_id
+        in: query
+        description: Only return items of this ITBM item type
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: OK. An array of items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ArticleWithProject'
+        '403':
+          description: Forbidden. ITBM is not enabled for the requested institution.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+  /items/search:
+    post:
+      tags:
+      - items
+      summary: Public ITBM Items Search
+      description: Search public ITBM items. Same light list shape as `/v2/items`.
+      operationId: items_public_search
+      requestBody:
+        description: Search Parameters
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArticleSearch'
+        required: false
+      responses:
+        '200':
+          description: OK. An array of items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ArticleWithProject'
+        '403':
+          description: Forbidden. ITBM is not enabled for the requested institution.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+      x-codegen-request-body-name: search
   /account/items:
+    get:
+      tags:
+      - items
+      summary: Private ITBM Items
+      description: >-
+        List the caller's own ITBM items. Light list shape — fetch
+        `/v2/account/items/{item_id}` for the full ITBM detail.
+      operationId: account_items_list
+      parameters:
+      - name: page
+        in: query
+        schema:
+          maximum: 5000
+          minimum: 1
+          type: integer
+      - name: page_size
+        in: query
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          default: 10
+      - name: limit
+        in: query
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+      - name: offset
+        in: query
+        schema:
+          maximum: 5000
+          minimum: 0
+          type: integer
+      - name: order
+        in: query
+        schema:
+          type: string
+          default: created_date
+          enum:
+          - created_date
+          - modified_date
+          - posted_date
+          - first_online
+          - publisher_published
+          - publisher_accepted
+      - name: order_direction
+        in: query
+        schema:
+          type: string
+          default: desc
+          enum:
+          - asc
+          - desc
+      - name: item_type_id
+        in: query
+        description: Only return items of this ITBM item type
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: OK. An array of items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ArticleWithProject'
+        '403':
+          description: Forbidden. ITBM is not enabled for the caller's institution.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Item
     post:
       tags:
       - items
@@ -49,6 +256,43 @@ paths:
         - all
       x-subcategory: Private Item
       x-codegen-request-body-name: Item
+  /account/items/search:
+    post:
+      tags:
+      - items
+      summary: Private ITBM Items Search
+      description: Search the caller's own ITBM items. Same light list shape as `/v2/account/items`.
+      operationId: account_items_search
+      requestBody:
+        description: Search Parameters
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ArticleSearch'
+        required: false
+      responses:
+        '200':
+          description: OK. An array of items
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ArticleWithProject'
+        '403':
+          description: Forbidden. ITBM is not enabled for the caller's institution.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Item
+      x-codegen-request-body-name: search
   /items/{item_id}:
     get:
       tags:
