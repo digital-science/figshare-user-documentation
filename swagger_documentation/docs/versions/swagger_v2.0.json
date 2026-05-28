@@ -8347,7 +8347,7 @@
                     "items"
                 ],
                 "summary": "Create new Item",
-                "description": "Create a new Item by sending item information. Institutions with item-type based metadata enabled can include stock fields (journal, volume, etc.) inside the `fields` object. Institutions without item-type based metadata sending stock fields will receive a validation error. `categories` input is a list of objects with an `id` key (`[{\"id\": <int>}]`); `licence` input is a single object with an `id` key (`{\"id\": <int>}`). Bare integers are rejected with 422.",
+                "description": "Create a new Item by sending item information. Institutions with item-type based metadata enabled can include stock fields (journal, volume, etc.) inside the `fields` object. Institutions without item-type based metadata sending stock fields will receive a validation error. `categories` input is a list of objects with an `id` key (`[{\"id\": <int>}]`); `licence` input is a single object identified by either `id` or the combined `uri` + `name` pair (`{\"id\": <int>}` or `{\"uri\": \"...\", \"name\": \"...\"}`) — `id` wins when present; `uri` or `name` on their own are rejected with 422, as are unresolved or ambiguous pairs. Bare integers are rejected with 422.",
                 "operationId": "private_item_create",
                 "requestBody": {
                     "description": "Item description",
@@ -8512,7 +8512,7 @@
                     "items"
                 ],
                 "summary": "Update item",
-                "description": "Update an item by passing full body parameters. Institutions with item-type based metadata enabled can include stock fields inside the `fields` object. Institutions without item-type based metadata sending stock fields will receive a validation error. `categories` input is `[{\"id\": <int>}]` and `licence` input is `{\"id\": <int>}`; bare integers are rejected.",
+                "description": "Update an item by passing full body parameters. Institutions with item-type based metadata enabled can include stock fields inside the `fields` object. Institutions without item-type based metadata sending stock fields will receive a validation error. `categories` input is `[{\"id\": <int>}]`; `licence` input is `{\"id\": <int>}` or the combined `{\"uri\": \"...\", \"name\": \"...\"}` pair (id wins; uri or name alone, unresolved, or ambiguous pairs are rejected with 422). Bare integers are rejected.",
                 "operationId": "private_item_update",
                 "parameters": [
                     {
@@ -8597,7 +8597,7 @@
                     "items"
                 ],
                 "summary": "Partially update item",
-                "description": "Partially update an item by sending only the keys to change. For items with item-type based metadata, send the keys to update inside `fields:{}` — keys not present are preserved. `categories` and `licence` follow the same object-with-`id` rule as create; bare integers are rejected.",
+                "description": "Partially update an item by sending only the keys to change. For items with item-type based metadata, send the keys to update inside `fields:{}` — keys not present are preserved. `categories` follows the same object-with-`id` rule as create. `licence` accepts `{\"id\": <int>}` or the combined `{\"uri\": \"...\", \"name\": \"...\"}` pair (id wins; uri or name alone, unresolved, or ambiguous pairs are rejected with 422). Bare integers are rejected.",
                 "operationId": "private_item_partial_update",
                 "parameters": [
                     {
@@ -10045,7 +10045,7 @@
                     "projects"
                 ],
                 "summary": "Create project",
-                "description": "Create a new project. Institutions with item-type based metadata enabled wrap metadata in a `fields` object (`title`, `description`, `funding_list`). Institutions without item-type based metadata can use the legacy flat-payload form. `funding_list` entries accept either `{\"id\": <int>}` (reference an existing record) or `{\"title\": \"...\"}` (mint a new user-defined entry).",
+                "description": "Create a new project. Institutions with item-type based metadata enabled wrap metadata in a `fields` object (`title`, `description`, `funding_list`, and — when configured for the institution — `licence`). Institutions without item-type based metadata can use the legacy flat-payload form. `funding_list` entries accept either `{\"id\": <int>}` (reference an existing record) or `{\"title\": \"...\"}` (mint a new user-defined entry). When `licence` is configured for projects, it accepts the same shapes as on items: `{\"id\": <int>}` or the combined `{\"uri\": \"...\", \"name\": \"...\"}` pair (id wins; uri or name alone, unresolved, or ambiguous pairs are rejected with 422).",
                 "operationId": "private_project_create",
                 "requestBody": {
                     "description": "Project  description",
@@ -12778,7 +12778,7 @@
                     },
                     "fields": {
                         "type": "object",
-                        "description": "All metadata fields keyed by underlying field name. Includes core fields (title, description, keywords, authors, licence, categories, funding_list, related_materials) and stock fields (journal, volume, issue, etc.). Use GET /items/fields/{item_type_id} to discover available fields. `categories` is a list of objects with an `id` key (extras ignored); `licence` is a single object with an `id` key (extras ignored). Bare integers are rejected.",
+                        "description": "All metadata fields keyed by underlying field name. Includes core fields (title, description, keywords, authors, licence, categories, funding_list, related_materials) and stock fields (journal, volume, issue, etc.). Use GET /items/fields/{item_type_id} to discover available fields. `categories` is a list of objects with an `id` key (extras ignored); `licence` is a single object identified by `id` or by the combined `uri`+`name` pair (`{\"id\": <int>}` or `{\"uri\": \"...\", \"name\": \"...\"}`; id wins; extras ignored; uri or name alone, unresolved, or ambiguous pairs are rejected with 422). Bare integers are rejected.",
                         "additionalProperties": true
                     }
                 },
@@ -12807,7 +12807,7 @@
                     },
                     "fields": {
                         "type": "object",
-                        "description": "All metadata fields keyed by underlying field name. Same structure as ItemCreate — `categories` is a list of objects with an `id` key, `licence` is a single object with an `id` key. Bare integers are rejected.",
+                        "description": "All metadata fields keyed by underlying field name. Same structure as ItemCreate — `categories` is a list of objects with an `id` key; `licence` is a single object identified by `id` or by the combined `uri`+`name` pair (id wins; uri or name alone, unresolved, or ambiguous pairs are rejected with 422). Bare integers are rejected.",
                         "additionalProperties": true
                     }
                 },
