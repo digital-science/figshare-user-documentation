@@ -684,14 +684,21 @@
                     {
                         "name": "order",
                         "in": "query",
-                        "description": "The field by which to order.",
+                        "description": "The field by which to order. ITBM-enabled institutions accept the additional date keys `posted_date`, `first_online`, `publisher_published`, `publisher_accepted`, `start_date`, `finish_date` (and `created_date`); legacy keys (`published_date`, `modified_date`, `views`) are rejected for ITBM tenants.",
                         "schema": {
                             "type": "string",
                             "default": "published_date",
                             "enum": [
                                 "published_date",
                                 "modified_date",
-                                "views"
+                                "views",
+                                "created_date",
+                                "posted_date",
+                                "first_online",
+                                "publisher_published",
+                                "publisher_accepted",
+                                "start_date",
+                                "finish_date"
                             ]
                         }
                     },
