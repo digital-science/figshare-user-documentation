@@ -378,6 +378,7 @@ paths:
         flat-payload form. `funding_list`
         entries accept either `{"id": <int>}` (reference an existing record)
         or `{"title": "..."}` (mint a new user-defined entry).
+        Unrecognised field names inside `fields` (e.g. a typo) are rejected with 422.
       operationId: private_project_create
       requestBody:
         description: Project  description
@@ -416,9 +417,11 @@ paths:
       - projects
       summary: View project details
       description: >-
-        View a private project. For projects with item-type based metadata, metadata is returned
-        under a `fields` object with `funding_list` hydrated to `[{id, title}]`.
-        Projects without item-type based metadata keep the legacy flat shape.
+        View a private project. For projects with item-type based metadata, all core and stock
+        metadata (including `title`) is returned under a `fields` object and suppressed at the top
+        level, with `funding_list` hydrated to
+        `[{id, title, grant_code, funder_name, is_user_defined, url}]` (`url` only when a dimensions id
+        is present). Projects without item-type based metadata keep the legacy flat shape.
       operationId: private_project_details
       parameters:
       - name: project_id
@@ -560,6 +563,7 @@ paths:
         update inside `fields:{}` — keys not present are preserved.
         `funding_list` entries accept
         `{"id": <int>}` or `{"title": "..."}`.
+        Unrecognised field names inside `fields` (e.g. a typo) are rejected with 422.
       operationId: private_project_partial_update
       parameters:
       - name: project_id

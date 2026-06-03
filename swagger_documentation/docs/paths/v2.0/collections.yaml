@@ -436,6 +436,7 @@ paths:
         objects, each identified by either `id` (int) or `source_id` (string); mixed entries allowed
         (`[{"id": 69}, {"source_id": "3001"}]`). Unresolved `source_id` values are reported in
         the response `warnings` array. Bare integers are rejected.
+        Unrecognised field names inside `fields` (e.g. a typo) are rejected with 422.
         `licence` is no longer accepted on collections (removed Apr 2026).
         Institutions without item-type based metadata can use the legacy flat-payload form.
       operationId: private_collection_create
@@ -476,11 +477,13 @@ paths:
       - collections
       summary: Collection details
       description: >-
-        View a collection. For collections with item-type based metadata, metadata is returned
-        under a `fields` object with relational fields hydrated:
-        `authors → [{id, name, first_name, last_name, orcid_id}]`,
+        View a collection. For collections with item-type based metadata, all core and stock metadata
+        (including `title`) is returned under a `fields` object and suppressed at the top level, with
+        relational fields hydrated:
+        `authors → [{id, name, first_name, last_name, is_active, url_name, orcid_id, affiliations}]`,
         `categories → [{id, title, parent_id, path, source_id, taxonomy_id}]`,
-        `funding_list → [{id, title}]`,
+        `funding_list → [{id, title, grant_code, funder_name, is_user_defined, url}]` (`url` only when a
+        dimensions id is present),
         `related_materials → [{id, title, relation, identifier, identifier_type}]`,
         `publisher` returned as-is (string). Collections without item-type based metadata keep the
         legacy flat shape.
@@ -620,6 +623,7 @@ paths:
         — keys not present are preserved. `categories` entries accept `id` (int) or
         `source_id` (string), mixed allowed (bare integers rejected). Unresolved
         `source_id` values are reported in the response `warnings` array.
+        Unrecognised field names inside `fields` (e.g. a typo) are rejected with 422.
       operationId: private_collection_patch
       parameters:
       - name: collection_id

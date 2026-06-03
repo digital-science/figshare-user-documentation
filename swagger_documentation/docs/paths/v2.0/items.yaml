@@ -13,6 +13,7 @@ paths:
         in the response `warnings` array.
         `licence` input is a single object with an `id` key (`{"id": <int>}`).
         Bare integers are rejected with 422.
+        Unrecognised field names inside `fields` (e.g. a typo) are rejected with 422.
       operationId: private_item_create
       requestBody:
         description: Item description
@@ -190,6 +191,7 @@ paths:
         For items with item-type based metadata, send the keys to update inside `fields:{}` —
         keys not present are preserved. `categories` entries accept `id` (int) or `source_id` (string),
         mixed allowed; `licence` is `{"id": <int>}`. Bare integers are rejected.
+        Unrecognised field names inside `fields` (e.g. a typo) are rejected with 422.
       operationId: private_item_partial_update
       parameters:
       - name: item_id
