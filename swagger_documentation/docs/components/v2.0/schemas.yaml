@@ -577,7 +577,7 @@ schemas:
         description: >-
           All metadata fields keyed by underlying field name. Includes core fields (title,
           description, keywords, authors, licence, categories, funding_list, related_materials)
-          and stock fields (journal, volume, issue, etc.). Use GET /items/fields/{item_type_id}
+          and stock fields (journal, volume, issue, etc.). Use GET /account/items/fields/item-type/{item_type_id}
           to discover available fields. `categories` is a list of objects, each identified by
           either an `id` (integer) or a `source_id` (string); entries may be mixed. Unresolved
           `source_id` values are reported in the response `warnings` array.
@@ -2683,7 +2683,7 @@ schemas:
         type: array
         description: >-
           Available metadata fields for this item type. Only present when item-type based metadata
-          is enabled for the institution (`itbm_config` feature flag). Use GET /items/fields/{item_type_id}
+          is enabled for the institution (`itbm_config` feature flag). Use GET /account/items/fields/item-type/{item_type_id}
           for full detail.
         items:
           $ref: '#/components/schemas/ItemTypeField'

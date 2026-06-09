@@ -242,7 +242,7 @@ paths:
       - OAuth2:
         - all
       x-subcategory: Private Item
-  /items/fields:
+  /account/items/fields:
     get:
       tags:
       - other
@@ -275,7 +275,7 @@ paths:
       security:
       - OAuth2:
         - all
-  /items/fields/{item_type_id}:
+  /account/items/fields/item-type/{item_type_id}:
     get:
       tags:
       - other
@@ -326,7 +326,7 @@ paths:
       security:
       - OAuth2:
         - all
-  /projects/fields:
+  /account/projects/fields:
     get:
       tags:
       - other
@@ -359,7 +359,7 @@ paths:
       security:
       - OAuth2:
         - all
-  /collections/fields:
+  /account/collections/fields:
     get:
       tags:
       - other

@@ -6886,7 +6886,7 @@
                     "institutions"
                 ],
                 "summary": "Group custom fields",
-                "description": "Returns the custom fields for the specified group. Deprecated in favour of GET /items/fields/{item_type_id}. Will be removed after 2027-01-01.",
+                "description": "Returns the custom fields for the specified group. Deprecated in favour of GET /account/items/fields/item-type/{item_type_id}. Will be removed after 2027-01-01.",
                 "operationId": "account_group_custom_fields",
                 "parameters": [
                     {
@@ -6949,7 +6949,7 @@
                     "institutions"
                 ],
                 "summary": "Private account institution group custom fields",
-                "description": "Returns the custom fields in the group the user belongs to, or the ones in the group specified, if the user has access. Deprecated in favour of GET /items/fields/{item_type_id}. Will be removed after 2027-01-01.",
+                "description": "Returns the custom fields in the group the user belongs to, or the ones in the group specified, if the user has access. Deprecated in favour of GET /account/items/fields/item-type/{item_type_id}. Will be removed after 2027-01-01.",
                 "operationId": "custom_fields_list",
                 "parameters": [
                     {
@@ -8678,7 +8678,7 @@
                 "x-subcategory": "Private Item"
             }
         },
-        "/items/fields": {
+        "/account/items/fields": {
             "get": {
                 "tags": [
                     "other"
@@ -8728,7 +8728,7 @@
                 ]
             }
         },
-        "/items/fields/{item_type_id}": {
+        "/account/items/fields/item-type/{item_type_id}": {
             "get": {
                 "tags": [
                     "other"
@@ -8803,7 +8803,7 @@
                 ]
             }
         },
-        "/projects/fields": {
+        "/account/projects/fields": {
             "get": {
                 "tags": [
                     "other"
@@ -8853,7 +8853,7 @@
                 ]
             }
         },
-        "/collections/fields": {
+        "/account/collections/fields": {
             "get": {
                 "tags": [
                     "other"
@@ -12756,7 +12756,7 @@
                     },
                     "fields": {
                         "type": "object",
-                        "description": "All metadata fields keyed by underlying field name. Includes core fields (title, description, keywords, authors, licence, categories, funding_list, related_materials) and stock fields (journal, volume, issue, etc.). Use GET /items/fields/{item_type_id} to discover available fields. `categories` is a list of objects, each identified by either an `id` (integer) or a `source_id` (string); entries may be mixed. Unresolved `source_id` values are reported in the response `warnings` array. `licence` is a single object with an `id` key (extras ignored). Bare integers are rejected.",
+                        "description": "All metadata fields keyed by underlying field name. Includes core fields (title, description, keywords, authors, licence, categories, funding_list, related_materials) and stock fields (journal, volume, issue, etc.). Use GET /account/items/fields/item-type/{item_type_id} to discover available fields. `categories` is a list of objects, each identified by either an `id` (integer) or a `source_id` (string); entries may be mixed. Unresolved `source_id` values are reported in the response `warnings` array. `licence` is a single object with an `id` key (extras ignored). Bare integers are rejected.",
                         "additionalProperties": true
                     }
                 },
@@ -15451,7 +15451,7 @@
                     },
                     "fields": {
                         "type": "array",
-                        "description": "Available metadata fields for this item type. Only present when item-type based metadata is enabled for the institution (`itbm_config` feature flag). Use GET /items/fields/{item_type_id} for full detail.",
+                        "description": "Available metadata fields for this item type. Only present when item-type based metadata is enabled for the institution (`itbm_config` feature flag). Use GET /account/items/fields/item-type/{item_type_id} for full detail.",
                         "items": {
                             "$ref": "#/components/schemas/ItemTypeField"
                         }
