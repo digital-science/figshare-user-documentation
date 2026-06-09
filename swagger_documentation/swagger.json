@@ -4614,7 +4614,7 @@
                     "collections"
                 ],
                 "summary": "Create collection",
-                "description": "Create a new collection. Institutions with item-type based metadata enabled wrap metadata in a `fields` object; stock fields are `categories`, `funding_list`, `related_materials`, and `publisher`. `categories` input is a list of objects with an `id` key (`[{\"id\": <int>}]`); bare integers are rejected. `licence` is no longer accepted on collections (removed Apr 2026). Institutions without item-type based metadata can use the legacy flat-payload form.",
+                "description": "Create a new collection. Institutions with item-type based metadata enabled wrap metadata in a `fields` object; stock fields are `categories`, `funding_list`, `related_materials`, and `publisher`. `categories` input is a list of objects, each identified by either `id` (int) or `source_id` (string); mixed entries allowed (`[{\"id\": 69}, {\"source_id\": \"3001\"}]`). Unresolved `source_id` values are reported in the response `warnings` array. Bare integers are rejected. Unrecognised field names inside `fields` (e.g. a typo) are rejected with 422. `licence` is no longer accepted on collections (removed Apr 2026). Institutions without item-type based metadata can use the legacy flat-payload form.",
                 "operationId": "private_collection_create",
                 "requestBody": {
                     "description": "Collection description",
@@ -4674,7 +4674,7 @@
                     "collections"
                 ],
                 "summary": "Collection details",
-                "description": "View a collection. For collections with item-type based metadata, metadata is returned under a `fields` object with relational fields hydrated: `authors → [{id, name, first_name, last_name, orcid_id}]`, `categories → [{id, title, parent_id, path, source_id, taxonomy_id}]`, `funding_list → [{id, title}]`, `related_materials → [{id, title, relation, identifier, identifier_type}]`, `publisher` returned as-is (string). Collections without item-type based metadata keep the legacy flat shape.",
+                "description": "View a collection. For collections with item-type based metadata, all core and stock metadata (including `title`) is returned under a `fields` object and suppressed at the top level, with relational fields hydrated: `authors \u2192 [{id, name, first_name, last_name, is_active, url_name, orcid_id, affiliations}]`, `categories \u2192 [{id, title, parent_id, path, source_id, taxonomy_id}]`, `funding_list \u2192 [{id, title, grant_code, funder_name, is_user_defined, url}]` (`url` only when a dimensions id is present), `related_materials \u2192 [{id, title, relation, identifier, identifier_type}]`, `publisher` returned as-is (string). Collections without item-type based metadata keep the legacy flat shape.",
                 "operationId": "private_collection_details",
                 "parameters": [
                     {
@@ -4726,7 +4726,7 @@
                     "collections"
                 ],
                 "summary": "Update collection",
-                "description": "Update a collection by passing full body parameters. Institutions with item-type based metadata enabled wrap metadata in a `fields` object; `categories` input is `[{\"id\": <int>}]` (objects with `id`; bare integers rejected). The legacy flat-payload form is also accepted for institutions without item-type based metadata.",
+                "description": "Update a collection by passing full body parameters. Institutions with item-type based metadata enabled wrap metadata in a `fields` object; `categories` entries accept `id` (int) or `source_id` (string), mixed allowed (bare integers rejected). Unresolved `source_id` values are reported in the response `warnings` array. The legacy flat-payload form is also accepted for institutions without item-type based metadata.",
                 "operationId": "private_collection_update",
                 "parameters": [
                     {
@@ -4865,7 +4865,7 @@
                     "collections"
                 ],
                 "summary": "Partially update collection",
-                "description": "Partially update a collection by sending only the keys to change. For collections with item-type based metadata, send the keys to update inside `fields:{}` — keys not present are preserved. `categories` input is `[{\"id\": <int>}]` (objects with `id`; bare integers rejected).",
+                "description": "Partially update a collection by sending only the keys to change. For collections with item-type based metadata, send the keys to update inside `fields:{}` \u2014 keys not present are preserved. `categories` entries accept `id` (int) or `source_id` (string), mixed allowed (bare integers rejected). Unresolved `source_id` values are reported in the response `warnings` array. Unrecognised field names inside `fields` (e.g. a typo) are rejected with 422.",
                 "operationId": "private_collection_patch",
                 "parameters": [
                     {
@@ -7010,7 +7010,7 @@
                     "institutions"
                 ],
                 "summary": "Custom fields values files upload",
-                "description": "Uploads a CSV containing values for a specific custom field of type <b>dropdown_large_list</b>. The <code>custom_field_id</code> path parameter accepts both classic custom field IDs (legacy) and underlying field IDs (v2). The lookup is performed automatically — no additional parameter is required. More details in the <a href=\"#custom_fields\">Custom Fields section</a>",
+                "description": "Uploads a CSV containing values for a specific custom field of type <b>dropdown_large_list</b>. The <code>custom_field_id</code> path parameter accepts both classic custom field IDs (legacy) and underlying field IDs (v2). The lookup is performed automatically \u2014 no additional parameter is required. More details in the <a href=\"#custom_fields\">Custom Fields section</a>",
                 "operationId": "custom_fields_upload",
                 "parameters": [
                     {
@@ -8347,7 +8347,7 @@
                     "items"
                 ],
                 "summary": "Create new Item",
-                "description": "Create a new Item by sending item information. Institutions with item-type based metadata enabled can include stock fields (journal, volume, etc.) inside the `fields` object. Institutions without item-type based metadata sending stock fields will receive a validation error. `categories` input is a list of objects with an `id` key (`[{\"id\": <int>}]`); `licence` input is a single object identified by either `id` or the combined `uri` + `name` pair (`{\"id\": <int>}` or `{\"uri\": \"...\", \"name\": \"...\"}`) — `id` wins when present; `uri` or `name` on their own are rejected with 422, as are unresolved or ambiguous pairs. Bare integers are rejected with 422.",
+                "description": "Create a new Item by sending item information. Institutions with item-type based metadata enabled can include stock fields (journal, volume, etc.) inside the `fields` object. Institutions without item-type based metadata sending stock fields will receive a validation error. `categories` input is a list of objects, each identified by either `id` (int) or `source_id` (string); entries may be mixed (`[{\"id\": 69}, {\"source_id\": \"3001\"}]`). Unresolved `source_id` values are reported in the response `warnings` array. `licence` input is a single object with an `id` key (`{\"id\": <int>}`). Bare integers are rejected with 422. Unrecognised field names inside `fields` (e.g. a typo) are rejected with 422.",
                 "operationId": "private_item_create",
                 "requestBody": {
                     "description": "Item description",
@@ -8512,7 +8512,7 @@
                     "items"
                 ],
                 "summary": "Update item",
-                "description": "Update an item by passing full body parameters. Institutions with item-type based metadata enabled can include stock fields inside the `fields` object. Institutions without item-type based metadata sending stock fields will receive a validation error. `categories` input is `[{\"id\": <int>}]`; `licence` input is `{\"id\": <int>}` or the combined `{\"uri\": \"...\", \"name\": \"...\"}` pair (id wins; uri or name alone, unresolved, or ambiguous pairs are rejected with 422). Bare integers are rejected.",
+                "description": "Update an item by passing full body parameters. Institutions with item-type based metadata enabled can include stock fields inside the `fields` object. Institutions without item-type based metadata sending stock fields will receive a validation error. `categories` entries accept `id` (int) or `source_id` (string), mixed allowed; `licence` input is `{\"id\": <int>}`. Bare integers are rejected.",
                 "operationId": "private_item_update",
                 "parameters": [
                     {
@@ -8597,7 +8597,7 @@
                     "items"
                 ],
                 "summary": "Partially update item",
-                "description": "Partially update an item by sending only the keys to change. For items with item-type based metadata, send the keys to update inside `fields:{}` — keys not present are preserved. `categories` follows the same object-with-`id` rule as create. `licence` accepts `{\"id\": <int>}` or the combined `{\"uri\": \"...\", \"name\": \"...\"}` pair (id wins; uri or name alone, unresolved, or ambiguous pairs are rejected with 422). Bare integers are rejected.",
+                "description": "Partially update an item by sending only the keys to change. For items with item-type based metadata, send the keys to update inside `fields:{}` \u2014 keys not present are preserved. `categories` entries accept `id` (int) or `source_id` (string), mixed allowed; `licence` is `{\"id\": <int>}`. Bare integers are rejected. Unrecognised field names inside `fields` (e.g. a typo) are rejected with 422.",
                 "operationId": "private_item_partial_update",
                 "parameters": [
                     {
@@ -8811,17 +8811,6 @@
                 "summary": "Project Field Definitions",
                 "description": "Returns the catalog of underlying field definitions for projects. Requires an institutional account with the itbm_config feature flag enabled.",
                 "operationId": "projects_fields_catalog",
-                "parameters": [
-                    {
-                        "name": "group_id",
-                        "in": "query",
-                        "description": "Filter fields by group applicability",
-                        "schema": {
-                            "minimum": 1,
-                            "type": "integer"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK. An array of underlying field definitions",
@@ -8872,17 +8861,6 @@
                 "summary": "Collection Field Definitions",
                 "description": "Returns the catalog of underlying field definitions for collections. Requires an institutional account with the itbm_config feature flag enabled.",
                 "operationId": "collections_fields_catalog",
-                "parameters": [
-                    {
-                        "name": "group_id",
-                        "in": "query",
-                        "description": "Filter fields by group applicability",
-                        "schema": {
-                            "minimum": 1,
-                            "type": "integer"
-                        }
-                    }
-                ],
                 "responses": {
                     "200": {
                         "description": "OK. An array of underlying field definitions",
@@ -10045,7 +10023,7 @@
                     "projects"
                 ],
                 "summary": "Create project",
-                "description": "Create a new project. Institutions with item-type based metadata enabled wrap metadata in a `fields` object (`title`, `description`, `funding_list`, and — when configured for the institution — `licence`). Institutions without item-type based metadata can use the legacy flat-payload form. `funding_list` entries accept either `{\"id\": <int>}` (reference an existing record) or `{\"title\": \"...\"}` (mint a new user-defined entry). When `licence` is configured for projects, it accepts the same shapes as on items: `{\"id\": <int>}` or the combined `{\"uri\": \"...\", \"name\": \"...\"}` pair (id wins; uri or name alone, unresolved, or ambiguous pairs are rejected with 422).",
+                "description": "Create a new project. Institutions with item-type based metadata enabled wrap metadata in a `fields` object (`title`, `description`, `funding_list`). Institutions without item-type based metadata can use the legacy flat-payload form. `funding_list` entries accept either `{\"id\": <int>}` (reference an existing record) or `{\"title\": \"...\"}` (mint a new user-defined entry). Unrecognised field names inside `fields` (e.g. a typo) are rejected with 422.",
                 "operationId": "private_project_create",
                 "requestBody": {
                     "description": "Project  description",
@@ -10105,7 +10083,7 @@
                     "projects"
                 ],
                 "summary": "View project details",
-                "description": "View a private project. For projects with item-type based metadata, metadata is returned under a `fields` object with `funding_list` hydrated to `[{id, title}]`. Projects without item-type based metadata keep the legacy flat shape.",
+                "description": "View a private project. For projects with item-type based metadata, all core and stock metadata (including `title`) is returned under a `fields` object and suppressed at the top level, with `funding_list` hydrated to `[{id, title, grant_code, funder_name, is_user_defined, url}]` (`url` only when a dimensions id is present). Projects without item-type based metadata keep the legacy flat shape.",
                 "operationId": "private_project_details",
                 "parameters": [
                     {
@@ -10292,7 +10270,7 @@
                     "projects"
                 ],
                 "summary": "Partially update project",
-                "description": "Partially update a project; only provided keys will be changed. For institutions with item-type based metadata enabled, send the keys to update inside `fields:{}` — keys not present are preserved. `funding_list` entries accept `{\"id\": <int>}` or `{\"title\": \"...\"}`.",
+                "description": "Partially update a project; only provided keys will be changed. For institutions with item-type based metadata enabled, send the keys to update inside `fields:{}` \u2014 keys not present are preserved. `funding_list` entries accept `{\"id\": <int>}` or `{\"title\": \"...\"}`. Unrecognised field names inside `fields` (e.g. a typo) are rejected with 422.",
                 "operationId": "private_project_partial_update",
                 "parameters": [
                     {
@@ -12778,7 +12756,7 @@
                     },
                     "fields": {
                         "type": "object",
-                        "description": "All metadata fields keyed by underlying field name. Includes core fields (title, description, keywords, authors, licence, categories, funding_list, related_materials) and stock fields (journal, volume, issue, etc.). Use GET /items/fields/{item_type_id} to discover available fields. `categories` is a list of objects with an `id` key (extras ignored); `licence` is a single object identified by `id` or by the combined `uri`+`name` pair (`{\"id\": <int>}` or `{\"uri\": \"...\", \"name\": \"...\"}`; id wins; extras ignored; uri or name alone, unresolved, or ambiguous pairs are rejected with 422). Bare integers are rejected.",
+                        "description": "All metadata fields keyed by underlying field name. Includes core fields (title, description, keywords, authors, licence, categories, funding_list, related_materials) and stock fields (journal, volume, issue, etc.). Use GET /items/fields/{item_type_id} to discover available fields. `categories` is a list of objects, each identified by either an `id` (integer) or a `source_id` (string); entries may be mixed. Unresolved `source_id` values are reported in the response `warnings` array. `licence` is a single object with an `id` key (extras ignored). Bare integers are rejected.",
                         "additionalProperties": true
                     }
                 },
@@ -12807,7 +12785,7 @@
                     },
                     "fields": {
                         "type": "object",
-                        "description": "All metadata fields keyed by underlying field name. Same structure as ItemCreate — `categories` is a list of objects with an `id` key; `licence` is a single object identified by `id` or by the combined `uri`+`name` pair (id wins; uri or name alone, unresolved, or ambiguous pairs are rejected with 422). Bare integers are rejected.",
+                        "description": "All metadata fields keyed by underlying field name. Same structure as ItemCreate \u2014 `categories` entries accept `id` (int) or `source_id` (string), mixed allowed; `licence` is a single object with an `id` key. Bare integers are rejected.",
                         "additionalProperties": true
                     }
                 },
@@ -12828,7 +12806,7 @@
                     "fields": {
                         "type": "object",
                         "additionalProperties": true,
-                        "description": "Item-type based metadata field values keyed by field name. Only present for items with item-type based metadata enabled. Scalar/text/date/dropdown stock fields and custom fields are returned as-is. Relational fields are hydrated on GET to the same shapes as the legacy /articles endpoint: authors → [{id, name, first_name, last_name, orcid_id}]; funding_list → [{id, title}]; related_materials → [{id, title, relation, identifier, identifier_type}]; categories → [{id, title, parent_id, path, source_id, taxonomy_id}]; licence → {id, value, name, url}."
+                        "description": "Item-type based metadata field values keyed by field name. Only present for items with item-type based metadata enabled. Scalar/text/date/dropdown stock fields and custom fields are returned as-is. Relational fields are hydrated on GET as follows: authors \u2192 [{id, name, first_name, last_name, is_active, url_name, orcid_id, affiliations}]; funding_list \u2192 [{id, title, grant_code, funder_name, is_user_defined, url}] (url only when a Dimensions grant id exists); related_materials \u2192 [{id, title, relation, identifier, identifier_type}]; categories \u2192 [{id, title, parent_id, path, source_id, taxonomy_id}]; licence \u2192 {id, value, name, url}."
                     }
                 },
                 "x-tag": "items"
@@ -12848,7 +12826,7 @@
                     "fields": {
                         "type": "object",
                         "additionalProperties": true,
-                        "description": "Item-type based metadata field values keyed by field name. Only present for items with item-type based metadata enabled. Scalar/text/date/dropdown stock fields and custom fields are returned as-is. Relational fields are hydrated on GET to the same shapes as the legacy /articles endpoint: authors → [{id, name, first_name, last_name, orcid_id}]; funding_list → [{id, title}]; related_materials → [{id, title, relation, identifier, identifier_type}]; categories → [{id, title, parent_id, path, source_id, taxonomy_id}]; licence → {id, value, name, url}."
+                        "description": "Item-type based metadata field values keyed by field name. Only present for items with item-type based metadata enabled. Scalar/text/date/dropdown stock fields and custom fields are returned as-is. Relational fields are hydrated on GET as follows: authors \u2192 [{id, name, first_name, last_name, is_active, url_name, orcid_id, affiliations}]; funding_list \u2192 [{id, title, grant_code, funder_name, is_user_defined, url}] (url only when a Dimensions grant id exists); related_materials \u2192 [{id, title, relation, identifier, identifier_type}]; categories \u2192 [{id, title, parent_id, path, source_id, taxonomy_id}]; licence \u2192 {id, value, name, url}."
                     }
                 },
                 "x-tag": "items"
@@ -14064,7 +14042,7 @@
                     },
                     "fields": {
                         "type": "object",
-                        "description": "Item-type based metadata field values keyed by field name. Only present when the collection belongs to an institution with item-type based metadata enabled. Scalar/text stock fields (e.g. publisher) and custom fields are returned as-is. Relational fields are hydrated on GET to the same shapes as the legacy /articles endpoint: authors → [{id, name, first_name, last_name, orcid_id}]; funding_list → [{id, title}]; related_materials → [{id, title, relation, identifier, identifier_type}]; categories → [{id, title, parent_id, path, source_id, taxonomy_id}].",
+                        "description": "Item-type based metadata field values keyed by field name. Only present when the collection belongs to an institution with item-type based metadata enabled. Scalar/text stock fields (e.g. publisher) and custom fields are returned as-is. Relational fields are hydrated on GET as follows: authors \u2192 [{id, name, first_name, last_name, is_active, url_name, orcid_id, affiliations}]; funding_list \u2192 [{id, title, grant_code, funder_name, is_user_defined, url}] (url only when a Dimensions grant id exists); related_materials \u2192 [{id, title, relation, identifier, identifier_type}]; categories \u2192 [{id, title, parent_id, path, source_id, taxonomy_id}].",
                         "additionalProperties": {}
                     }
                 },
@@ -14257,7 +14235,7 @@
                     },
                     "fields": {
                         "type": "object",
-                        "description": "Item-type based metadata field values keyed by field name. Only present when the collection belongs to an institution with item-type based metadata enabled. Scalar/text stock fields (e.g. publisher) and custom fields are returned as-is. Relational fields are hydrated on GET to the same shapes as the legacy /articles endpoint: authors → [{id, name, first_name, last_name, orcid_id}]; funding_list → [{id, title}]; related_materials → [{id, title, relation, identifier, identifier_type}]; categories → [{id, title, parent_id, path, source_id, taxonomy_id}].",
+                        "description": "Item-type based metadata field values keyed by field name. Only present when the collection belongs to an institution with item-type based metadata enabled. Scalar/text stock fields (e.g. publisher) and custom fields are returned as-is. Relational fields are hydrated on GET as follows: authors \u2192 [{id, name, first_name, last_name, is_active, url_name, orcid_id, affiliations}]; funding_list \u2192 [{id, title, grant_code, funder_name, is_user_defined, url}] (url only when a Dimensions grant id exists); related_materials \u2192 [{id, title, relation, identifier, identifier_type}]; categories \u2192 [{id, title, parent_id, path, source_id, taxonomy_id}].",
                         "additionalProperties": {}
                     }
                 },
@@ -14287,7 +14265,7 @@
                         "maxLength": 1000,
                         "minLength": 3,
                         "type": "string",
-                        "description": "Title of collection",
+                        "description": "Title of the collection. Required. Legacy requests send it at the top level; ITBM (item-type based metadata) requests send it inside the `fields` object, where it is validated. Not listed in top-level `required` because ITBM payloads carry it within `fields`.",
                         "example": "Test collection title"
                     },
                     "description": {
@@ -14454,14 +14432,22 @@
                     },
                     "fields": {
                         "type": "object",
-                        "description": "Institutions with item-type based metadata only: all metadata fields keyed by underlying field name (e.g. title, description, keywords, publisher, funding_list). When present, the fields object is the authoritative source for all metadata; top-level metadata keys are ignored.",
+                        "description": "Institutions with item-type based metadata only: all metadata fields keyed by underlying field name (e.g. title, description, keywords, publisher, funding_list). When present, the fields object is the authoritative source for all metadata; top-level metadata keys are ignored. `categories` inside `fields` is a list of objects, each identified by either an `id` (integer) or a `source_id` (string); entries may be mixed. Unresolved `source_id` values are reported in the response `warnings` array.",
                         "example": {
                             "title": "My Collection",
                             "description": "Collection description",
                             "keywords": [
                                 "keyword1"
                             ],
-                            "publisher": "Springer Nature"
+                            "publisher": "Springer Nature",
+                            "categories": [
+                                {
+                                    "id": 69
+                                },
+                                {
+                                    "source_id": "3001"
+                                }
+                            ]
                         },
                         "additionalProperties": true
                     }
@@ -16447,7 +16433,7 @@
                         "maxLength": 1000,
                         "minLength": 3,
                         "type": "string",
-                        "description": "The title for this project - mandatory. 3 - 1000 characters.",
+                        "description": "The title for this project. Required, 3 - 1000 characters. Legacy requests send it at the top level; ITBM (item-type based metadata) requests send it inside the `fields` object, where it is validated. Not listed in top-level `required` because ITBM payloads carry it within `fields`.",
                         "example": "project title"
                     },
                     "description": {
@@ -17075,7 +17061,7 @@
             },
             "TimelineUpdate": {
                 "type": "object",
-                "description": "Legacy timeline input (used by /v2/account/articles). Items with item-type based metadata do not use this object — pass dates as stock fields inside fields: {} instead.",
+                "description": "Legacy timeline input (used by /v2/account/articles). Items with item-type based metadata do not use this object \u2014 pass dates as stock fields inside fields: {} instead.",
                 "properties": {
                     "firstOnline": {
                         "type": "string",

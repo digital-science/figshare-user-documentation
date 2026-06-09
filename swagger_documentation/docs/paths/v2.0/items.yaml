@@ -335,13 +335,6 @@ paths:
         Returns the catalog of underlying field definitions for projects.
         Requires an institutional account with the itbm_config feature flag enabled.
       operationId: projects_fields_catalog
-      parameters:
-      - name: group_id
-        in: query
-        description: Filter fields by group applicability
-        schema:
-          minimum: 1
-          type: integer
       responses:
         '200':
           description: OK. An array of underlying field definitions
@@ -375,13 +368,6 @@ paths:
         Returns the catalog of underlying field definitions for collections.
         Requires an institutional account with the itbm_config feature flag enabled.
       operationId: collections_fields_catalog
-      parameters:
-      - name: group_id
-        in: query
-        description: Filter fields by group applicability
-        schema:
-          minimum: 1
-          type: integer
       responses:
         '200':
           description: OK. An array of underlying field definitions

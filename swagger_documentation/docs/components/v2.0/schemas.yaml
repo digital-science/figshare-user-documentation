@@ -626,9 +626,9 @@ schemas:
         description: >-
           Item-type based metadata field values keyed by field name. Only present for items with item-type based metadata enabled.
           Scalar/text/date/dropdown stock fields and custom fields are returned as-is.
-          Relational fields are hydrated on GET to the same shapes as the legacy /articles endpoint:
-          authors → [{id, name, first_name, last_name, orcid_id}];
-          funding_list → [{id, title}];
+          Relational fields are hydrated on GET as follows:
+          authors → [{id, name, first_name, last_name, is_active, url_name, orcid_id, affiliations}];
+          funding_list → [{id, title, grant_code, funder_name, is_user_defined, url}] (url only when a Dimensions grant id exists);
           related_materials → [{id, title, relation, identifier, identifier_type}];
           categories → [{id, title, parent_id, path, source_id, taxonomy_id}];
           licence → {id, value, name, url}.
@@ -649,9 +649,9 @@ schemas:
         description: >-
           Item-type based metadata field values keyed by field name. Only present for items with item-type based metadata enabled.
           Scalar/text/date/dropdown stock fields and custom fields are returned as-is.
-          Relational fields are hydrated on GET to the same shapes as the legacy /articles endpoint:
-          authors → [{id, name, first_name, last_name, orcid_id}];
-          funding_list → [{id, title}];
+          Relational fields are hydrated on GET as follows:
+          authors → [{id, name, first_name, last_name, is_active, url_name, orcid_id, affiliations}];
+          funding_list → [{id, title, grant_code, funder_name, is_user_defined, url}] (url only when a Dimensions grant id exists);
           related_materials → [{id, title, relation, identifier, identifier_type}];
           categories → [{id, title, parent_id, path, source_id, taxonomy_id}];
           licence → {id, value, name, url}.
@@ -1587,10 +1587,10 @@ schemas:
           Item-type based metadata field values keyed by field name. Only present
           when the collection belongs to an institution with item-type based metadata
           enabled. Scalar/text stock fields (e.g. publisher) and
-          custom fields are returned as-is. Relational fields are hydrated on GET to the
-          same shapes as the legacy /articles endpoint:
-          authors → [{id, name, first_name, last_name, orcid_id}];
-          funding_list → [{id, title}];
+          custom fields are returned as-is. Relational fields are hydrated on GET
+          as follows:
+          authors → [{id, name, first_name, last_name, is_active, url_name, orcid_id, affiliations}];
+          funding_list → [{id, title, grant_code, funder_name, is_user_defined, url}] (url only when a Dimensions grant id exists);
           related_materials → [{id, title, relation, identifier, identifier_type}];
           categories → [{id, title, parent_id, path, source_id, taxonomy_id}].
         additionalProperties: {}
@@ -1745,10 +1745,10 @@ schemas:
           Item-type based metadata field values keyed by field name. Only present
           when the collection belongs to an institution with item-type based metadata
           enabled. Scalar/text stock fields (e.g. publisher) and
-          custom fields are returned as-is. Relational fields are hydrated on GET to the
-          same shapes as the legacy /articles endpoint:
-          authors → [{id, name, first_name, last_name, orcid_id}];
-          funding_list → [{id, title}];
+          custom fields are returned as-is. Relational fields are hydrated on GET
+          as follows:
+          authors → [{id, name, first_name, last_name, is_active, url_name, orcid_id, affiliations}];
+          funding_list → [{id, title, grant_code, funder_name, is_user_defined, url}] (url only when a Dimensions grant id exists);
           related_materials → [{id, title, relation, identifier, identifier_type}];
           categories → [{id, title, parent_id, path, source_id, taxonomy_id}].
         additionalProperties: {}
@@ -1771,7 +1771,11 @@ schemas:
         maxLength: 1000
         minLength: 3
         type: string
-        description: Title of collection
+        description: >-
+          Title of the collection. Required. Legacy requests send it at the top
+          level; ITBM (item-type based metadata) requests send it inside the
+          `fields` object, where it is validated. Not listed in top-level
+          `required` because ITBM payloads carry it within `fields`.
         example: Test collection title
       description:
         maxLength: 20000
@@ -3430,7 +3434,12 @@ schemas:
         maxLength: 1000
         minLength: 3
         type: string
-        description: The title for this project - mandatory. 3 - 1000 characters.
+        description: >-
+          The title for this project. Required, 3 - 1000 characters. Legacy
+          requests send it at the top level; ITBM (item-type based metadata)
+          requests send it inside the `fields` object, where it is validated.
+          Not listed in top-level `required` because ITBM payloads carry it
+          within `fields`.
         example: project title
       description:
         maxLength: 20000
