@@ -9,6 +9,10 @@ install:
 	cd swagger_documentation && pip install -r requirements.txt
 .PHONY: install
 
+ci-tests:
+	@echo "No tests to run for this repository."
+.PHONY: ci-tests
+
 format:
 	black -l 120 -t py312 ./swagger_documentation
 .PHONY: format
