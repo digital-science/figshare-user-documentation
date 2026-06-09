@@ -1,13 +1,10 @@
 # Stage 1: Build the static documentation assets
-FROM debian:11-slim AS build
+FROM python:3.12-slim AS build
 
 WORKDIR /app
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    python3-dev \
-    python3-pip \
-    python3-venv \
-    openjdk-17-jre \
+    openjdk-21-jre \
     build-essential \
     libxml2-dev \
     libxslt-dev \

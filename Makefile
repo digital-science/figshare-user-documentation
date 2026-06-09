@@ -10,7 +10,7 @@ install:
 .PHONY: install
 
 format:
-	black -l 120 -t py39 ./swagger_documentation
+	black -l 120 -t py312 ./swagger_documentation
 .PHONY: format
 
 server:
