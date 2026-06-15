@@ -12420,6 +12420,21 @@
                         "type": "string",
                         "description": "Date when article was created",
                         "example": "2017-05-18T11:49:03Z"
+                    },
+                    "modified_date": {
+                        "type": "string",
+                        "description": "Date when article was last modified",
+                        "example": "2017-05-18T11:49:03Z"
+                    },
+                    "published_date": {
+                        "type": "string",
+                        "description": "Date when article was first published, null if not published",
+                        "example": "2017-05-18T11:49:03Z"
+                    },
+                    "group_id": {
+                        "type": "integer",
+                        "description": "Group ID of the article",
+                        "example": 1
                     }
                 },
                 "x-tag": "articles"
@@ -12603,6 +12618,20 @@
                         "description": "Reason for embargo",
                         "example": "not complete"
                     },
+                    "embargo_date": {
+                        "type": "string",
+                        "description": "Date when the embargo expires and the article gets published, null if not embargoed",
+                        "example": "2018-05-22T04:04:04"
+                    },
+                    "embargo_type": {
+                        "type": "string",
+                        "description": "Embargo level. Possible values: article, file",
+                        "example": "file",
+                        "enum": [
+                            "article",
+                            "file"
+                        ]
+                    },
                     "references": {
                         "type": "array",
                         "description": "List of references",
@@ -12655,6 +12684,11 @@
                         "type": "string",
                         "description": "Curation status of the article",
                         "example": "approved"
+                    },
+                    "group_resource_id": {
+                        "type": "string",
+                        "description": "Group resource ID of the article",
+                        "example": ""
                     },
                     "figshare_url": {
                         "type": "string",
@@ -12823,6 +12857,20 @@
                         "type": "string",
                         "description": "Reason for embargo",
                         "example": "not complete"
+                    },
+                    "embargo_date": {
+                        "type": "string",
+                        "description": "Date when the embargo expires and the article gets published, null if not embargoed",
+                        "example": "2018-05-22T04:04:04"
+                    },
+                    "embargo_type": {
+                        "type": "string",
+                        "description": "Embargo level. Possible values: article, file",
+                        "example": "file",
+                        "enum": [
+                            "article",
+                            "file"
+                        ]
                     },
                     "references": {
                         "type": "array",
@@ -13293,6 +13341,20 @@
                         "type": "boolean",
                         "description": "True if embargoed",
                         "example": true
+                    },
+                    "embargo_date": {
+                        "type": "string",
+                        "description": "Date when the embargo expires and the article gets published, null if not embargoed",
+                        "example": "2018-05-22T04:04:04"
+                    },
+                    "embargo_type": {
+                        "type": "string",
+                        "description": "Embargo level. Possible values: article, file",
+                        "example": "file",
+                        "enum": [
+                            "article",
+                            "file"
+                        ]
                     },
                     "embargo_title": {
                         "type": "string",
@@ -14052,6 +14114,21 @@
                         "type": "string",
                         "description": "Date when article was created",
                         "example": "2017-05-18T11:49:03Z"
+                    },
+                    "modified_date": {
+                        "type": "string",
+                        "description": "Date when article was last modified",
+                        "example": "2017-05-18T11:49:03Z"
+                    },
+                    "published_date": {
+                        "type": "string",
+                        "description": "Date when article was first published, null if not published",
+                        "example": "2017-05-18T11:49:03Z"
+                    },
+                    "group_id": {
+                        "type": "integer",
+                        "description": "Group ID of the article",
+                        "example": 1
                     }
                 },
                 "allOf": [
@@ -14413,6 +14490,11 @@
                     },
                     "timeline": {
                         "$ref": "#/components/schemas/Timeline"
+                    },
+                    "published_date": {
+                        "type": "string",
+                        "description": "Date when collection was first published, null if not published",
+                        "example": "2017-05-15T15:12:26Z"
                     }
                 },
                 "x-tag": "collections"
@@ -14597,6 +14679,11 @@
                         "description": "Item-type based metadata field values keyed by field name. Only present when the collection belongs to an institution with item-type based metadata enabled. Scalar/text stock fields (e.g. publisher) and custom fields are returned as-is. Relational fields are hydrated on GET as follows: authors \u2192 [{id, name, first_name, last_name, is_active, url_name, orcid_id, affiliations}]; funding_list \u2192 [{id, title, grant_code, funder_name, is_user_defined, url}] (url only when a Dimensions grant id exists); related_materials \u2192 [{id, title, relation, identifier, identifier_type}]; categories \u2192 [{id, title, parent_id, path, source_id, taxonomy_id}].",
                         "additionalProperties": {}
                     },
+                    "group_resource_id": {
+                        "type": "string",
+                        "description": "Group resource ID of the collection",
+                        "example": ""
+                    },
                     "id": {
                         "type": "integer",
                         "description": "Collection id",
@@ -14621,6 +14708,11 @@
                         "type": "string",
                         "description": "Api endpoint",
                         "example": "https://api.figshare.com/v2/collections/123"
+                    },
+                    "published_date": {
+                        "type": "string",
+                        "description": "Date when collection was first published, null if not published",
+                        "example": "2017-05-15T15:12:26Z"
                     }
                 },
                 "allOf": [
@@ -14815,6 +14907,11 @@
                         "description": "Item-type based metadata field values keyed by field name. Only present when the collection belongs to an institution with item-type based metadata enabled. Scalar/text stock fields (e.g. publisher) and custom fields are returned as-is. Relational fields are hydrated on GET as follows: authors \u2192 [{id, name, first_name, last_name, is_active, url_name, orcid_id, affiliations}]; funding_list \u2192 [{id, title, grant_code, funder_name, is_user_defined, url}] (url only when a Dimensions grant id exists); related_materials \u2192 [{id, title, relation, identifier, identifier_type}]; categories \u2192 [{id, title, parent_id, path, source_id, taxonomy_id}].",
                         "additionalProperties": {}
                     },
+                    "group_resource_id": {
+                        "type": "string",
+                        "description": "Group resource ID of the collection",
+                        "example": ""
+                    },
                     "id": {
                         "type": "integer",
                         "description": "Collection id",
@@ -14839,6 +14936,11 @@
                         "type": "string",
                         "description": "Api endpoint",
                         "example": "https://api.figshare.com/v2/collections/123"
+                    },
+                    "published_date": {
+                        "type": "string",
+                        "description": "Date when collection was first published, null if not published",
+                        "example": "2017-05-15T15:12:26Z"
                     }
                 },
                 "allOf": [
@@ -15628,6 +15730,11 @@
                     "resolution_comment": {
                         "type": "string",
                         "description": "The resolution comment of the review."
+                    },
+                    "review_date": {
+                        "type": "string",
+                        "description": "The date of the review.",
+                        "example": "2021-11-16T13:03:38"
                     }
                 },
                 "x-tag": "institutions"
@@ -15752,6 +15859,11 @@
                     "resolution_comment": {
                         "type": "string",
                         "description": "The resolution comment of the review."
+                    },
+                    "review_date": {
+                        "type": "string",
+                        "description": "The date of the review.",
+                        "example": "2021-11-16T13:03:38"
                     }
                 },
                 "allOf": [
@@ -16062,6 +16174,11 @@
                         "type": "string",
                         "description": "Institution name",
                         "example": "Institution"
+                    },
+                    "domain": {
+                        "type": "string",
+                        "description": "Institution domain",
+                        "example": "institution.edu"
                     }
                 },
                 "x-tag": "institutions"
@@ -16634,6 +16751,11 @@
                         "description": "True if the file is attached to a public item version",
                         "example": true
                     },
+                    "status": {
+                        "type": "string",
+                        "description": "File status",
+                        "example": "available"
+                    },
                     "id": {
                         "type": "integer",
                         "description": "File id",
@@ -16936,6 +17058,20 @@
                         "description": "Reason for embargo",
                         "example": "not complete"
                     },
+                    "embargo_date": {
+                        "type": "string",
+                        "description": "Date when the embargo expires and the article gets published, null if not embargoed",
+                        "example": "2018-05-22T04:04:04"
+                    },
+                    "embargo_type": {
+                        "type": "string",
+                        "description": "Embargo level. Possible values: article, file",
+                        "example": "file",
+                        "enum": [
+                            "article",
+                            "file"
+                        ]
+                    },
                     "references": {
                         "type": "array",
                         "description": "List of references",
@@ -17115,6 +17251,11 @@
                         "type": "string",
                         "description": "Date when project was last modified",
                         "example": "2017-05-16T14:52:54Z"
+                    },
+                    "published_date": {
+                        "type": "string",
+                        "description": "Date when project was first published, null if not published",
+                        "example": "2017-05-16T14:52:54Z"
                     }
                 },
                 "x-tag": "projects"
@@ -17266,6 +17407,20 @@
                         "description": "Reason for embargo",
                         "example": "not complete"
                     },
+                    "embargo_date": {
+                        "type": "string",
+                        "description": "Date when the embargo expires and the article gets published, null if not embargoed",
+                        "example": "2018-05-22T04:04:04"
+                    },
+                    "embargo_type": {
+                        "type": "string",
+                        "description": "Embargo level. Possible values: article, file",
+                        "example": "file",
+                        "enum": [
+                            "article",
+                            "file"
+                        ]
+                    },
                     "references": {
                         "type": "array",
                         "description": "List of references",
@@ -17373,6 +17528,21 @@
                         "type": "string",
                         "description": "Deprecated by related materials. Not applicable to regular users. In a publisher case, this is the publisher article title.",
                         "default": ""
+                    },
+                    "modified_date": {
+                        "type": "string",
+                        "description": "Date when article was last modified",
+                        "example": "2017-05-18T11:49:03Z"
+                    },
+                    "published_date": {
+                        "type": "string",
+                        "description": "Date when article was first published, null if not published",
+                        "example": "2017-05-18T11:49:03Z"
+                    },
+                    "group_id": {
+                        "type": "integer",
+                        "description": "Group ID of the article",
+                        "example": 1
                     }
                 },
                 "allOf": [
@@ -17504,6 +17674,12 @@
                         "description": "Item-type based metadata stock field values keyed by field name (e.g. funding_list). Only present when the project belongs to an institution with item-type based metadata enabled.",
                         "additionalProperties": {}
                     },
+                    "figshare_url": {
+                        "type": "string",
+                        "description": "Project public url",
+                        "format": "url",
+                        "example": "https://figshare.com/projects/project_name/1"
+                    },
                     "url": {
                         "type": "string",
                         "description": "Api endpoint",
@@ -17518,6 +17694,11 @@
                         "type": "string",
                         "description": "Project title",
                         "example": "project"
+                    },
+                    "published_date": {
+                        "type": "string",
+                        "description": "Date when project was first published, null if not published",
+                        "example": "2017-05-16T14:52:54Z"
                     }
                 },
                 "allOf": [
@@ -17619,6 +17800,12 @@
                         "type": "object",
                         "description": "Item-type based metadata stock field values keyed by field name (e.g. funding_list). Only present when the project belongs to an institution with item-type based metadata enabled.",
                         "additionalProperties": {}
+                    },
+                    "figshare_url": {
+                        "type": "string",
+                        "description": "Project public url",
+                        "format": "url",
+                        "example": "https://figshare.com/projects/project_name/1"
                     },
                     "role": {
                         "type": "string",
@@ -17867,6 +18054,11 @@
                     "modified_date": {
                         "type": "string",
                         "description": "Date when project was last modified",
+                        "example": "2017-05-16T14:52:54Z"
+                    },
+                    "published_date": {
+                        "type": "string",
+                        "description": "Date when project was first published, null if not published",
                         "example": "2017-05-16T14:52:54Z"
                     }
                 },
