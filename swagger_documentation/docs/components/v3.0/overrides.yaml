@@ -1,0 +1,814 @@
+# v3 (ITBM) schema overrides — AUTHORED to match the purpose-built presenter allowlists.
+# Flattened (no allOf) so each v3 schema documents EXACTLY the fields the v3 response returns.
+# Generated from the v2.0 baseline property definitions filtered to the kept set.
+schemas:
+  ItemCompletePrivate:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: Unique identifier for article
+        example: 1434614
+      doi:
+        type: string
+        description: DOI
+        example: 10.6084/m9.figshare.1434614
+      handle:
+        type: string
+        description: Handle
+        example: 111184/figshare.1234
+      url:
+        type: string
+        description: Api endpoint for article
+        format: url
+        example: http://api.figshare.com/articles/1434614
+      url_private_api:
+        type: string
+        description: Private Api endpoint for article
+        format: url
+        example: https://api.figshare.com/account/articles/1434614
+      url_public_api:
+        type: string
+        description: Public Api endpoint for article
+        format: url
+        example: https://api.figshare.com/articles/1434614
+      url_private_html:
+        type: string
+        description: Private site endpoint for article
+        format: url
+        example: https://figshare.com/account/articles/1434614
+      url_public_html:
+        type: string
+        description: Public site endpoint for article
+        format: url
+        example: https://figshare.com/articles/media/Test_article_title/1434614
+      figshare_url:
+        type: string
+        description: Article public url
+        format: url
+        example: http://figshare.com/articles/media/article_name/2000005
+      thumb:
+        type: string
+        description: Thumbnail image
+        format: url
+        example: https://ndownloader.figshare.com/files/123456789/preview/12345678/thumb.png
+      files:
+        type: array
+        description: List of up to 10 article files.
+        items:
+          $ref: '#/components/schemas/PublicFile'
+      folder_structure:
+        type: object
+        properties: {}
+        description: Mapping of file ids to folder paths, if folders are used
+        example:
+          '3000002': Test Folder
+      size:
+        type: integer
+        description: Article size
+        example: 69939
+      status:
+        type: string
+        description: Article status
+        example: public
+      version:
+        type: integer
+        description: Article version
+        example: 1
+      item_type_id:
+        type: integer
+        description: Item type identifier.
+      item_type_name:
+        type: string
+        description: Human-readable item type name (e.g. "dataset", "journal article").
+      group_id:
+        type: integer
+        nullable: true
+        description: Group id
+        example: 1
+      resource_doi:
+        type: string
+        description: Deprecated by related materials. Not applicable to regular users. In a publisher case, this is the publisher
+          article DOI.
+        default: ''
+      resource_title:
+        type: string
+        description: Deprecated by related materials. Not applicable to regular users. In a publisher case, this is the publisher
+          article title.
+        default: ''
+      is_public:
+        type: boolean
+        description: True if article is published
+        example: true
+      is_metadata_record:
+        type: boolean
+        description: True if article has no files
+        example: false
+      metadata_reason:
+        type: string
+        description: Article metadata reason
+        example: hosted somewhere else
+      is_confidential:
+        type: boolean
+        description: Article Confidentiality
+        example: true
+      confidential_reason:
+        type: string
+        description: Confidentiality reason
+        example: none
+      download_disabled:
+        type: boolean
+        description: If true, downloading of files for this article is disabled
+        example: false
+      is_embargoed:
+        type: boolean
+        description: True if article is embargoed
+        example: true
+      embargo_type:
+        type: string
+        description: 'Embargo can be enabled at the article or the file level. Possible values: article, file'
+        example: file
+        enum:
+        - article
+        - file
+      embargo_date:
+        type: string
+        description: Date when the embargo expires and the article gets published, '0' value will set up permanent embargo
+        example: '2018-05-22T04:04:04'
+      embargo_title:
+        type: string
+        description: Title for embargo
+        example: File(s) under embargo
+      embargo_reason:
+        type: string
+        description: Reason for embargo
+        example: not complete
+      embargo_options:
+        type: array
+        description: List of embargo options
+        items:
+          $ref: '#/components/schemas/GroupEmbargoOptions'
+      created_date:
+        type: string
+        description: Date when article was created
+        example: '2017-05-18T11:49:03Z'
+      modified_date:
+        type: string
+        format: date-time
+        nullable: true
+        description: Date of last modification
+        example: '2018-05-22T04:04:04'
+      published_date:
+        type: string
+        format: date-time
+        nullable: true
+        description: Date when first published
+        example: '2018-05-22T04:04:04'
+      fields:
+        type: object
+        additionalProperties: true
+        description: "Item-type based metadata field values keyed by field name. Only present for items with item-type based\
+          \ metadata enabled. Scalar/text/date/dropdown stock fields and custom fields are returned as-is. Relational fields\
+          \ are hydrated on GET as follows: authors \u2192 [{id, name, first_name, last_name, is_active, url_name, orcid_id,\
+          \ affiliations}]; funding_list \u2192 [{id, title, grant_code, funder_name, is_user_defined, url}] (url only when\
+          \ a Dimensions grant id exists); related_materials \u2192 [{id, title, relation, identifier, identifier_type}];\
+          \ categories \u2192 [{id, title, parent_id, path, source_id, taxonomy_id}]; licence \u2192 {id, value, name, url}."
+      account_id:
+        type: integer
+        description: ID of the account owning the article
+        example: 1000001
+      group_resource_id:
+        type: string
+        nullable: true
+        description: Group resource id
+      curation_status:
+        type: string
+        description: Curation status of the article
+        example: approved
+    required:
+    - account_id
+    - confidential_reason
+    - created_date
+    - curation_status
+    - doi
+    - download_disabled
+    - embargo_options
+    - embargo_reason
+    - embargo_title
+    - figshare_url
+    - files
+    - folder_structure
+    - handle
+    - id
+    - is_confidential
+    - is_embargoed
+    - is_metadata_record
+    - is_public
+    - metadata_reason
+    - resource_doi
+    - resource_title
+    - size
+    - status
+    - thumb
+    - url
+    - url_private_api
+    - url_private_html
+    - url_public_api
+    - url_public_html
+    - version
+    x-tag: items
+    description: Full item representation including item-type based metadata fields (private). Same as ArticleCompletePrivate
+      plus optional fields property.
+  ItemComplete:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: Unique identifier for article
+        example: 1434614
+      doi:
+        type: string
+        description: DOI
+        example: 10.6084/m9.figshare.1434614
+      handle:
+        type: string
+        description: Handle
+        example: 111184/figshare.1234
+      url:
+        type: string
+        description: Api endpoint for article
+        format: url
+        example: http://api.figshare.com/articles/1434614
+      url_private_api:
+        type: string
+        description: Private Api endpoint for article
+        format: url
+        example: https://api.figshare.com/account/articles/1434614
+      url_public_api:
+        type: string
+        description: Public Api endpoint for article
+        format: url
+        example: https://api.figshare.com/articles/1434614
+      url_private_html:
+        type: string
+        description: Private site endpoint for article
+        format: url
+        example: https://figshare.com/account/articles/1434614
+      url_public_html:
+        type: string
+        description: Public site endpoint for article
+        format: url
+        example: https://figshare.com/articles/media/Test_article_title/1434614
+      figshare_url:
+        type: string
+        description: Article public url
+        format: url
+        example: http://figshare.com/articles/media/article_name/2000005
+      thumb:
+        type: string
+        description: Thumbnail image
+        format: url
+        example: https://ndownloader.figshare.com/files/123456789/preview/12345678/thumb.png
+      files:
+        type: array
+        description: List of up to 10 article files.
+        items:
+          $ref: '#/components/schemas/PublicFile'
+      folder_structure:
+        type: object
+        properties: {}
+        description: Mapping of file ids to folder paths, if folders are used
+        example:
+          '3000002': Test Folder
+      size:
+        type: integer
+        description: Article size
+        example: 69939
+      status:
+        type: string
+        description: Article status
+        example: public
+      version:
+        type: integer
+        description: Article version
+        example: 1
+      item_type_id:
+        type: integer
+        description: Item type identifier.
+      item_type_name:
+        type: string
+        description: Human-readable item type name (e.g. "dataset", "journal article").
+      group_id:
+        type: integer
+        nullable: true
+        description: Group id
+        example: 1
+      resource_doi:
+        type: string
+        description: Deprecated by related materials. Not applicable to regular users. In a publisher case, this is the publisher
+          article DOI.
+        default: ''
+      resource_title:
+        type: string
+        description: Deprecated by related materials. Not applicable to regular users. In a publisher case, this is the publisher
+          article title.
+        default: ''
+      is_public:
+        type: boolean
+        description: True if article is published
+        example: true
+      is_metadata_record:
+        type: boolean
+        description: True if article has no files
+        example: false
+      metadata_reason:
+        type: string
+        description: Article metadata reason
+        example: hosted somewhere else
+      is_confidential:
+        type: boolean
+        description: Article Confidentiality
+        example: true
+      confidential_reason:
+        type: string
+        description: Confidentiality reason
+        example: none
+      download_disabled:
+        type: boolean
+        description: If true, downloading of files for this article is disabled
+        example: false
+      is_embargoed:
+        type: boolean
+        description: True if article is embargoed
+        example: true
+      embargo_type:
+        type: string
+        description: 'Embargo can be enabled at the article or the file level. Possible values: article, file'
+        example: file
+        enum:
+        - article
+        - file
+      embargo_date:
+        type: string
+        description: Date when the embargo expires and the article gets published, '0' value will set up permanent embargo
+        example: '2018-05-22T04:04:04'
+      embargo_title:
+        type: string
+        description: Title for embargo
+        example: File(s) under embargo
+      embargo_reason:
+        type: string
+        description: Reason for embargo
+        example: not complete
+      embargo_options:
+        type: array
+        description: List of embargo options
+        items:
+          $ref: '#/components/schemas/GroupEmbargoOptions'
+      created_date:
+        type: string
+        description: Date when article was created
+        example: '2017-05-18T11:49:03Z'
+      modified_date:
+        type: string
+        format: date-time
+        nullable: true
+        description: Date of last modification
+        example: '2018-05-22T04:04:04'
+      published_date:
+        type: string
+        format: date-time
+        nullable: true
+        description: Date when first published
+        example: '2018-05-22T04:04:04'
+      fields:
+        type: object
+        additionalProperties: true
+        description: "Item-type based metadata field values keyed by field name. Only present for items with item-type based\
+          \ metadata enabled. Scalar/text/date/dropdown stock fields and custom fields are returned as-is. Relational fields\
+          \ are hydrated on GET as follows: authors \u2192 [{id, name, first_name, last_name, is_active, url_name, orcid_id,\
+          \ affiliations}]; funding_list \u2192 [{id, title, grant_code, funder_name, is_user_defined, url}] (url only when\
+          \ a Dimensions grant id exists); related_materials \u2192 [{id, title, relation, identifier, identifier_type}];\
+          \ categories \u2192 [{id, title, parent_id, path, source_id, taxonomy_id}]; licence \u2192 {id, value, name, url}."
+    required:
+    - confidential_reason
+    - created_date
+    - doi
+    - download_disabled
+    - embargo_options
+    - embargo_reason
+    - embargo_title
+    - figshare_url
+    - files
+    - folder_structure
+    - handle
+    - id
+    - is_confidential
+    - is_embargoed
+    - is_metadata_record
+    - is_public
+    - metadata_reason
+    - resource_doi
+    - resource_title
+    - size
+    - status
+    - thumb
+    - url
+    - url_private_api
+    - url_private_html
+    - url_public_api
+    - url_public_html
+    - version
+    x-tag: items
+    description: Full item representation including item-type based metadata fields (public). Same as ArticleComplete plus
+      optional fields property.
+  CollectionCompletePrivate:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: Collection id
+        example: 123
+      doi:
+        type: string
+        description: Collection DOI
+        example: 10.6084/m9.figshare.123
+      handle:
+        type: string
+        description: Collection Handle
+        example: 111184/figshare.1234
+      url:
+        type: string
+        description: Api endpoint
+        example: https://api.figshare.com/v2/collections/123
+      version:
+        type: integer
+        description: Collection version
+        example: 1
+      resource_id:
+        type: string
+        description: Collection resource id
+        example: ''
+      resource_doi:
+        type: string
+        description: Collection resource doi
+        example: 10.6084/m9.figshare.123
+      resource_title:
+        type: string
+        description: Collection resource title
+        example: test
+      resource_link:
+        type: string
+        description: Collection resource link
+        example: http://figshare.com
+      resource_version:
+        type: integer
+        description: Collection resource version
+        example: 0
+      group_id:
+        type: integer
+        description: Collection group
+        example: 1
+      group_resource_id:
+        type: string
+        nullable: true
+        description: Group resource id
+      institution_id:
+        type: integer
+        description: Collection institution
+        example: 1
+      articles_count:
+        type: integer
+        description: Number of articles in collection
+        example: 1
+      public:
+        type: boolean
+        description: True if collection is published
+        example: true
+      created_date:
+        type: string
+        description: Date when collection was created
+        example: '2017-05-15T15:12:26Z'
+      modified_date:
+        type: string
+        description: Date when collection was last modified
+        example: '2017-05-15T15:12:26Z'
+      published_date:
+        type: string
+        format: date-time
+        nullable: true
+        description: Date when first published
+        example: '2018-05-22T04:04:04'
+      fields:
+        type: object
+        description: "Item-type based metadata field values keyed by field name. Only present when the collection belongs\
+          \ to an institution with item-type based metadata enabled. Scalar/text stock fields (e.g. publisher) and custom\
+          \ fields are returned as-is. Relational fields are hydrated on GET as follows: authors \u2192 [{id, name, first_name,\
+          \ last_name, is_active, url_name, orcid_id, affiliations}]; funding_list \u2192 [{id, title, grant_code, funder_name,\
+          \ is_user_defined, url}] (url only when a Dimensions grant id exists); related_materials \u2192 [{id, title, relation,\
+          \ identifier, identifier_type}]; categories \u2192 [{id, title, parent_id, path, source_id, taxonomy_id}]."
+        additionalProperties: {}
+      account_id:
+        type: integer
+        description: ID of the account owning the collection
+        example: 1000001
+    required:
+    - account_id
+    - articles_count
+    - created_date
+    - doi
+    - group_id
+    - handle
+    - id
+    - institution_id
+    - modified_date
+    - public
+    - resource_doi
+    - resource_id
+    - resource_link
+    - resource_title
+    - resource_version
+    - url
+    - version
+    x-tag: collections
+  CollectionComplete:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: Collection id
+        example: 123
+      doi:
+        type: string
+        description: Collection DOI
+        example: 10.6084/m9.figshare.123
+      handle:
+        type: string
+        description: Collection Handle
+        example: 111184/figshare.1234
+      url:
+        type: string
+        description: Api endpoint
+        example: https://api.figshare.com/v2/collections/123
+      version:
+        type: integer
+        description: Collection version
+        example: 1
+      resource_id:
+        type: string
+        description: Collection resource id
+        example: ''
+      resource_doi:
+        type: string
+        description: Collection resource doi
+        example: 10.6084/m9.figshare.123
+      resource_title:
+        type: string
+        description: Collection resource title
+        example: test
+      resource_link:
+        type: string
+        description: Collection resource link
+        example: http://figshare.com
+      resource_version:
+        type: integer
+        description: Collection resource version
+        example: 0
+      group_id:
+        type: integer
+        description: Collection group
+        example: 1
+      group_resource_id:
+        type: string
+        nullable: true
+        description: Group resource id
+      institution_id:
+        type: integer
+        description: Collection institution
+        example: 1
+      articles_count:
+        type: integer
+        description: Number of articles in collection
+        example: 1
+      public:
+        type: boolean
+        description: True if collection is published
+        example: true
+      created_date:
+        type: string
+        description: Date when collection was created
+        example: '2017-05-15T15:12:26Z'
+      modified_date:
+        type: string
+        description: Date when collection was last modified
+        example: '2017-05-15T15:12:26Z'
+      published_date:
+        type: string
+        format: date-time
+        nullable: true
+        description: Date when first published
+        example: '2018-05-22T04:04:04'
+      fields:
+        type: object
+        description: "Item-type based metadata field values keyed by field name. Only present when the collection belongs\
+          \ to an institution with item-type based metadata enabled. Scalar/text stock fields (e.g. publisher) and custom\
+          \ fields are returned as-is. Relational fields are hydrated on GET as follows: authors \u2192 [{id, name, first_name,\
+          \ last_name, is_active, url_name, orcid_id, affiliations}]; funding_list \u2192 [{id, title, grant_code, funder_name,\
+          \ is_user_defined, url}] (url only when a Dimensions grant id exists); related_materials \u2192 [{id, title, relation,\
+          \ identifier, identifier_type}]; categories \u2192 [{id, title, parent_id, path, source_id, taxonomy_id}]."
+        additionalProperties: {}
+    required:
+    - articles_count
+    - created_date
+    - doi
+    - group_id
+    - handle
+    - id
+    - institution_id
+    - modified_date
+    - public
+    - resource_doi
+    - resource_id
+    - resource_link
+    - resource_title
+    - resource_version
+    - url
+    - version
+    x-tag: collections
+  Collection:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: Collection id
+        example: 123
+      title:
+        type: string
+        description: Collection title
+        example: Sample collection
+      doi:
+        type: string
+        description: Collection DOI
+        example: 10.6084/m9.figshare.123
+      handle:
+        type: string
+        description: Collection Handle
+        example: 111184/figshare.1234
+      url:
+        type: string
+        description: Api endpoint
+        example: https://api.figshare.com/v2/collections/123
+      published_date:
+        type: string
+        format: date-time
+        nullable: true
+        description: Date when first published
+        example: '2018-05-22T04:04:04'
+    required:
+    - doi
+    - handle
+    - id
+    - title
+    - url
+    x-tag: collections
+  ProjectCompletePrivate:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: Project id
+        example: 1
+      url:
+        type: string
+        description: Api endpoint
+        example: http://api.figshare.com/v2/account/projects/1
+      collaborators:
+        type: array
+        description: List of project collaborators
+        items:
+          $ref: '#/components/schemas/Collaborator'
+      figshare_url:
+        type: string
+        description: Article public url
+        format: url
+        example: http://figshare.com/articles/media/article_name/2000005
+      created_date:
+        type: string
+        description: Date when project was created
+        example: '2017-05-16T14:52:54Z'
+      modified_date:
+        type: string
+        description: Date when project was last modified
+        example: '2017-05-16T14:52:54Z'
+      published_date:
+        type: string
+        format: date-time
+        nullable: true
+        description: Date when first published
+        example: '2018-05-22T04:04:04'
+      fields:
+        type: object
+        description: Item-type based metadata stock field values keyed by field name (e.g. funding_list). Only present when
+          the project belongs to an institution with item-type based metadata enabled.
+        additionalProperties: {}
+      role:
+        type: string
+        description: Role inside this project
+        example: Owner
+        enum:
+        - Owner
+        - Collaborator
+        - Viewer
+      storage:
+        type: string
+        description: Project storage type
+        example: individual
+        enum:
+        - individual
+        - group
+      group_id:
+        type: integer
+        description: Group of project if any
+        example: 0
+      account_id:
+        type: integer
+        description: ID of the account owning the project
+        example: 1000001
+      quota:
+        type: integer
+        description: Project quota
+        example: 0
+      used_quota:
+        type: integer
+        description: Project used quota
+        example: 0
+      used_quota_private:
+        type: integer
+        description: Project private quota used
+        example: 0
+      used_quota_public:
+        type: integer
+        description: Project public quota used
+        example: 0
+    required:
+    - account_id
+    - collaborators
+    - created_date
+    - group_id
+    - id
+    - modified_date
+    - quota
+    - role
+    - storage
+    - url
+    - used_quota
+    - used_quota_private
+    - used_quota_public
+    x-tag: projects
+  ProjectComplete:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: Project id
+        example: 1
+      url:
+        type: string
+        description: Api endpoint
+        example: http://api.figshare.com/v2/account/projects/1
+      collaborators:
+        type: array
+        description: List of project collaborators
+        items:
+          $ref: '#/components/schemas/Collaborator'
+      figshare_url:
+        type: string
+        description: Article public url
+        format: url
+        example: http://figshare.com/articles/media/article_name/2000005
+      created_date:
+        type: string
+        description: Date when project was created
+        example: '2017-05-16T14:52:54Z'
+      modified_date:
+        type: string
+        description: Date when project was last modified
+        example: '2017-05-16T14:52:54Z'
+      published_date:
+        type: string
+        format: date-time
+        nullable: true
+        description: Date when first published
+        example: '2018-05-22T04:04:04'
+      fields:
+        type: object
+        description: Item-type based metadata stock field values keyed by field name (e.g. funding_list). Only present when
+          the project belongs to an institution with item-type based metadata enabled.
+        additionalProperties: {}
+    required:
+    - collaborators
+    - created_date
+    - id
+    - modified_date
+    - url
+    x-tag: projects

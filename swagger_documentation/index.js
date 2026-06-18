@@ -341,8 +341,17 @@
         if (url && url.length > 1) {
             specUrl = decodeURIComponent(url[1]);
         } else {
-            // Use OpenAPI 3 spec
-            specUrl = 'swagger.json';
+            // Honor the version selected in the dropdown (?version= param or the saved preference
+            // written by version-manager.js) so the initially loaded spec matches the selector.
+            // Without this the page always loaded the default swagger.json (2.0) even when the
+            // selector reflected 3.0. Falls back to the default merged spec when none is set.
+            var versionParam = (window.location.search.match(/[?&]version=([^&]+)/) || [])[1];
+            var savedVersion = versionParam || localStorage.getItem('figshare_api_version');
+            // Only accept simple version tokens (e.g. "2.0", "3.0"); anything else (malformed,
+            // stale, or unknown) falls back to the default merged spec rather than 404ing.
+            specUrl = (savedVersion && /^\d+(\.\d+)*$/.test(savedVersion))
+                ? 'docs/versions/swagger_v' + savedVersion + '.json'
+                : 'swagger.json';
         }
 
         // Custom plugin to add client downloads to responses
@@ -517,8 +526,10 @@
 
             // Request interceptor for adding custom headers and access_token parameter
             requestInterceptor: function(request) {
-                // Skip swagger.json loading
-                if (request.url && request.url.includes('swagger.json')) {
+                // Skip any swagger spec file (swagger.json or versioned swagger_v*.json) — these
+                // are static docs assets and must not receive the X-API-Revision header, the
+                // /v{major} path prefix, or the access_token query param (which would leak the key).
+                if (request.url && /(^|\/)swagger(_v[\w.]+)?\.json(\?|$)/.test(request.url)) {
                     return request;
                 }
 
@@ -542,6 +553,12 @@
                         if (!/^\/v\d+(\/|$)/.test(versionedUrl.pathname)) {
                             var majorVersion = apiVersion.split('.')[0];
                             versionedUrl.pathname = '/v' + majorVersion + versionedUrl.pathname;
+                        }
+                        // The docs are served from docs.<domain>, but "Try it out" must hit the
+                        // API host api.<domain>. The spec has no explicit servers entry, so without
+                        // this Swagger UI resolves calls against the docs origin (docs.figshare.local).
+                        if (/^docs\./.test(versionedUrl.hostname)) {
+                            versionedUrl.hostname = versionedUrl.hostname.replace(/^docs\./, 'api.');
                         }
                         request.url = versionedUrl.toString();
                     } catch (e) {
@@ -569,8 +586,9 @@
 
             // Response interceptor to show error modal for failed requests
             responseInterceptor: function(response) {
-                // Skip swagger.json loading
-                if (response.url && response.url.includes('swagger.json')) {
+                // Skip any swagger spec file (swagger.json or versioned swagger_v*.json) so spec
+                // fetches are never treated as API responses / error-modalled.
+                if (response.url && /(^|\/)swagger(_v[\w.]+)?\.json(\?|$)/.test(response.url)) {
                     return response;
                 }
 
@@ -670,6 +688,14 @@
 
                 // Initialize sidebar navigation
                 initializeSidebarNavigation();
+
+                // Hide the v2 guide documentation when the active version is not v2. Resolve the
+                // version the same way the initial spec load does (?version= / saved preference).
+                var initialVersionParam = (window.location.search.match(/[?&]version=([^&]+)/) || [])[1];
+                var initialVersion = initialVersionParam || localStorage.getItem('figshare_api_version');
+                applyVersionDocVisibility(
+                    (initialVersion && /^\d+(\.\d+)*$/.test(initialVersion)) ? initialVersion : '2.0'
+                );
 
                 // Move schemas/models section after custom fields documentation
                 moveSchemasToEnd();
@@ -865,6 +891,13 @@
             topLevelItems.forEach(function(li) {
                 // Skip hidden insertion-point markers
                 if (li.id === 'api-menu-insertion-point' || li.id === 'presenters-menu-insertion-point') return;
+
+                // Respect version-based hiding — never re-show guides hidden for the current
+                // version (applyVersionDocVisibility), across both the reset and match paths.
+                if (li.getAttribute('data-version-hidden') === 'true') {
+                    li.style.display = 'none';
+                    return;
+                }
 
                 if (!query) {
                     resetMenuItemTree(li);
@@ -1363,6 +1396,52 @@
 
         // Expose initializeSidebarNavigation globally so version-manager.js can re-bind events
         window.initializeSidebarNavigation = initializeSidebarNavigation;
+
+        /**
+         * Show or hide the hardcoded guide documentation based on the active API version.
+         * The guide pages (Figshare Documentation, Upload, Search, Stats, OAI PMH, HR Feed,
+         * Custom Fields) describe the v2 API; other versions (v3+) expose only their own API
+         * endpoints + schemas, so the v2 guides are hidden there. Future versions are expected
+         * to ship their own guides, so anything that is not v2 hides these.
+         */
+        function applyVersionDocVisibility(version) {
+            var major = String(version || '').split('.')[0];
+            var hide = major !== '2';
+            var displayValue = hide ? 'none' : '';
+
+            // Main-content guide containers (rendered before/after the API operations).
+            ['documentation-sections-before', 'documentation-sections-after'].forEach(function(id) {
+                var el = document.getElementById(id);
+                if (el) el.style.display = displayValue;
+            });
+
+            // v3 (ITBM) intro — the inverse: shown only on v3, hidden elsewhere.
+            var v3Intro = document.getElementById('documentation-sections-v3');
+            if (v3Intro) v3Intro.style.display = major === '3' ? '' : 'none';
+
+            // Sidebar: toggle the static guide <li>s, leaving the dynamically generated API and
+            // Presenters entries (and their insertion-point markers) untouched. The
+            // data-version-hidden marker lets the search filter keep these hidden (see
+            // filterSidebarMenu).
+            var topLevelItems = document.querySelectorAll('.api-sidebar > ul > li');
+            topLevelItems.forEach(function(li) {
+                if (li.getAttribute('data-dynamic-api') === 'true' ||
+                    li.getAttribute('data-dynamic-presenters') === 'true' ||
+                    li.id === 'api-menu-insertion-point' ||
+                    li.id === 'presenters-menu-insertion-point') {
+                    return;
+                }
+                li.style.display = displayValue;
+                if (hide) {
+                    li.setAttribute('data-version-hidden', 'true');
+                } else {
+                    li.removeAttribute('data-version-hidden');
+                }
+            });
+        }
+
+        // Expose so version-manager.js can re-apply visibility on version change.
+        window.applyVersionDocVisibility = applyVersionDocVisibility;
 
 
         // Function to initialize sidebar navigation
@@ -2271,7 +2350,13 @@
         const swaggerWrapper = document.getElementById('swagger-ui-content');
         if (!swaggerWrapper) return;
 
+        // onComplete re-fires when the spec is swapped (version switch); the static guide content
+        // is version-independent, so skip re-injection to avoid duplicate sections — duplicates
+        // would escape version hiding (getElementById only hides the first copy) and stay visible.
+        if (document.getElementById('documentation-sections-before')) return;
+
         // Build documentation sections
+        const v3IntroDiv = document.getElementById('description_v3_intro');
         const introDiv = document.getElementById('description_intro');
         const oauthIntroDiv = document.getElementById('description_oauth_intro');
         const oauthQuickDiv = document.getElementById('description_oauth_quick');
@@ -2894,6 +2979,15 @@
         // This will contain: Upload Files, Search, Stats, OAI PMH, HR Feed, Custom Fields
         // This ensures API endpoint documentation (Articles, Authors, Collections, etc.) appears in between
         swaggerWrapper.insertAdjacentHTML('beforeend', docContentAfter);
+
+        // v3 (ITBM) intro — shown only on the v3 version (see applyVersionDocVisibility). Starts
+        // hidden and is inserted at the very top so it precedes the API operations when shown.
+        let docContentV3 = '<div id="documentation-sections-v3" style="max-width: 100%; display: none;">';
+        docContentV3 += '<div id="doc-section-v3-intro" class="guide-section" style="margin-bottom: 40px;">';
+        docContentV3 += '<h2 class="guide-section-header" style="font-size: 24px; border-bottom: 2px solid #434f59; padding-bottom: 10px; margin-bottom: 20px;">Figshare Documentation</h2>';
+        docContentV3 += '<div class="markdown-content">' + (v3IntroDiv ? v3IntroDiv.innerHTML : '') + '</div>';
+        docContentV3 += '</div></div>';
+        swaggerWrapper.insertAdjacentHTML('afterbegin', docContentV3);
     }
 
     // Function to move Schemas/Models section after Custom Fields documentation
@@ -3017,8 +3111,8 @@
         window.fetch = function(input, init) {
             var url = typeof input === 'string' ? input : (input.url || String(input));
 
-            // Only intercept API calls (not swagger.json or other resources)
-            var isApiCall = url.includes('/v2/') && !url.includes('swagger.json');
+            // Only intercept versioned API calls (e.g. /v2/, /v3/), not swagger spec files or other resources
+            var isApiCall = /\/v\d+\//.test(url) && !/(^|\/)swagger(_v[\w.]+)?\.json(\?|$)/.test(url);
 
             if (!isApiCall) {
                 return originalFetch.apply(this, arguments);

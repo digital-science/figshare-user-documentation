@@ -66,10 +66,13 @@ class SwaggerDocsMerger:
         # Load the base file
         base = self.load_yaml("swagger-source.yaml")
 
-        # Construct servers from API_URL and API_SCHEME if provided
+        # Construct servers from API_URL and API_SCHEME if provided. The path prefix is
+        # derived from the version's major component so each version advertises its own
+        # mount point (v2.x -> /v2, v3.x -> /v3).
         servers = []
+        major_version = str(version).split(".")[0]
         if self.api_url and self.api_scheme:
-            servers = [{"url": f"{self.api_scheme}://{self.api_url}/v2"}]
+            servers = [{"url": f"{self.api_scheme}://{self.api_url}/v{major_version}"}]
         elif "servers" in base:
             servers = base["servers"]
 
@@ -279,6 +282,21 @@ class SwaggerDocsMerger:
                             else:
                                 # Direct schema name removal
                                 merged["components"]["schemas"].pop(schema_name, None)
+
+                    # Remove specific properties from existing schemas (without redefining the
+                    # whole schema). Maps schema name -> list of property names; each is dropped
+                    # from the schema's `properties` and from its `required` list. No-op when the
+                    # schema or property is absent.
+                    if "exclude_schema_properties" in exclusions_data:
+                        for schema_name, prop_names in exclusions_data["exclude_schema_properties"].items():
+                            schema = merged["components"]["schemas"].get(schema_name)
+                            if not schema:
+                                continue
+                            for prop_name in prop_names:
+                                if isinstance(schema.get("properties"), dict):
+                                    schema["properties"].pop(prop_name, None)
+                                if isinstance(schema.get("required"), list) and prop_name in schema["required"]:
+                                    schema["required"].remove(prop_name)
 
                 # Second, handle inclusions (add new components)
                 inclusions_file = version_components_dir / "inclusions.yaml"

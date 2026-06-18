@@ -219,6 +219,13 @@
                     currentVersion = version;
                     console.log('Updated to version:', version);
 
+                    // Switching versions re-renders the operations and changes the page height.
+                    // If the user was partially scrolled, the shorter content would leave the
+                    // scroll position inside the static documentation band (whose last section is
+                    // Impersonation), causing the sidebar to auto-expand/highlight it. Reset to the
+                    // top so the version change starts cleanly (matches scrollY < 200 collapse).
+                    window.scrollTo(0, 0);
+
                     // Wait for Swagger UI to re-render, then rebuild the sidebar
                     setTimeout(function() {
                         // Filter internal operations for new spec
@@ -234,6 +241,11 @@
                         // Re-initialize sidebar navigation to bind events to new elements
                         if (window.initializeSidebarNavigation && typeof window.initializeSidebarNavigation === 'function') {
                             window.initializeSidebarNavigation();
+                        }
+
+                        // Hide the v2 guide documentation when the new version is not v2.
+                        if (window.applyVersionDocVisibility && typeof window.applyVersionDocVisibility === 'function') {
+                            window.applyVersionDocVisibility(version);
                         }
                     }, 800);
                 })

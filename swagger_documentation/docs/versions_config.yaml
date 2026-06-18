@@ -10,8 +10,12 @@ versions:
   "2.0":
     deprecated: false
     description: "Current stable API version"
-    
-    
+
+  "3.0":
+    deprecated: false
+    description: "Item-type based metadata (ITBM) API version"
+
+
   # "2.2":
   #   deprecated: true
   #   sunset: "30 Jul 2025"
