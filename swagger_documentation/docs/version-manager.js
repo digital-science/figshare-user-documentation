@@ -13,6 +13,15 @@
     var currentVersion = null;
 
     /**
+     * Reflect the active API version in the browser tab title (e.g. "Figshare API v3").
+     */
+    function updateDocumentTitle(version) {
+        if (version) {
+            document.title = 'Figshare API v' + version;
+        }
+    }
+
+    /**
      * Load versions manifest from the server
      */
     function loadVersionsManifest() {
@@ -98,6 +107,7 @@
             if (versionInfo.version === selectedVersion) {
                 option.selected = true;
                 currentVersion = versionInfo.version;
+                updateDocumentTitle(currentVersion);
             }
             
             select.appendChild(option);
@@ -217,6 +227,7 @@
                     }
                     window.ui.specActions.updateSpec(JSON.stringify(spec));
                     currentVersion = version;
+                    updateDocumentTitle(version);
                     console.log('Updated to version:', version);
 
                     // Switching versions re-renders the operations and changes the page height.

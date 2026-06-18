@@ -812,3 +812,155 @@ schemas:
     - modified_date
     - url
     x-tag: projects
+  # --- v3 (ITBM) REQUEST schemas: top-level allowlist + nested `fields`; examples omit group_id ---
+  ItemCreate:
+    type: object
+    description: v3 (ITBM) item creation payload. Structural inputs stay top-level; all metadata goes inside 'fields'.
+    properties:
+      item_type_id:
+        type: integer
+        description: Item type id (see GET /item_types).
+        example: 1
+      item_type_name:
+        type: string
+        description: Item type name, as an alternative to item_type_id.
+        example: dataset
+      group_id:
+        type: integer
+        nullable: true
+        description: Group to create the item under; omit to use your default group.
+      is_metadata_record:
+        type: boolean
+        description: True if the item has no files (metadata-only).
+      download_disabled:
+        type: boolean
+        description: Disable the download button for this item.
+      resource_doi:
+        type: string
+        description: Resource DOI.
+      resource_title:
+        type: string
+        description: Resource title.
+      fields:
+        type: object
+        additionalProperties: true
+        description: Item-type based metadata, keyed by field name. Holds core fields (title, description, keywords), stock
+          fields (e.g. publisher, journal, funding_list), and any custom fields configured for the institution. 'title' is
+          required on create. Use the GET /account/{items,collections,projects}/fields catalog endpoints to discover the available
+          field names.
+    example:
+      item_type_id: 1
+      fields:
+        title: My item
+    x-tag: items
+  ItemUpdate:
+    type: object
+    description: v3 (ITBM) item update payload. Same shape as ItemCreate; all properties optional (send only what changes
+      inside 'fields').
+    properties:
+      item_type_id:
+        type: integer
+        description: Item type id (see GET /item_types).
+      item_type_name:
+        type: string
+        description: Item type name, as an alternative to item_type_id.
+      group_id:
+        type: integer
+        nullable: true
+        description: Group to move the item to.
+      is_metadata_record:
+        type: boolean
+        description: True if the item has no files (metadata-only).
+      download_disabled:
+        type: boolean
+        description: Disable the download button for this item.
+      resource_doi:
+        type: string
+        description: Resource DOI.
+      resource_title:
+        type: string
+        description: Resource title.
+      fields:
+        type: object
+        additionalProperties: true
+        description: Item-type based metadata, keyed by field name. Holds core fields (title, description, keywords), stock
+          fields (e.g. publisher, journal, funding_list), and any custom fields configured for the institution. 'title' is
+          required on create. Use the GET /account/{items,collections,projects}/fields catalog endpoints to discover the available
+          field names.
+    example:
+      fields:
+        title: Updated item title
+    x-tag: items
+  CollectionCreate:
+    type: object
+    description: v3 (ITBM) collection creation payload. All metadata goes inside 'fields'; only group_id stays top-level.
+    properties:
+      group_id:
+        type: integer
+        nullable: true
+        description: Group to create the collection under; omit to use your default group.
+      fields:
+        type: object
+        additionalProperties: true
+        description: Item-type based metadata, keyed by field name. Holds core fields (title, description, keywords), stock
+          fields (e.g. publisher, journal, funding_list), and any custom fields configured for the institution. 'title' is
+          required on create. Use the GET /account/{items,collections,projects}/fields catalog endpoints to discover the available
+          field names.
+    example:
+      fields:
+        title: My collection
+    x-tag: collections
+  CollectionUpdate:
+    type: object
+    description: v3 (ITBM) collection update payload. Send only the metadata that changes inside 'fields'.
+    properties:
+      group_id:
+        type: integer
+        nullable: true
+        description: Group to move the collection to.
+      fields:
+        type: object
+        additionalProperties: true
+        description: Item-type based metadata, keyed by field name. Holds core fields (title, description, keywords), stock
+          fields (e.g. publisher, journal, funding_list), and any custom fields configured for the institution. 'title' is
+          required on create. Use the GET /account/{items,collections,projects}/fields catalog endpoints to discover the available
+          field names.
+    example:
+      fields:
+        description: Updated collection description
+    x-tag: collections
+  ProjectCreate:
+    type: object
+    description: v3 (ITBM) project creation payload. All metadata goes inside 'fields'; only group_id stays top-level.
+    properties:
+      group_id:
+        type: integer
+        nullable: true
+        description: Group to create the project under (institutional accounts); omit for an individual project.
+      fields:
+        type: object
+        additionalProperties: true
+        description: Item-type based metadata, keyed by field name. Holds core fields (title, description, keywords), stock
+          fields (e.g. publisher, journal, funding_list), and any custom fields configured for the institution. 'title' is
+          required on create. Use the GET /account/{items,collections,projects}/fields catalog endpoints to discover the available
+          field names.
+    example:
+      fields:
+        title: My project
+    x-tag: projects
+  ProjectUpdate:
+    type: object
+    description: v3 (ITBM) project update payload. Send only the metadata that changes inside 'fields'. The project group
+      cannot be changed.
+    properties:
+      fields:
+        type: object
+        additionalProperties: true
+        description: Item-type based metadata, keyed by field name. Holds core fields (title, description, keywords), stock
+          fields (e.g. publisher, journal, funding_list), and any custom fields configured for the institution. 'title' is
+          required on create. Use the GET /account/{items,collections,projects}/fields catalog endpoints to discover the available
+          field names.
+    example:
+      fields:
+        description: Updated project description
+    x-tag: projects

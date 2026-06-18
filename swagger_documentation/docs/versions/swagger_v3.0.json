@@ -2350,69 +2350,95 @@
             },
             "ItemCreate": {
                 "type": "object",
-                "description": "Item creation payload. All metadata (core + stock + custom) goes inside the 'fields' object, keyed by underlying field name. System properties (item_type_id, group_id) stay top-level. No backward-compatible fields: defined_type, references, custom_fields are not accepted.",
+                "description": "v3 (ITBM) item creation payload. Structural inputs stay top-level; all metadata goes inside 'fields'.",
                 "properties": {
                     "item_type_id": {
                         "type": "integer",
-                        "description": "Item type identifier (use /item_types to get available types)."
+                        "description": "Item type id (see GET /item_types).",
+                        "example": 1
                     },
                     "item_type_name": {
                         "type": "string",
-                        "description": "Item type name as alternative to item_type_id (e.g. \"dataset\"). Resolved to item_type_id internally."
+                        "description": "Item type name, as an alternative to item_type_id.",
+                        "example": "dataset"
                     },
                     "group_id": {
                         "type": "integer",
-                        "description": "Group to assign the item to."
+                        "nullable": true,
+                        "description": "Group to create the item under; omit to use your default group."
                     },
                     "is_metadata_record": {
                         "type": "boolean",
-                        "description": "True if item has no files."
+                        "description": "True if the item has no files (metadata-only)."
                     },
                     "download_disabled": {
                         "type": "boolean",
-                        "description": "Disable download button for this item."
+                        "description": "Disable the download button for this item."
                     },
                     "resource_doi": {
                         "type": "string",
-                        "description": "Deprecated by related materials (inside fields)."
+                        "description": "Resource DOI."
                     },
                     "resource_title": {
                         "type": "string",
-                        "description": "Deprecated by related materials (inside fields)."
+                        "description": "Resource title."
                     },
                     "fields": {
                         "type": "object",
-                        "description": "All metadata fields keyed by underlying field name. Includes core fields (title, description, keywords, authors, licence, categories, funding_list, related_materials) and stock fields (journal, volume, issue, etc.). Use GET /account/items/fields/item-type/{item_type_id} to discover available fields. `categories` is a list of objects, each identified by either an `id` (integer) or a `source_id` (string); entries may be mixed. Unresolved `source_id` values are reported in the response `warnings` array. `licence` is a single object with an `id` key (extras ignored). Bare integers are rejected.",
-                        "additionalProperties": true
+                        "additionalProperties": true,
+                        "description": "Item-type based metadata, keyed by field name. Holds core fields (title, description, keywords), stock fields (e.g. publisher, journal, funding_list), and any custom fields configured for the institution. 'title' is required on create. Use the GET /account/{items,collections,projects}/fields catalog endpoints to discover the available field names."
+                    }
+                },
+                "example": {
+                    "item_type_id": 1,
+                    "fields": {
+                        "title": "My item"
                     }
                 },
                 "x-tag": "items"
             },
             "ItemUpdate": {
-                "description": "Item update payload. Same structure as ItemCreate but no required fields. Use PATCH for partial updates (only send changed fields inside 'fields').",
                 "type": "object",
+                "description": "v3 (ITBM) item update payload. Same shape as ItemCreate; all properties optional (send only what changes inside 'fields').",
                 "properties": {
                     "item_type_id": {
                         "type": "integer",
-                        "description": "Item type identifier (use /item_types to get available types)."
+                        "description": "Item type id (see GET /item_types)."
                     },
                     "item_type_name": {
                         "type": "string",
-                        "description": "Item type name as alternative to item_type_id (e.g. \"dataset\"). Resolved to item_type_id internally."
+                        "description": "Item type name, as an alternative to item_type_id."
                     },
                     "group_id": {
-                        "type": "integer"
+                        "type": "integer",
+                        "nullable": true,
+                        "description": "Group to move the item to."
                     },
                     "is_metadata_record": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "description": "True if the item has no files (metadata-only)."
                     },
                     "download_disabled": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "description": "Disable the download button for this item."
+                    },
+                    "resource_doi": {
+                        "type": "string",
+                        "description": "Resource DOI."
+                    },
+                    "resource_title": {
+                        "type": "string",
+                        "description": "Resource title."
                     },
                     "fields": {
                         "type": "object",
-                        "description": "All metadata fields keyed by underlying field name. Same structure as ItemCreate — `categories` entries accept `id` (int) or `source_id` (string), mixed allowed; `licence` is a single object with an `id` key. Bare integers are rejected.",
-                        "additionalProperties": true
+                        "additionalProperties": true,
+                        "description": "Item-type based metadata, keyed by field name. Holds core fields (title, description, keywords), stock fields (e.g. publisher, journal, funding_list), and any custom fields configured for the institution. 'title' is required on create. Use the GET /account/{items,collections,projects}/fields catalog endpoints to discover the available field names."
+                    }
+                },
+                "example": {
+                    "fields": {
+                        "title": "Updated item title"
                     }
                 },
                 "x-tag": "items"
@@ -4197,208 +4223,22 @@
             },
             "CollectionCreate": {
                 "type": "object",
+                "description": "v3 (ITBM) collection creation payload. All metadata goes inside 'fields'; only group_id stays top-level.",
                 "properties": {
-                    "funding": {
-                        "type": "string",
-                        "description": "Grant number or funding authority",
-                        "default": ""
-                    },
-                    "funding_list": {
-                        "type": "array",
-                        "description": "Funding creation / update items",
-                        "items": {
-                            "$ref": "#/components/schemas/FundingCreate"
-                        }
-                    },
-                    "title": {
-                        "maxLength": 1000,
-                        "minLength": 3,
-                        "type": "string",
-                        "description": "Title of the collection. Required. Legacy requests send it at the top level; ITBM (item-type based metadata) requests send it inside the `fields` object, where it is validated. Not listed in top-level `required` because ITBM payloads carry it within `fields`.",
-                        "example": "Test collection title"
-                    },
-                    "description": {
-                        "maxLength": 20000,
-                        "type": "string",
-                        "description": "The collection description. In a publisher case, usually this is the remote collection description",
-                        "example": "Test description of article",
-                        "default": ""
-                    },
-                    "articles": {
-                        "type": "array",
-                        "description": "List of articles to be associated with the collection",
-                        "example": [
-                            2000001,
-                            2000005
-                        ],
-                        "items": {
-                            "type": "integer"
-                        }
-                    },
-                    "authors": {
-                        "type": "array",
-                        "description": "List of authors to be associated with the collection. The list can contain the following fields: id, name, first_name, last_name, email, orcid_id. If an id is supplied, it will take priority and everything else will be ignored. For adding more authors use the specific authors endpoint.",
-                        "example": [
-                            {
-                                "name": "John Doe"
-                            },
-                            {
-                                "id": 20005
-                            }
-                        ],
-                        "items": {
-                            "type": "object",
-                            "properties": {}
-                        }
-                    },
-                    "categories": {
-                        "type": "array",
-                        "description": "List of category ids to be associated with the collection(e.g [1, 23, 33, 66])",
-                        "example": [
-                            1,
-                            10,
-                            11
-                        ],
-                        "items": {
-                            "type": "integer"
-                        }
-                    },
-                    "categories_by_source_id": {
-                        "type": "array",
-                        "description": "List of category source ids to be associated with the collection, supersedes the categories property",
-                        "example": [
-                            "300204",
-                            "400207"
-                        ],
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "tags": {
-                        "type": "array",
-                        "description": "List of tags to be associated with the collection. Keywords can be used instead",
-                        "example": [
-                            "tag1",
-                            "tag2"
-                        ],
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "keywords": {
-                        "type": "array",
-                        "description": "List of tags to be associated with the collection. Tags can be used instead",
-                        "example": [
-                            "tag1",
-                            "tag2"
-                        ],
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "references": {
-                        "type": "array",
-                        "description": "List of links to be associated with the collection (e.g [\"http://link1\", \"http://link2\", \"http://link3\"])",
-                        "example": [
-                            "http://figshare.com",
-                            "http://api.figshare.com"
-                        ],
-                        "items": {
-                            "type": "string",
-                            "format": "link"
-                        }
-                    },
-                    "related_materials": {
-                        "type": "array",
-                        "description": "List of related materials; supersedes references and resource DOI/title.",
-                        "example": [
-                            {
-                                "id": 10432,
-                                "identifier": "10.6084/m9.figshare.1407024",
-                                "identifier_type": "DOI",
-                                "relation": "IsSupplementTo",
-                                "title": "Figshare for institutions brochure",
-                                "is_linkout": false
-                            }
-                        ],
-                        "items": {
-                            "$ref": "#/components/schemas/RelatedMaterial"
-                        }
-                    },
-                    "custom_fields": {
-                        "type": "object",
-                        "properties": {},
-                        "description": "List of key, values pairs to be associated with the collection",
-                        "example": {
-                            "defined_key": "value for it"
-                        }
-                    },
-                    "custom_fields_list": {
-                        "type": "array",
-                        "description": "List of custom fields values, supersedes custom_fields parameter",
-                        "items": {
-                            "$ref": "#/components/schemas/CustomArticleFieldAdd"
-                        }
-                    },
-                    "doi": {
-                        "type": "string",
-                        "description": "Not applicable for regular users. In an institutional case, make sure your group supports setting DOIs. This setting is applied by figshare via opening a ticket through our support/helpdesk system.",
-                        "default": ""
-                    },
-                    "handle": {
-                        "type": "string",
-                        "description": "Not applicable for regular users. In an institutional case, make sure your group supports setting Handles. This setting is applied by figshare via opening a ticket through our support/helpdesk system.",
-                        "default": ""
-                    },
-                    "resource_id": {
-                        "type": "string",
-                        "description": "Not applicable to regular users. In a publisher case, this is the publisher article id"
-                    },
-                    "resource_doi": {
-                        "type": "string",
-                        "description": "Not applicable to regular users. In a publisher case, this is the publisher article DOI.",
-                        "default": ""
-                    },
-                    "resource_link": {
-                        "type": "string",
-                        "description": "Not applicable to regular users. In a publisher case, this is the publisher article link"
-                    },
-                    "resource_title": {
-                        "type": "string",
-                        "description": "Not applicable to regular users. In a publisher case, this is the publisher article title.",
-                        "default": ""
-                    },
-                    "resource_version": {
-                        "type": "integer",
-                        "description": "Not applicable to regular users. In a publisher case, this is the publisher article version"
-                    },
                     "group_id": {
                         "type": "integer",
-                        "description": "Not applicable to regular users. This field is reserved to institutions/publishers with access to assign to specific groups"
-                    },
-                    "timeline": {
-                        "$ref": "#/components/schemas/TimelineUpdate"
+                        "nullable": true,
+                        "description": "Group to create the collection under; omit to use your default group."
                     },
                     "fields": {
                         "type": "object",
-                        "description": "Institutions with item-type based metadata only: all metadata fields keyed by underlying field name (e.g. title, description, keywords, publisher, funding_list). When present, the fields object is the authoritative source for all metadata; top-level metadata keys are ignored. `categories` inside `fields` is a list of objects, each identified by either an `id` (integer) or a `source_id` (string); entries may be mixed. Unresolved `source_id` values are reported in the response `warnings` array.",
-                        "example": {
-                            "title": "My Collection",
-                            "description": "Collection description",
-                            "keywords": [
-                                "keyword1"
-                            ],
-                            "publisher": "Springer Nature",
-                            "categories": [
-                                {
-                                    "id": 69
-                                },
-                                {
-                                    "source_id": "3001"
-                                }
-                            ]
-                        },
-                        "additionalProperties": true
+                        "additionalProperties": true,
+                        "description": "Item-type based metadata, keyed by field name. Holds core fields (title, description, keywords), stock fields (e.g. publisher, journal, funding_list), and any custom fields configured for the institution. 'title' is required on create. Use the GET /account/{items,collections,projects}/fields catalog endpoints to discover the available field names."
+                    }
+                },
+                "example": {
+                    "fields": {
+                        "title": "My collection"
                     }
                 },
                 "x-tag": "collections"
@@ -4483,187 +4323,22 @@
             },
             "CollectionUpdate": {
                 "type": "object",
+                "description": "v3 (ITBM) collection update payload. Send only the metadata that changes inside 'fields'.",
                 "properties": {
-                    "funding": {
-                        "type": "string",
-                        "description": "Grant number or funding authority",
-                        "default": ""
-                    },
-                    "funding_list": {
-                        "type": "array",
-                        "description": "Funding creation / update items",
-                        "items": {
-                            "$ref": "#/components/schemas/FundingCreate"
-                        }
-                    },
-                    "title": {
-                        "maxLength": 1000,
-                        "minLength": 3,
-                        "type": "string",
-                        "description": "Title of collection",
-                        "example": "Test collection title"
-                    },
-                    "description": {
-                        "maxLength": 20000,
-                        "type": "string",
-                        "description": "The collection description. In a publisher case, usually this is the remote collection description",
-                        "example": "Test description of collection",
-                        "default": ""
-                    },
-                    "articles": {
-                        "type": "array",
-                        "description": "List of articles to be associated with the collection",
-                        "example": [
-                            2000001,
-                            2000005
-                        ],
-                        "items": {
-                            "type": "integer"
-                        }
-                    },
-                    "authors": {
-                        "type": "array",
-                        "description": "List of authors to be associated with the collection. The list can contain the following fields: id, name, first_name, last_name, email, orcid_id. If an id is supplied, it will take priority and everything else will be ignored. For adding more authors use the specific authors endpoint.",
-                        "example": [
-                            {
-                                "name": "John Doe"
-                            },
-                            {
-                                "id": 20005
-                            }
-                        ],
-                        "items": {
-                            "type": "object",
-                            "properties": {}
-                        }
-                    },
-                    "categories": {
-                        "type": "array",
-                        "description": "List of category ids to be associated with the collection (e.g [1, 23, 33, 66])",
-                        "example": [
-                            1,
-                            10,
-                            11
-                        ],
-                        "items": {
-                            "type": "integer"
-                        }
-                    },
-                    "categories_by_source_id": {
-                        "type": "array",
-                        "description": "List of category source ids to be associated with the article, supersedes the categories property",
-                        "example": [
-                            "300204",
-                            "400207"
-                        ],
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "tags": {
-                        "type": "array",
-                        "description": "List of tags to be associated with the collection. Keywords can be used instead",
-                        "example": [
-                            "tag1",
-                            "tag2"
-                        ],
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "keywords": {
-                        "type": "array",
-                        "description": "List of tags to be associated with the collection. Tags can be used instead",
-                        "example": [
-                            "tag1",
-                            "tag2"
-                        ],
-                        "items": {
-                            "type": "string"
-                        }
-                    },
-                    "references": {
-                        "type": "array",
-                        "description": "List of links to be associated with the collection (e.g [\"http://link1\", \"http://link2\", \"http://link3\"])",
-                        "example": [
-                            "http://figshare.com",
-                            "http://api.figshare.com"
-                        ],
-                        "items": {
-                            "type": "string",
-                            "format": "link"
-                        }
-                    },
-                    "related_materials": {
-                        "type": "array",
-                        "description": "List of related materials; supersedes references and resource DOI/title.",
-                        "example": [
-                            {
-                                "id": 10432,
-                                "identifier": "10.6084/m9.figshare.1407024",
-                                "identifier_type": "DOI",
-                                "relation": "IsSupplementTo",
-                                "title": "Figshare for institutions brochure",
-                                "is_linkout": false
-                            }
-                        ],
-                        "items": {
-                            "$ref": "#/components/schemas/RelatedMaterial"
-                        }
-                    },
-                    "custom_fields": {
-                        "type": "object",
-                        "properties": {},
-                        "description": "List of key, values pairs to be associated with the collection",
-                        "example": {
-                            "defined_key": "value for it"
-                        }
-                    },
-                    "custom_fields_list": {
-                        "type": "array",
-                        "description": "List of custom fields values, supersedes custom_fields parameter",
-                        "items": {
-                            "$ref": "#/components/schemas/CustomArticleFieldAdd"
-                        }
-                    },
-                    "doi": {
-                        "type": "string",
-                        "description": "Not applicable for regular users. In an institutional case, make sure your group supports setting DOIs. This setting is applied by figshare via opening a ticket through our support/helpdesk system.",
-                        "default": ""
-                    },
-                    "handle": {
-                        "type": "string",
-                        "description": "Not applicable for regular users. In an institutional case, make sure your group supports setting Handles. This setting is applied by figshare via opening a ticket through our support/helpdesk system.",
-                        "default": ""
-                    },
-                    "resource_id": {
-                        "type": "string",
-                        "description": "Not applicable to regular users. In a publisher case, this is the publisher article id"
-                    },
-                    "resource_doi": {
-                        "type": "string",
-                        "description": "Not applicable to regular users. In a publisher case, this is the publisher article DOI.",
-                        "default": ""
-                    },
-                    "resource_link": {
-                        "type": "string",
-                        "description": "Not applicable to regular users. In a publisher case, this is the publisher article link"
-                    },
-                    "resource_title": {
-                        "type": "string",
-                        "description": "Not applicable to regular users. In a publisher case, this is the publisher article title.",
-                        "default": ""
-                    },
-                    "resource_version": {
-                        "type": "integer",
-                        "description": "Not applicable to regular users. In a publisher case, this is the publisher article version"
-                    },
                     "group_id": {
                         "type": "integer",
-                        "description": "Not applicable to regular users. This field is reserved to institutions/publishers with access to assign to specific groups"
+                        "nullable": true,
+                        "description": "Group to move the collection to."
                     },
-                    "timeline": {
-                        "$ref": "#/components/schemas/TimelineUpdate"
+                    "fields": {
+                        "type": "object",
+                        "additionalProperties": true,
+                        "description": "Item-type based metadata, keyed by field name. Holds core fields (title, description, keywords), stock fields (e.g. publisher, journal, funding_list), and any custom fields configured for the institution. 'title' is required on create. Use the GET /account/{items,collections,projects}/fields catalog endpoints to discover the available field names."
+                    }
+                },
+                "example": {
+                    "fields": {
+                        "description": "Updated collection description"
                     }
                 },
                 "x-tag": "collections"
@@ -6384,65 +6059,22 @@
             },
             "ProjectCreate": {
                 "type": "object",
+                "description": "v3 (ITBM) project creation payload. All metadata goes inside 'fields'; only group_id stays top-level.",
                 "properties": {
-                    "title": {
-                        "maxLength": 1000,
-                        "minLength": 3,
-                        "type": "string",
-                        "description": "The title for this project. Required, 3 - 1000 characters. Legacy requests send it at the top level; ITBM (item-type based metadata) requests send it inside the `fields` object, where it is validated. Not listed in top-level `required` because ITBM payloads carry it within `fields`.",
-                        "example": "project title"
-                    },
-                    "description": {
-                        "maxLength": 20000,
-                        "type": "string",
-                        "description": "Project description",
-                        "example": "project description"
-                    },
-                    "funding": {
-                        "type": "string",
-                        "description": "Grant number or organization(s) that funded this project. Up to 2000 characters permitted.",
-                        "example": ""
-                    },
-                    "funding_list": {
-                        "type": "array",
-                        "description": "Funding creation / update items",
-                        "items": {
-                            "$ref": "#/components/schemas/FundingCreate"
-                        }
-                    },
                     "group_id": {
                         "type": "integer",
-                        "description": "Only if project type is group.",
-                        "example": 0
-                    },
-                    "custom_fields": {
-                        "type": "object",
-                        "properties": {},
-                        "description": "List of key, values pairs to be associated with the project",
-                        "example": {
-                            "defined_key": "value for it"
-                        }
-                    },
-                    "custom_fields_list": {
-                        "type": "array",
-                        "description": "List of custom fields values, supersedes custom_fields parameter",
-                        "items": {
-                            "$ref": "#/components/schemas/CustomArticleFieldAdd"
-                        }
+                        "nullable": true,
+                        "description": "Group to create the project under (institutional accounts); omit for an individual project."
                     },
                     "fields": {
                         "type": "object",
-                        "description": "Institutions with item-type based metadata only: all metadata fields keyed by underlying field name (e.g. title, description, funding_list). When present, the fields object is the authoritative source for all metadata; top-level metadata keys are ignored.",
-                        "example": {
-                            "title": "My Project",
-                            "description": "Project description",
-                            "funding_list": [
-                                {
-                                    "title": "Test Grant"
-                                }
-                            ]
-                        },
-                        "additionalProperties": true
+                        "additionalProperties": true,
+                        "description": "Item-type based metadata, keyed by field name. Holds core fields (title, description, keywords), stock fields (e.g. publisher, journal, funding_list), and any custom fields configured for the institution. 'title' is required on create. Use the GET /account/{items,collections,projects}/fields catalog endpoints to discover the available field names."
+                    }
+                },
+                "example": {
+                    "fields": {
+                        "title": "My project"
                     }
                 },
                 "x-tag": "projects"
@@ -6580,46 +6212,17 @@
             },
             "ProjectUpdate": {
                 "type": "object",
+                "description": "v3 (ITBM) project update payload. Send only the metadata that changes inside 'fields'. The project group cannot be changed.",
                 "properties": {
-                    "title": {
-                        "maxLength": 1000,
-                        "minLength": 3,
-                        "type": "string",
-                        "description": "The title for this project - mandatory. 3 - 1000 characters.",
-                        "example": "project title"
-                    },
-                    "description": {
-                        "maxLength": 20000,
-                        "type": "string",
-                        "description": "Project description",
-                        "example": "project description"
-                    },
-                    "funding": {
-                        "type": "string",
-                        "description": "Grant number or organization(s) that funded this project. Up to 2000 characters permitted.",
-                        "example": ""
-                    },
-                    "funding_list": {
-                        "type": "array",
-                        "description": "Funding creation / update items",
-                        "items": {
-                            "$ref": "#/components/schemas/FundingCreate"
-                        }
-                    },
-                    "custom_fields": {
+                    "fields": {
                         "type": "object",
-                        "properties": {},
-                        "description": "List of key, values pairs to be associated with the project",
-                        "example": {
-                            "defined_key": "value for it"
-                        }
-                    },
-                    "custom_fields_list": {
-                        "type": "array",
-                        "description": "List of custom fields values, supersedes custom_fields parameter",
-                        "items": {
-                            "$ref": "#/components/schemas/CustomArticleFieldAdd"
-                        }
+                        "additionalProperties": true,
+                        "description": "Item-type based metadata, keyed by field name. Holds core fields (title, description, keywords), stock fields (e.g. publisher, journal, funding_list), and any custom fields configured for the institution. 'title' is required on create. Use the GET /account/{items,collections,projects}/fields catalog endpoints to discover the available field names."
+                    }
+                },
+                "example": {
+                    "fields": {
+                        "description": "Updated project description"
                     }
                 },
                 "x-tag": "projects"
