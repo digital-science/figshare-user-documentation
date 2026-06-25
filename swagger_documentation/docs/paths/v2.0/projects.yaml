@@ -44,11 +44,7 @@ paths:
           type: integer
       - name: order
         in: query
-        description: >-
-          The field by which to order. Default varies by endpoint/resource.
-          ITBM-enabled institutions accept the additional date keys `posted_date`,
-          `first_online`, `publisher_published`, `publisher_accepted`, `start_date`,
-          `finish_date`.
+        description: The field by which to order. Default varies by endpoint/resource.
         schema:
           type: string
           default: published_date
@@ -56,13 +52,6 @@ paths:
           - published_date
           - modified_date
           - views
-          - created_date
-          - posted_date
-          - first_online
-          - publisher_published
-          - publisher_accepted
-          - start_date
-          - finish_date
       - name: order_direction
         in: query
         schema:
@@ -105,9 +94,7 @@ paths:
           description: Bad Request
           content: {}
         '422':
-          description: >-
-            Unprocessable Entity. The request was malformed (e.g. invalid `institution` or unsupported `order` for the
-            tenant's mode).
+          description: Bad Request
           content: {}
         '500':
           description: Internal Server Error
@@ -327,11 +314,7 @@ paths:
           type: integer
       - name: order
         in: query
-        description: >-
-          The field by which to order. ITBM-enabled institutions accept the additional date keys
-          `posted_date`, `first_online`, `publisher_published`, `publisher_accepted`, `start_date`,
-          `finish_date` (and `created_date`); legacy keys (`published_date`, `modified_date`, `views`)
-          are rejected for ITBM tenants.
+        description: The field by which to order.
         schema:
           type: string
           default: published_date
@@ -339,13 +322,6 @@ paths:
           - published_date
           - modified_date
           - views
-          - created_date
-          - posted_date
-          - first_online
-          - publisher_published
-          - publisher_accepted
-          - start_date
-          - finish_date
       - name: order_direction
         in: query
         schema:

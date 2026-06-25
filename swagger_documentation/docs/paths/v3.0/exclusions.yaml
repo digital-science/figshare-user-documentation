@@ -27,7 +27,6 @@ exclude_paths:
 - /account/authors/search
 - /account/authors/{author_id}
 - /account/categories
-- /account/collections/search
 - /account/collections/{collection_id}/articles
 - /account/collections/{collection_id}/articles/{article_id}
 - /account/collections/{collection_id}/authors
@@ -62,7 +61,6 @@ exclude_paths:
 - /account/licenses
 - /account/profile
 - /account/profile/{user_id}/picture
-- /account/projects/search
 - /account/projects/{project_id}/articles
 - /account/projects/{project_id}/articles/{article_id}
 - /account/projects/{project_id}/articles/{article_id}/files
@@ -87,8 +85,6 @@ exclude_paths:
 - /articles/{article_id}/versions/{version_id}/embargo
 - /articles/{article_id}/versions/{version_id}/files
 - /categories
-- /collections
-- /collections/search
 - /collections/{collection_id}/articles
 - /collections/{collection_id}/versions
 - /collections/{collection_id}/versions/{version_id}
@@ -96,8 +92,6 @@ exclude_paths:
 - /institution/hrfeed/upload
 - /institutions/{institution_string_id}/articles/filter-by
 - /licenses
-- /projects
-- /projects/search
 - /projects/{project_id}/articles
 - /symplectic/accounts
 - /symplectic/accounts/{external_user_id}/articles

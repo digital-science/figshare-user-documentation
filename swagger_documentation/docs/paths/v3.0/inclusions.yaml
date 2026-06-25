@@ -636,3 +636,603 @@ paths:
       security:
       - OAuth2:
         - all
+  /projects:
+    get:
+      tags:
+      - projects
+      summary: Public ITBM Projects
+      description: >-
+        List public projects from institutions with item-type based metadata enabled
+        (`itbm_enabled`). Returns the light list shape; fetch `/v3/projects/{project_id}`
+        for the full ITBM detail including the `fields` object.
+      operationId: projects_public_list
+      parameters:
+      - name: page
+        in: query
+        schema:
+          maximum: 5000
+          minimum: 1
+          type: integer
+      - name: page_size
+        in: query
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          default: 10
+      - name: limit
+        in: query
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+      - name: offset
+        in: query
+        schema:
+          maximum: 5000
+          minimum: 0
+          type: integer
+      - name: order
+        in: query
+        description: ITBM date keys. Legacy keys (`published_date`, `modified_date`, `views`) are rejected for ITBM tenants.
+        schema:
+          type: string
+          default: created_date
+          enum:
+          - created_date
+          - modified_date
+          - posted_date
+          - first_online
+          - publisher_published
+          - publisher_accepted
+          - start_date
+          - finish_date
+      - name: order_direction
+        in: query
+        schema:
+          type: string
+          default: desc
+          enum:
+          - asc
+          - desc
+      - name: institution
+        in: query
+        description: Only return projects from this institution
+        schema:
+          type: integer
+      - name: group
+        in: query
+        description: Only return projects from this group
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: OK. An array of projects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Project'
+        '403':
+          description: Forbidden. ITBM is not enabled for the requested institution.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '422':
+          description: Unprocessable Entity. Malformed `institution` or unsupported `order` for an ITBM tenant.
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+  /projects/search:
+    post:
+      tags:
+      - projects
+      summary: Public ITBM Projects Search
+      description: Search public ITBM projects. Same light list shape as `/v3/projects`.
+      operationId: projects_public_search
+      requestBody:
+        description: Search Parameters
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectsSearch'
+        required: false
+      responses:
+        '200':
+          description: OK. An array of projects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Project'
+        '403':
+          description: Forbidden. ITBM is not enabled for the requested institution.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '422':
+          description: Unprocessable Entity. Malformed `institution` or unsupported `order` for an ITBM tenant.
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+      x-codegen-request-body-name: search
+  /account/projects:
+    get:
+      tags:
+      - projects
+      summary: Private ITBM Projects
+      description: >-
+        List the caller's own ITBM projects (light list shape). 403 when ITBM is not
+        enabled for the caller's institution; fetch `/v3/account/projects/{project_id}`
+        for the full ITBM detail.
+      operationId: private_projects_list
+      parameters:
+      - name: page
+        in: query
+        schema:
+          maximum: 5000
+          minimum: 1
+          type: integer
+      - name: page_size
+        in: query
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          default: 10
+      - name: limit
+        in: query
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+      - name: offset
+        in: query
+        schema:
+          maximum: 5000
+          minimum: 0
+          type: integer
+      - name: order
+        in: query
+        description: ITBM date keys. Legacy keys (`published_date`, `modified_date`, `views`) are rejected for ITBM tenants.
+        schema:
+          type: string
+          default: created_date
+          enum:
+          - created_date
+          - modified_date
+          - posted_date
+          - first_online
+          - publisher_published
+          - publisher_accepted
+          - start_date
+          - finish_date
+      - name: order_direction
+        in: query
+        schema:
+          type: string
+          default: desc
+          enum:
+          - asc
+          - desc
+      - name: storage
+        in: query
+        description: Only return projects with this storage type
+        schema:
+          type: string
+          enum:
+          - group
+          - individual
+      - name: roles
+        in: query
+        description: 'Any combination of owner, collaborator, viewer separated by comma.'
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK. An array of projects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjectPrivate'
+        '403':
+          description: Forbidden. ITBM is not enabled for the caller's institution.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '422':
+          description: Unprocessable Entity. Unsupported `order`, `roles`, or `storage` for an ITBM tenant.
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+    post:
+      tags:
+      - projects
+      summary: Create project
+      description: >-
+        Create a new ITBM project. All metadata is wrapped in a `fields` object
+        (`title` is required; `description`, `funding_list`, and any configured
+        custom fields are optional); `group_id` is the only top-level key. Legacy
+        flat-payload top-level metadata is rejected with 422. `funding_list`
+        entries accept either `{"id": <int>}` (reference an existing record)
+        or `{"title": "..."}` (mint a new user-defined entry).
+        Unrecognised field names inside `fields` (e.g. a typo) are rejected with 422.
+      operationId: private_project_create
+      requestBody:
+        description: Project  description
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectCreate'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateProjectResponse'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Project
+      x-codegen-request-body-name: Project
+  /account/projects/search:
+    post:
+      tags:
+      - projects
+      summary: Private ITBM Projects Search
+      description: Search the caller's own ITBM projects. Same light list shape as `/v3/account/projects`.
+      operationId: private_projects_search
+      requestBody:
+        description: Search Parameters
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectsSearch'
+        required: false
+      responses:
+        '200':
+          description: OK. An array of projects
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjectPrivate'
+        '403':
+          description: Forbidden. ITBM is not enabled for the caller's institution.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '422':
+          description: Unprocessable Entity. Unsupported `order`, `roles`, or `storage` for an ITBM tenant.
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-codegen-request-body-name: search
+  /collections:
+    get:
+      tags:
+      - collections
+      summary: Public ITBM Collections
+      description: >-
+        List public collections from institutions with item-type based metadata enabled
+        (`itbm_enabled`). Returns the light list shape; fetch `/v3/collections/{collection_id}`
+        for the full ITBM detail including the `fields` object.
+      operationId: collections_public_list
+      parameters:
+      - name: page
+        in: query
+        schema:
+          maximum: 5000
+          minimum: 1
+          type: integer
+      - name: page_size
+        in: query
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          default: 10
+      - name: limit
+        in: query
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+      - name: offset
+        in: query
+        schema:
+          maximum: 5000
+          minimum: 0
+          type: integer
+      - name: order
+        in: query
+        description: Collection ITBM date keys.
+        schema:
+          type: string
+          default: created_date
+          enum:
+          - created_date
+          - modified_date
+          - published_date
+      - name: order_direction
+        in: query
+        schema:
+          type: string
+          default: desc
+          enum:
+          - asc
+          - desc
+      - name: institution
+        in: query
+        description: Only return collections from this institution
+        schema:
+          type: integer
+      - name: group
+        in: query
+        description: Only return collections from this group
+        schema:
+          type: integer
+      - name: item_type_id
+        in: query
+        description: Only return collections with items of this ITBM item type
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: OK. An array of collections
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Collection'
+        '403':
+          description: Forbidden. ITBM is not enabled for the requested institution.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '422':
+          description: Unprocessable Entity. Malformed `institution` or unsupported `order` for an ITBM tenant.
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+  /collections/search:
+    post:
+      tags:
+      - collections
+      summary: Public ITBM Collections Search
+      description: Search public ITBM collections. Same light list shape as `/v3/collections`.
+      operationId: collections_public_search
+      requestBody:
+        description: Search Parameters
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CollectionsSearch'
+        required: false
+      responses:
+        '200':
+          description: OK. An array of collections
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Collection'
+        '403':
+          description: Forbidden. ITBM is not enabled for the requested institution.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '422':
+          description: Unprocessable Entity. Malformed `institution` or unsupported `order` for an ITBM tenant.
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+      x-codegen-request-body-name: search
+  /account/collections:
+    get:
+      tags:
+      - collections
+      summary: Private ITBM Collections
+      description: >-
+        List the caller's own ITBM collections (light list shape). 403 when ITBM is not
+        enabled for the caller's institution; fetch `/v3/account/collections/{collection_id}`
+        for the full ITBM detail.
+      operationId: private_collections_list
+      parameters:
+      - name: page
+        in: query
+        schema:
+          maximum: 5000
+          minimum: 1
+          type: integer
+      - name: page_size
+        in: query
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          default: 10
+      - name: limit
+        in: query
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+      - name: offset
+        in: query
+        schema:
+          maximum: 5000
+          minimum: 0
+          type: integer
+      - name: order
+        in: query
+        description: Collection ITBM date keys.
+        schema:
+          type: string
+          default: created_date
+          enum:
+          - created_date
+          - modified_date
+          - published_date
+      - name: order_direction
+        in: query
+        schema:
+          type: string
+          default: desc
+          enum:
+          - asc
+          - desc
+      - name: item_type_id
+        in: query
+        description: Only return collections with items of this ITBM item type
+        schema:
+          type: integer
+      responses:
+        '200':
+          description: OK. An array of collections
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Collection'
+        '403':
+          description: Forbidden. ITBM is not enabled for the caller's institution.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '422':
+          description: Unprocessable Entity. Unsupported `order` for an ITBM tenant.
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+    post:
+      tags:
+      - collections
+      summary: Create collection
+      description: >-
+        Create a new ITBM collection. All metadata is wrapped in a `fields` object
+        (`title` is required); `group_id` is the only other top-level key. Legacy
+        flat-payload top-level metadata is rejected with 422. `categories` entries
+        accept `id` (int) or `source_id` (string), mixed allowed; unresolved
+        `source_id` values are reported in the response `warnings` array.
+        Unrecognised field names inside `fields` are rejected with 422.
+      operationId: private_collection_create
+      requestBody:
+        description: Collection description
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CollectionCreate'
+        required: true
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LocationWarnings'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Collection
+      x-codegen-request-body-name: Collection
+  /account/collections/search:
+    post:
+      tags:
+      - collections
+      summary: Private ITBM Collections Search
+      description: Search the caller's own ITBM collections. Same light list shape as `/v3/account/collections`.
+      operationId: private_collections_search
+      requestBody:
+        description: Search Parameters
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CollectionsSearch'
+        required: false
+      responses:
+        '200':
+          description: OK. An array of collections
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Collection'
+        '403':
+          description: Forbidden. ITBM is not enabled for the caller's institution.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '422':
+          description: Unprocessable Entity. Unsupported `order` for an ITBM tenant.
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-codegen-request-body-name: search

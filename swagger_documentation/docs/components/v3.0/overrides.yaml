@@ -964,3 +964,44 @@ schemas:
       fields:
         description: Updated project description
     x-tag: projects
+  ProjectsSearch:
+    description: v3 (ITBM) project search payload. `order` accepts the ITBM date keys; legacy keys
+      (`published_date`, `modified_date`, `views`) are rejected for ITBM tenants.
+    properties:
+      order:
+        type: string
+        description: The field by which to order (ITBM date keys).
+        example: created_date
+        default: created_date
+        enum:
+        - created_date
+        - modified_date
+        - posted_date
+        - first_online
+        - publisher_published
+        - publisher_accepted
+        - start_date
+        - finish_date
+    allOf:
+    - $ref: '#/components/schemas/CommonSearch'
+    x-tag: projects
+  CollectionsSearch:
+    description: v3 (ITBM) collection search payload. `order` accepts the collection ITBM date keys;
+      legacy stats keys (`views`, `shares`, `cites`) are rejected for ITBM tenants.
+    properties:
+      order:
+        type: string
+        description: The field by which to order (ITBM date keys).
+        example: created_date
+        default: created_date
+        enum:
+        - created_date
+        - modified_date
+        - published_date
+      item_type_id:
+        type: integer
+        description: Only return collections with items of this ITBM item type.
+        example: 3
+    allOf:
+    - $ref: '#/components/schemas/CommonSearch'
+    x-tag: collections
