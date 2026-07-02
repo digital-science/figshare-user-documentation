@@ -1,0 +1,15 @@
+# v3-only component additions (merged after the v2.0 baseline and exclusions).
+schemas:
+  ItemsCreator:
+    required:
+    - items
+    type: object
+    properties:
+      items:
+        type: array
+        description: List of item ids
+        example:
+        - 2000003
+        - 2000004
+        items:
+          type: integer

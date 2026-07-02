@@ -210,7 +210,7 @@
                     "collections"
                 ],
                 "summary": "Collection details",
-                "description": "View a collection",
+                "description": "View a public collection. Metadata is returned under the `fields` object with relational fields hydrated (`authors`, `categories`, `licence`, `funding_list`, `related_materials`). Requires item-type based metadata (ITBM) to be enabled for the institution; returns 403 otherwise.",
                 "operationId": "collection_details",
                 "parameters": [
                     {
@@ -246,6 +246,16 @@
                     "500": {
                         "description": "Internal Server Error",
                         "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [],
@@ -439,7 +449,7 @@
                     "collections"
                 ],
                 "summary": "Collection details",
-                "description": "View a collection. For collections with item-type based metadata, all core and stock metadata (including `title`) is returned under a `fields` object and suppressed at the top level, with relational fields hydrated: `authors → [{id, name, first_name, last_name, is_active, url_name, orcid_id, affiliations}]`, `categories → [{id, title, parent_id, path, source_id, taxonomy_id}]`, `funding_list → [{id, title, grant_code, funder_name, is_user_defined, url}]` (`url` only when a dimensions id is present), `related_materials → [{id, title, relation, identifier, identifier_type}]`, `publisher` returned as-is (string). Collections without item-type based metadata keep the legacy flat shape.",
+                "description": "View a private collection. Metadata is returned under the `fields` object with relational fields hydrated (`authors`, `categories`, `licence`, `funding_list`, `related_materials`). Requires item-type based metadata (ITBM) to be enabled for the institution; returns 403 otherwise.",
                 "operationId": "private_collection_details",
                 "parameters": [
                     {
@@ -475,6 +485,16 @@
                     "500": {
                         "description": "Internal Server Error",
                         "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": [
@@ -491,7 +511,7 @@
                     "collections"
                 ],
                 "summary": "Update collection",
-                "description": "Update a collection by passing full body parameters. Institutions with item-type based metadata enabled wrap metadata in a `fields` object; `categories` entries accept `id` (int) or `source_id` (string), mixed allowed (bare integers rejected). Unresolved `source_id` values are reported in the response `warnings` array. The legacy flat-payload form is also accepted for institutions without item-type based metadata.",
+                "description": "Update a collection by passing full body parameters. Metadata is wrapped in a `fields` object; `categories` entries accept `id` (int) or `source_id` (string), mixed allowed (bare integers rejected). Unresolved `source_id` values are reported in the response `warnings` array. Requires item-type based metadata (ITBM) to be enabled for the institution; returns 403 otherwise.",
                 "operationId": "private_collection_update",
                 "parameters": [
                     {
@@ -574,7 +594,7 @@
                     "collections"
                 ],
                 "summary": "Delete collection",
-                "description": "Delete n collection",
+                "description": "Delete n collection. Requires item-type based metadata (ITBM) to be enabled for the institution; returns 403 otherwise.",
                 "operationId": "private_collection_delete",
                 "parameters": [
                     {
@@ -630,7 +650,7 @@
                     "collections"
                 ],
                 "summary": "Partially update collection",
-                "description": "Partially update a collection by sending only the keys to change. For collections with item-type based metadata, send the keys to update inside `fields:{}` — keys not present are preserved. `categories` entries accept `id` (int) or `source_id` (string), mixed allowed (bare integers rejected). Unresolved `source_id` values are reported in the response `warnings` array. Unrecognised field names inside `fields` (e.g. a typo) are rejected with 422.",
+                "description": "Partially update a collection by sending only the keys to change. For collections with item-type based metadata, send the keys to update inside `fields:{}` — keys not present are preserved. `categories` entries accept `id` (int) or `source_id` (string), mixed allowed (bare integers rejected). Unresolved `source_id` values are reported in the response `warnings` array. Unrecognised field names inside `fields` (e.g. a typo) are rejected with 422. Requires item-type based metadata (ITBM) to be enabled for the institution; returns 403 otherwise.",
                 "operationId": "private_collection_patch",
                 "parameters": [
                     {
@@ -777,7 +797,7 @@
                     "other"
                 ],
                 "summary": "Item Types",
-                "description": "Returns the list of Item Types of the requested group. If no user is authenticated, returns the item types available for Figshare.",
+                "description": "List the institution's selectable item types with their ITBM field configuration.",
                 "operationId": "item_types_list",
                 "parameters": [
                     {
@@ -1029,7 +1049,7 @@
                     "projects"
                 ],
                 "summary": "Public Project",
-                "description": "View a project",
+                "description": "View a public project. Metadata is returned under the `fields` object with relational fields hydrated (`authors`, `categories`, `licence`, `funding_list`, `related_materials`). Requires item-type based metadata (ITBM) to be enabled for the institution; returns 403 otherwise.",
                 "operationId": "project_details",
                 "parameters": [
                     {
@@ -1065,6 +1085,16 @@
                     "500": {
                         "description": "Internal Server Error",
                         "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": []
@@ -1336,7 +1366,7 @@
                     "projects"
                 ],
                 "summary": "View project details",
-                "description": "View a private project. For projects with item-type based metadata, all core and stock metadata (including `title`) is returned under a `fields` object and suppressed at the top level, with `funding_list` hydrated to `[{id, title, grant_code, funder_name, is_user_defined, url}]` (`url` only when a dimensions id is present). Projects without item-type based metadata keep the legacy flat shape.",
+                "description": "View a private project. Metadata is returned under the `fields` object with relational fields hydrated (`authors`, `categories`, `licence`, `funding_list`, `related_materials`). Requires item-type based metadata (ITBM) to be enabled for the institution; returns 403 otherwise.",
                 "operationId": "private_project_details",
                 "parameters": [
                     {
@@ -1398,7 +1428,7 @@
                     "projects"
                 ],
                 "summary": "Update project",
-                "description": "Update a project by passing full body parameters. Institutions with item-type based metadata enabled wrap metadata in a `fields` object; the legacy flat-payload form is also accepted for institutions without item-type based metadata. `funding_list` entries accept `{\"id\": <int>}` or `{\"title\": \"...\"}`.",
+                "description": "Update a project by passing full body parameters. Metadata is wrapped in a `fields` object. `funding_list` entries accept `{\"id\": <int>}` or `{\"title\": \"...\"}`. Requires item-type based metadata (ITBM) to be enabled for the institution; returns 403 otherwise.",
                 "operationId": "private_project_update",
                 "parameters": [
                     {
@@ -1471,7 +1501,7 @@
                     "projects"
                 ],
                 "summary": "Delete project",
-                "description": "A project can be deleted only if: - it is not public - it does not have public articles.\n\nWhen an individual project is deleted, all the articles are moved to my data of each owner.\n\nWhen a group project is deleted, all the articles and files are deleted as well. Only project owner, group admin and above can delete a project.\n",
+                "description": "A project can be deleted only if: - it is not public - it does not have public articles.\n\nWhen an individual project is deleted, all the articles are moved to my data of each owner.\n\nWhen a group project is deleted, all the articles and files are deleted as well. Only project owner, group admin and above can delete a project. Requires item-type based metadata (ITBM) to be enabled for the institution; returns 403 otherwise.",
                 "operationId": "private_project_delete",
                 "parameters": [
                     {
@@ -1523,7 +1553,7 @@
                     "projects"
                 ],
                 "summary": "Partially update project",
-                "description": "Partially update a project; only provided keys will be changed. For institutions with item-type based metadata enabled, send the keys to update inside `fields:{}` — keys not present are preserved. `funding_list` entries accept `{\"id\": <int>}` or `{\"title\": \"...\"}`. Unrecognised field names inside `fields` (e.g. a typo) are rejected with 422.",
+                "description": "Partially update a project; only provided keys will be changed. For institutions with item-type based metadata enabled, send the keys to update inside `fields:{}` — keys not present are preserved. `funding_list` entries accept `{\"id\": <int>}` or `{\"title\": \"...\"}`. Unrecognised field names inside `fields` (e.g. a typo) are rejected with 422. Requires item-type based metadata (ITBM) to be enabled for the institution; returns 403 otherwise.",
                 "operationId": "private_project_partial_update",
                 "parameters": [
                     {
@@ -1902,7 +1932,7 @@
                     "items"
                 ],
                 "summary": "Create new Item",
-                "description": "Create a new Item by sending item information. Institutions with item-type based metadata enabled can include stock fields (journal, volume, etc.) inside the `fields` object. Institutions without item-type based metadata sending stock fields will receive a validation error. `categories` input is a list of objects, each identified by either `id` (int) or `source_id` (string); entries may be mixed (`[{\"id\": 69}, {\"source_id\": \"3001\"}]`). Unresolved `source_id` values are reported in the response `warnings` array. `licence` input is a single object with an `id` key (`{\"id\": <int>}`). Bare integers are rejected with 422. Unrecognised field names inside `fields` (e.g. a typo) are rejected with 422.",
+                "description": "Create a new Item by sending item information. Stock fields (journal, volume, etc.) are sent inside the `fields` object. Requires item-type based metadata (ITBM) to be enabled for the institution; returns 403 otherwise. `categories` input is a list of objects, each identified by either `id` (int) or `source_id` (string); entries may be mixed (`[{\"id\": 69}, {\"source_id\": \"3001\"}]`). Unresolved `source_id` values are reported in the response `warnings` array. `licence` input is a single object with an `id` key (`{\"id\": <int>}`). Bare integers are rejected with 422. Unrecognised field names inside `fields` (e.g. a typo) are rejected with 422.",
                 "operationId": "private_item_create",
                 "requestBody": {
                     "description": "Item description",
@@ -2025,7 +2055,7 @@
                     "items"
                 ],
                 "summary": "Public item details",
-                "description": "View a public item. For items with item-type based metadata, the response includes a fields object with stock field values.",
+                "description": "View a public item. Metadata is returned under the `fields` object with relational fields hydrated (`authors`, `categories`, `licence`, `funding_list`, `related_materials`). Requires item-type based metadata (ITBM) to be enabled for the institution; returns 403 otherwise.",
                 "operationId": "public_item_details",
                 "parameters": [
                     {
@@ -2041,7 +2071,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK. The item representation. For items with item-type based metadata, metadata is returned under a `fields` object with relational fields hydrated (`authors`, `categories`, `licence`, `funding_list`, `related_materials`).",
+                        "description": "OK. The item representation. Metadata is returned under the `fields` object with relational fields hydrated (`authors`, `categories`, `licence`, `funding_list`, `related_materials`).",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -2057,6 +2087,16 @@
                     "500": {
                         "description": "Internal Server Error",
                         "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
                     }
                 },
                 "security": []
@@ -2068,7 +2108,7 @@
                     "items"
                 ],
                 "summary": "Item details",
-                "description": "View a private item. For items with item-type based metadata, the response includes a fields object with stock field values.",
+                "description": "View a private item. Metadata is returned under the `fields` object with relational fields hydrated (`authors`, `categories`, `licence`, `funding_list`, `related_materials`). Requires item-type based metadata (ITBM) to be enabled for the institution; returns 403 otherwise.",
                 "operationId": "private_item_details",
                 "parameters": [
                     {
@@ -2084,7 +2124,7 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "OK. The private item representation. For items with item-type based metadata, metadata is returned under a `fields` object with relational fields hydrated (`authors`, `categories`, `licence`, `funding_list`, `related_materials`).",
+                        "description": "OK. The private item representation. Metadata is returned under the `fields` object with relational fields hydrated (`authors`, `categories`, `licence`, `funding_list`, `related_materials`).",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -2126,7 +2166,7 @@
                     "items"
                 ],
                 "summary": "Update item",
-                "description": "Update an item by passing full body parameters. Institutions with item-type based metadata enabled can include stock fields inside the `fields` object. Institutions without item-type based metadata sending stock fields will receive a validation error. `categories` entries accept `id` (int) or `source_id` (string), mixed allowed; `licence` input is `{\"id\": <int>}`. Bare integers are rejected.",
+                "description": "Update an item by passing full body parameters. Stock fields are sent inside the `fields` object. Requires item-type based metadata (ITBM) to be enabled for the institution; returns 403 otherwise. `categories` entries accept `id` (int) or `source_id` (string), mixed allowed; `licence` input is `{\"id\": <int>}`. Bare integers are rejected.",
                 "operationId": "private_item_update",
                 "parameters": [
                     {
@@ -2211,7 +2251,7 @@
                     "items"
                 ],
                 "summary": "Partially update item",
-                "description": "Partially update an item by sending only the keys to change. For items with item-type based metadata, send the keys to update inside `fields:{}` — keys not present are preserved. `categories` entries accept `id` (int) or `source_id` (string), mixed allowed; `licence` is `{\"id\": <int>}`. Bare integers are rejected. Unrecognised field names inside `fields` (e.g. a typo) are rejected with 422.",
+                "description": "Partially update an item by sending only the keys to change. Send the keys to update inside `fields:{}` — keys not present are preserved. `categories` entries accept `id` (int) or `source_id` (string), mixed allowed; `licence` is `{\"id\": <int>}`. Bare integers are rejected. Unrecognised field names inside `fields` (e.g. a typo) are rejected with 422.",
                 "operationId": "private_item_partial_update",
                 "parameters": [
                     {
@@ -2298,7 +2338,7 @@
                     "other"
                 ],
                 "summary": "Item Field Definitions",
-                "description": "Returns the catalog of underlying field definitions (core, stock, custom) for items. Requires an institutional account with the itbm_config feature flag enabled.",
+                "description": "Returns the catalog of underlying field definitions (core, stock, custom) for items. Requires item-type based metadata (ITBM) to be enabled for the institution; returns 403 otherwise.",
                 "operationId": "items_fields_catalog",
                 "responses": {
                     "200": {
@@ -2348,7 +2388,7 @@
                     "other"
                 ],
                 "summary": "Item Type Field Configuration",
-                "description": "Returns the fields configured for a specific item type, including per-type overrides (display_name, hint_text, is_mandatory, order, display_area, settings). Requires an institutional account with the itbm_config feature flag enabled.",
+                "description": "Returns the fields configured for a specific item type, including per-type overrides (display_name, hint_text, is_mandatory, order, display_area, settings). Requires item-type based metadata (ITBM) to be enabled for the institution; returns 403 otherwise.",
                 "operationId": "items_fields_by_item_type",
                 "parameters": [
                     {
@@ -2423,7 +2463,7 @@
                     "other"
                 ],
                 "summary": "Project Field Definitions",
-                "description": "Returns the catalog of underlying field definitions for projects. Requires an institutional account with the itbm_config feature flag enabled.",
+                "description": "Returns the catalog of underlying field definitions for projects. Requires item-type based metadata (ITBM) to be enabled for the institution; returns 403 otherwise.",
                 "operationId": "projects_fields_catalog",
                 "responses": {
                     "200": {
@@ -2473,7 +2513,7 @@
                     "other"
                 ],
                 "summary": "Collection Field Definitions",
-                "description": "Returns the catalog of underlying field definitions for collections. Requires an institutional account with the itbm_config feature flag enabled.",
+                "description": "Returns the catalog of underlying field definitions for collections. Requires item-type based metadata (ITBM) to be enabled for the institution; returns 403 otherwise.",
                 "operationId": "collections_fields_catalog",
                 "responses": {
                     "200": {
@@ -2515,6 +2555,1449 @@
                         ]
                     }
                 ]
+            }
+        },
+        "/items/{item_id}/versions": {
+            "get": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "List item versions",
+                "description": "List public item versions",
+                "operationId": "item_versions",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "description": "Item Unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. Item version representations",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ArticleVersions"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request. Item ID must be an integer and bigger than 0.",
+                        "content": {}
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [],
+                "x-subcategory": "Public Item"
+            }
+        },
+        "/items/{item_id}/versions/{version_id}": {
+            "get": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "Item details for version",
+                "description": "Item with specified version",
+                "operationId": "item_version_details",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "description": "Item Unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "version_id",
+                        "in": "path",
+                        "description": "Item Version Number",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. The item representation. Metadata is returned under the `fields` object with relational fields hydrated (`authors`, `categories`, `licence`, `funding_list`, `related_materials`).",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ItemComplete"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [],
+                "x-subcategory": "Public Item"
+            }
+        },
+        "/items/{item_id}/versions/{version_id}/files": {
+            "get": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "Public Item version files",
+                "description": "Item version file details",
+                "operationId": "item_version_files",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "description": "Item Unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "version_id",
+                        "in": "path",
+                        "description": "Item Version Unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number. Used for pagination with page_size",
+                        "schema": {
+                            "maximum": 5000,
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "in": "query",
+                        "description": "The number of results included on a page. Used for pagination with page",
+                        "schema": {
+                            "maximum": 1000,
+                            "minimum": 1,
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of results included on a page. Used for pagination with query",
+                        "schema": {
+                            "maximum": 1000,
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Where to start the listing (the offset of the first result). Used for pagination with limit",
+                        "schema": {
+                            "maximum": 5000,
+                            "minimum": 0,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. List of item files",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/PublicFile"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [],
+                "x-subcategory": "Public Item files"
+            }
+        },
+        "/items/{item_id}/files": {
+            "get": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "List item files",
+                "description": "Files list for item",
+                "operationId": "item_files",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "description": "Item Unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number. Used for pagination with page_size",
+                        "schema": {
+                            "maximum": 5000,
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "in": "query",
+                        "description": "The number of results included on a page. Used for pagination with page",
+                        "schema": {
+                            "maximum": 1000,
+                            "minimum": 1,
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of results included on a page. Used for pagination with query",
+                        "schema": {
+                            "maximum": 1000,
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Where to start the listing (the offset of the first result). Used for pagination with limit",
+                        "schema": {
+                            "maximum": 5000,
+                            "minimum": 0,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. List of item files",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/PublicFile"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [],
+                "x-subcategory": "Public Item files"
+            }
+        },
+        "/items/{item_id}/files/{file_id}": {
+            "get": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "Item file details",
+                "description": "File by id",
+                "operationId": "item_file_details",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "description": "Item Unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "file_id",
+                        "in": "path",
+                        "description": "File Unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. File representation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PublicFile"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [],
+                "x-subcategory": "Public Item files"
+            }
+        },
+        "/account/items/{item_id}/versions/{version_id}": {
+            "put": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "Update item version",
+                "description": "Updating an item version by passing body parameters.",
+                "operationId": "private_item_version_update",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "description": "Item unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "version_id",
+                        "in": "path",
+                        "description": "Item version identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Item description",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ArticleVersionUpdate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "205": {
+                        "description": "Reset Content",
+                        "headers": {
+                            "Location": {
+                                "description": "Location of newly created item",
+                                "schema": {
+                                    "type": "string",
+                                    "format": "link"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LocationWarningsUpdate"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Item version private updates",
+                "x-codegen-request-body-name": "Item"
+            },
+            "patch": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "Partially update item version",
+                "description": "Partially updating an item version by passing only the fields to change.",
+                "operationId": "private_item_version_partial_update",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "description": "Item unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "version_id",
+                        "in": "path",
+                        "description": "Item version identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Subset of item version fields to update",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ArticleVersionUpdate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "205": {
+                        "description": "Reset Content",
+                        "headers": {
+                            "Location": {
+                                "description": "Location of updated item version",
+                                "schema": {
+                                    "type": "string",
+                                    "format": "link"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LocationWarningsUpdate"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Item version private updates",
+                "x-codegen-request-body-name": "Item"
+            }
+        },
+        "/account/items/{item_id}/files": {
+            "get": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "List item files",
+                "description": "List private files",
+                "operationId": "private_item_files_list",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "description": "Item unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number. Used for pagination with page_size",
+                        "schema": {
+                            "maximum": 5000,
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "in": "query",
+                        "description": "The number of results included on a page. Used for pagination with page",
+                        "schema": {
+                            "maximum": 1000,
+                            "minimum": 1,
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of results included on a page. Used for pagination with query",
+                        "schema": {
+                            "maximum": 1000,
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Where to start the listing (the offset of the first result). Used for pagination with limit",
+                        "schema": {
+                            "maximum": 5000,
+                            "minimum": 0,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. Item files list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/PrivateFile"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Item Files"
+            }
+        },
+        "/account/items/{item_id}/files/{file_id}": {
+            "get": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "Single File",
+                "description": "View details of file for specified item",
+                "operationId": "private_item_file_details",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "description": "Item unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "file_id",
+                        "in": "path",
+                        "description": "File unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. Item private file",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PrivateFile"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Item Files"
+            }
+        },
+        "/account/items/{item_id}/authors": {
+            "get": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "List item authors",
+                "description": "List item authors",
+                "operationId": "private_item_authors_list",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "description": "Item unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. Authors list for item",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Author"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Item Authors"
+            },
+            "put": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "Replace item authors",
+                "description": "Associate new authors with the item. This will remove all already associated authors and add these new ones",
+                "operationId": "private_item_authors_replace",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "description": "Item unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Authors description",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthorsCreator"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "205": {
+                        "description": "Reset Content",
+                        "headers": {
+                            "Location": {
+                                "description": "Location of list of authors",
+                                "schema": {
+                                    "type": "string",
+                                    "format": "url"
+                                }
+                            }
+                        },
+                        "content": {}
+                    },
+                    "400": {
+                        "description": "Bad Request. Item ID must be an integer and bigger than 0. Author with ID Not Found.",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Item Authors",
+                "x-codegen-request-body-name": "Authors"
+            },
+            "post": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "Add item authors",
+                "description": "Associate new authors with the item. This will add new authors to the list of already associated authors",
+                "operationId": "private_item_authors_add",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "description": "Item unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Authors description",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthorsCreator"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "205": {
+                        "description": "Reset Content",
+                        "headers": {
+                            "Location": {
+                                "description": "Location of list of authors",
+                                "schema": {
+                                    "type": "string",
+                                    "format": "url"
+                                }
+                            }
+                        },
+                        "content": {}
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Item Authors",
+                "x-codegen-request-body-name": "Authors"
+            }
+        },
+        "/account/items/{item_id}/authors/{author_id}": {
+            "delete": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "Delete item author",
+                "description": "De-associate author from item",
+                "operationId": "private_item_author_delete",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "description": "Item unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "author_id",
+                        "in": "path",
+                        "description": "Item Author unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Item Authors"
+            }
+        },
+        "/account/items/{item_id}/publish": {
+            "post": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "Private Item Publish",
+                "description": "- If the whole item is under embargo, it will not be published immediately, but when the embargo expires or is lifted.\n- When an item is published, a new public version will be generated. Any further updates to the item will affect the private item data. In order to make these changes publicly visible, an explicit publish operation is needed.",
+                "operationId": "account_item_publish",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "description": "Item unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "headers": {
+                            "Location": {
+                                "description": "Location of newly published item",
+                                "schema": {
+                                    "type": "string",
+                                    "format": "link"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Location"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/account/items/{item_id}/unpublish": {
+            "post": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "Public Item Unpublish",
+                "description": "Allows authorized users to unpublish an item.",
+                "operationId": "account_item_unpublish",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "description": "Item unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Item unpublish data",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ArticleUnpublishData"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "204": {
+                        "description": "No Content",
+                        "content": {}
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-codegen-request-body-name": "reason"
+            }
+        },
+        "/account/projects/{project_id}/items": {
+            "post": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "Create project item",
+                "description": "Create a new Item and associate it with this project",
+                "operationId": "private_project_items_create",
+                "parameters": [
+                    {
+                        "name": "project_id",
+                        "in": "path",
+                        "description": "Project unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Item description",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ArticleProjectCreate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "headers": {
+                            "Location": {
+                                "description": "Location of item",
+                                "schema": {
+                                    "type": "string",
+                                    "format": "url"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Location"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Project Items",
+                "x-codegen-request-body-name": "Item"
+            }
+        },
+        "/account/projects/{project_id}/items/{item_id}": {
+            "get": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "Project item details",
+                "description": "Project item details",
+                "operationId": "private_project_item_details",
+                "parameters": [
+                    {
+                        "name": "project_id",
+                        "in": "path",
+                        "description": "Project unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "description": "Project Item unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. The private item representation. Metadata is returned under the `fields` object with relational fields hydrated (`authors`, `categories`, `licence`, `funding_list`, `related_materials`).",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ItemCompletePrivate"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Project Items"
+            }
+        },
+        "/account/collections/{collection_id}/items": {
+            "post": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "Add collection items",
+                "description": "Associate new items with the collection. This will add new items to the list of already associated items",
+                "operationId": "private_collection_items_add",
+                "parameters": [
+                    {
+                        "name": "collection_id",
+                        "in": "path",
+                        "description": "Collection unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Items list",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ItemsCreator"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Reset Content",
+                        "headers": {
+                            "Location": {
+                                "description": "Location of new items",
+                                "schema": {
+                                    "type": "string",
+                                    "format": "url"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Location"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Collection Items",
+                "x-codegen-request-body-name": "items"
             }
         }
     },
@@ -7763,6 +9246,25 @@
                     }
                 },
                 "x-tag": "altmetric"
+            },
+            "ItemsCreator": {
+                "required": [
+                    "items"
+                ],
+                "type": "object",
+                "properties": {
+                    "items": {
+                        "type": "array",
+                        "description": "List of item ids",
+                        "example": [
+                            2000003,
+                            2000004
+                        ],
+                        "items": {
+                            "type": "integer"
+                        }
+                    }
+                }
             },
             "CollectionsSearch": {
                 "description": "v3 (ITBM) collection search payload. `order` accepts the collection ITBM date keys; legacy stats keys (`views`, `shares`, `cites`) are rejected for ITBM tenants.",
