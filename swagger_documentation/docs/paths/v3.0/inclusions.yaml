@@ -240,7 +240,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden
+          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -357,7 +357,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ItemCompletePrivate'
         '403':
-          description: Forbidden
+          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -414,7 +414,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden
+          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -474,7 +474,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden
+          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -514,7 +514,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden
+          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -562,7 +562,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden
+          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -598,7 +598,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden
+          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -631,7 +631,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden
+          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -897,7 +897,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden
+          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -1190,7 +1190,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden
+          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -1561,7 +1561,7 @@ paths:
           description: Reset Content
           headers:
             Location:
-              description: Location of newly created item
+              description: Location of updated item version
               schema:
                 type: string
                 format: link
@@ -1570,7 +1570,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/LocationWarningsUpdate'
         '403':
-          description: Forbidden
+          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -1628,7 +1628,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/LocationWarningsUpdate'
         '403':
-          description: Forbidden
+          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -1702,7 +1702,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden
+          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -1750,7 +1750,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden
+          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -1793,7 +1793,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden
+          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -1844,7 +1844,7 @@ paths:
           description: Bad Request. Item ID must be an integer and bigger than 0. Author with ID Not Found.
           content: {}
         '403':
-          description: Forbidden
+          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -1896,7 +1896,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden
+          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -1939,7 +1939,7 @@ paths:
           description: No Content
           content: {}
         '403':
-          description: Forbidden
+          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -1991,7 +1991,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden
+          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -2035,7 +2035,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden
+          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -2089,7 +2089,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden
+          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -2140,7 +2140,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden
+          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -2180,7 +2180,7 @@ paths:
         required: true
       responses:
         '201':
-          description: Reset Content
+          description: Created
           headers:
             Location:
               description: Location of new items
@@ -2195,7 +2195,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden
+          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -2240,7 +2240,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden
+          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -2322,7 +2322,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden
+          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -2372,7 +2372,7 @@ paths:
                 format: link
           content: {}
         '403':
-          description: Forbidden
+          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -2415,7 +2415,7 @@ paths:
           description: No Content
           content: {}
         '403':
-          description: Forbidden
+          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -2466,7 +2466,7 @@ paths:
                 format: link
           content: {}
         '403':
-          description: Forbidden
+          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -2608,7 +2608,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden
+          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -2628,7 +2628,7 @@ paths:
       tags:
       - collections
       summary: Delete collection
-      description: Delete n collection. Requires item-type based metadata (ITBM) to be enabled for the institution;
+      description: Delete a collection. Requires item-type based metadata (ITBM) to be enabled for the institution;
         returns 403 otherwise.
       operationId: private_collection_delete
       parameters:
@@ -2647,7 +2647,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden
+          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -2705,7 +2705,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden
+          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
             application/json:
               schema:

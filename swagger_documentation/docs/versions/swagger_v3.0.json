@@ -418,7 +418,7 @@
                         "content": {}
                     },
                     "403": {
-                        "description": "Forbidden",
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -561,7 +561,7 @@
                         "content": {}
                     },
                     "403": {
-                        "description": "Forbidden",
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -594,7 +594,7 @@
                     "collections"
                 ],
                 "summary": "Delete collection",
-                "description": "Delete n collection. Requires item-type based metadata (ITBM) to be enabled for the institution; returns 403 otherwise.",
+                "description": "Delete a collection. Requires item-type based metadata (ITBM) to be enabled for the institution; returns 403 otherwise.",
                 "operationId": "private_collection_delete",
                 "parameters": [
                     {
@@ -618,7 +618,7 @@
                         "content": {}
                     },
                     "403": {
-                        "description": "Forbidden",
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -700,7 +700,7 @@
                         "content": {}
                     },
                     "403": {
-                        "description": "Forbidden",
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -830,7 +830,7 @@
                         "content": {}
                     },
                     "403": {
-                        "description": "Forbidden",
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1335,7 +1335,7 @@
                         "content": {}
                     },
                     "403": {
-                        "description": "Forbidden",
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1396,7 +1396,7 @@
                         "content": {}
                     },
                     "403": {
-                        "description": "Forbidden",
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1468,7 +1468,7 @@
                         "content": {}
                     },
                     "403": {
-                        "description": "Forbidden",
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1521,7 +1521,7 @@
                         "content": {}
                     },
                     "403": {
-                        "description": "Forbidden",
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1593,7 +1593,7 @@
                         "content": {}
                     },
                     "403": {
-                        "description": "Forbidden",
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -1961,7 +1961,7 @@
                         "content": {}
                     },
                     "403": {
-                        "description": "Forbidden",
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -2134,7 +2134,7 @@
                         }
                     },
                     "403": {
-                        "description": "Forbidden",
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -2215,7 +2215,7 @@
                         "content": {}
                     },
                     "403": {
-                        "description": "Forbidden",
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -2300,7 +2300,7 @@
                         "content": {}
                     },
                     "403": {
-                        "description": "Forbidden",
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -2359,7 +2359,7 @@
                         "content": {}
                     },
                     "403": {
-                        "description": "Forbidden",
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -2430,7 +2430,7 @@
                         "content": {}
                     },
                     "403": {
-                        "description": "Forbidden",
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -2484,7 +2484,7 @@
                         "content": {}
                     },
                     "403": {
-                        "description": "Forbidden",
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -2534,7 +2534,7 @@
                         "content": {}
                     },
                     "403": {
-                        "description": "Forbidden",
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -3014,7 +3014,7 @@
                         "description": "Reset Content",
                         "headers": {
                             "Location": {
-                                "description": "Location of newly created item",
+                                "description": "Location of updated item version",
                                 "schema": {
                                     "type": "string",
                                     "format": "link"
@@ -3030,7 +3030,7 @@
                         }
                     },
                     "403": {
-                        "description": "Forbidden",
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -3119,7 +3119,7 @@
                         }
                     },
                     "403": {
-                        "description": "Forbidden",
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -3228,7 +3228,7 @@
                         "content": {}
                     },
                     "403": {
-                        "description": "Forbidden",
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -3302,7 +3302,7 @@
                         "content": {}
                     },
                     "403": {
-                        "description": "Forbidden",
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -3369,7 +3369,7 @@
                         "content": {}
                     },
                     "403": {
-                        "description": "Forbidden",
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -3445,7 +3445,7 @@
                         "content": {}
                     },
                     "403": {
-                        "description": "Forbidden",
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -3522,7 +3522,7 @@
                         "content": {}
                     },
                     "403": {
-                        "description": "Forbidden",
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -3587,7 +3587,7 @@
                         "content": {}
                     },
                     "403": {
-                        "description": "Forbidden",
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -3660,7 +3660,7 @@
                         "content": {}
                     },
                     "403": {
-                        "description": "Forbidden",
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -3728,7 +3728,7 @@
                         "content": {}
                     },
                     "403": {
-                        "description": "Forbidden",
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -3812,7 +3812,7 @@
                         "content": {}
                     },
                     "403": {
-                        "description": "Forbidden",
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -3887,7 +3887,7 @@
                         "content": {}
                     },
                     "403": {
-                        "description": "Forbidden",
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -3948,7 +3948,7 @@
                 },
                 "responses": {
                     "201": {
-                        "description": "Reset Content",
+                        "description": "Created",
                         "headers": {
                             "Location": {
                                 "description": "Location of new items",
@@ -3971,7 +3971,7 @@
                         "content": {}
                     },
                     "403": {
-                        "description": "Forbidden",
+                        "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
                         "content": {
                             "application/json": {
                                 "schema": {
