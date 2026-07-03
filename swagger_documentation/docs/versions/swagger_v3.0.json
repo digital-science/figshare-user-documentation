@@ -544,7 +544,7 @@
                                 "description": "Location of collection",
                                 "schema": {
                                     "type": "string",
-                                    "format": "link"
+                                    "format": "uri"
                                 }
                             }
                         },
@@ -683,7 +683,7 @@
                                 "description": "Location of collection",
                                 "schema": {
                                     "type": "string",
-                                    "format": "link"
+                                    "format": "uri"
                                 }
                             }
                         },
@@ -1461,7 +1461,7 @@
                                 "description": "Location of project",
                                 "schema": {
                                     "type": "string",
-                                    "format": "link"
+                                    "format": "uri"
                                 }
                             }
                         },
@@ -1586,7 +1586,7 @@
                                 "description": "Location of project",
                                 "schema": {
                                     "type": "string",
-                                    "format": "link"
+                                    "format": "uri"
                                 }
                             }
                         },
@@ -2569,7 +2569,7 @@
                     {
                         "name": "item_id",
                         "in": "path",
-                        "description": "Item Unique identifier",
+                        "description": "Item unique identifier",
                         "required": true,
                         "schema": {
                             "minimum": 1,
@@ -2630,7 +2630,7 @@
                     {
                         "name": "item_id",
                         "in": "path",
-                        "description": "Item Unique identifier",
+                        "description": "Item unique identifier",
                         "required": true,
                         "schema": {
                             "minimum": 1,
@@ -2698,7 +2698,7 @@
                     {
                         "name": "item_id",
                         "in": "path",
-                        "description": "Item Unique identifier",
+                        "description": "Item unique identifier",
                         "required": true,
                         "schema": {
                             "minimum": 1,
@@ -2795,7 +2795,7 @@
                     }
                 },
                 "security": [],
-                "x-subcategory": "Public Item files"
+                "x-subcategory": "Public Item Files"
             }
         },
         "/items/{item_id}/files": {
@@ -2810,7 +2810,7 @@
                     {
                         "name": "item_id",
                         "in": "path",
-                        "description": "Item Unique identifier",
+                        "description": "Item unique identifier",
                         "required": true,
                         "schema": {
                             "minimum": 1,
@@ -2897,7 +2897,7 @@
                     }
                 },
                 "security": [],
-                "x-subcategory": "Public Item files"
+                "x-subcategory": "Public Item Files"
             }
         },
         "/items/{item_id}/files/{file_id}": {
@@ -2912,7 +2912,7 @@
                     {
                         "name": "item_id",
                         "in": "path",
-                        "description": "Item Unique identifier",
+                        "description": "Item unique identifier",
                         "required": true,
                         "schema": {
                             "minimum": 1,
@@ -2965,7 +2965,7 @@
                     }
                 },
                 "security": [],
-                "x-subcategory": "Public Item files"
+                "x-subcategory": "Public Item Files"
             }
         },
         "/account/items/{item_id}/versions/{version_id}": {
@@ -3017,7 +3017,7 @@
                                 "description": "Location of updated item version",
                                 "schema": {
                                     "type": "string",
-                                    "format": "link"
+                                    "format": "uri"
                                 }
                             }
                         },
@@ -3028,6 +3028,10 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
                     },
                     "403": {
                         "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
@@ -3041,6 +3045,10 @@
                     },
                     "404": {
                         "description": "Not Found",
+                        "content": {}
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
                         "content": {}
                     },
                     "500": {
@@ -3106,7 +3114,7 @@
                                 "description": "Location of updated item version",
                                 "schema": {
                                     "type": "string",
-                                    "format": "link"
+                                    "format": "uri"
                                 }
                             }
                         },
@@ -3117,6 +3125,10 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
                     },
                     "403": {
                         "description": "Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.",
@@ -3130,6 +3142,10 @@
                     },
                     "404": {
                         "description": "Not Found",
+                        "content": {}
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
                         "content": {}
                     },
                     "500": {
@@ -3434,7 +3450,7 @@
                                 "description": "Location of list of authors",
                                 "schema": {
                                     "type": "string",
-                                    "format": "url"
+                                    "format": "uri"
                                 }
                             }
                         },
@@ -3511,7 +3527,7 @@
                                 "description": "Location of list of authors",
                                 "schema": {
                                     "type": "string",
-                                    "format": "url"
+                                    "format": "uri"
                                 }
                             }
                         },
@@ -3643,7 +3659,7 @@
                                 "description": "Location of newly published item",
                                 "schema": {
                                     "type": "string",
-                                    "format": "link"
+                                    "format": "uri"
                                 }
                             }
                         },
@@ -3795,7 +3811,7 @@
                                 "description": "Location of item",
                                 "schema": {
                                     "type": "string",
-                                    "format": "url"
+                                    "format": "uri"
                                 }
                             }
                         },
@@ -3954,7 +3970,7 @@
                                 "description": "Location of new items",
                                 "schema": {
                                     "type": "string",
-                                    "format": "url"
+                                    "format": "uri"
                                 }
                             }
                         },

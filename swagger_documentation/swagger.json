@@ -4674,7 +4674,7 @@
                     "collections"
                 ],
                 "summary": "Collection details",
-                "description": "View a collection. For collections with item-type based metadata, all core and stock metadata (including `title`) is returned under a `fields` object and suppressed at the top level, with relational fields hydrated: `authors → [{id, name, first_name, last_name, is_active, url_name, orcid_id, affiliations}]`, `categories → [{id, title, parent_id, path, source_id, taxonomy_id}]`, `funding_list → [{id, title, grant_code, funder_name, is_user_defined, url}]` (`url` only when a dimensions id is present), `related_materials → [{id, title, relation, identifier, identifier_type}]`, `publisher` returned as-is (string). Collections without item-type based metadata keep the legacy flat shape.",
+                "description": "View a collection. For collections with item-type based metadata, all core and stock metadata (including `title`) is returned under a `fields` object and suppressed at the top level, with relational fields hydrated: `authors \u2192 [{id, name, first_name, last_name, is_active, url_name, orcid_id, affiliations}]`, `categories \u2192 [{id, title, parent_id, path, source_id, taxonomy_id}]`, `funding_list \u2192 [{id, title, grant_code, funder_name, is_user_defined, url}]` (`url` only when a dimensions id is present), `related_materials \u2192 [{id, title, relation, identifier, identifier_type}]`, `publisher` returned as-is (string). Collections without item-type based metadata keep the legacy flat shape.",
                 "operationId": "private_collection_details",
                 "parameters": [
                     {
@@ -4865,7 +4865,7 @@
                     "collections"
                 ],
                 "summary": "Partially update collection",
-                "description": "Partially update a collection by sending only the keys to change. For collections with item-type based metadata, send the keys to update inside `fields:{}` — keys not present are preserved. `categories` entries accept `id` (int) or `source_id` (string), mixed allowed (bare integers rejected). Unresolved `source_id` values are reported in the response `warnings` array. Unrecognised field names inside `fields` (e.g. a typo) are rejected with 422.",
+                "description": "Partially update a collection by sending only the keys to change. For collections with item-type based metadata, send the keys to update inside `fields:{}` \u2014 keys not present are preserved. `categories` entries accept `id` (int) or `source_id` (string), mixed allowed (bare integers rejected). Unresolved `source_id` values are reported in the response `warnings` array. Unrecognised field names inside `fields` (e.g. a typo) are rejected with 422.",
                 "operationId": "private_collection_patch",
                 "parameters": [
                     {
@@ -7010,7 +7010,7 @@
                     "institutions"
                 ],
                 "summary": "Custom fields values files upload",
-                "description": "Uploads a CSV containing values for a specific custom field of type <b>dropdown_large_list</b>. The <code>custom_field_id</code> path parameter accepts both classic custom field IDs (legacy) and underlying field IDs (v2). The lookup is performed automatically — no additional parameter is required. More details in the <a href=\"#custom_fields\">Custom Fields section</a>",
+                "description": "Uploads a CSV containing values for a specific custom field of type <b>dropdown_large_list</b>. The <code>custom_field_id</code> path parameter accepts both classic custom field IDs (legacy) and underlying field IDs (v2). The lookup is performed automatically \u2014 no additional parameter is required. More details in the <a href=\"#custom_fields\">Custom Fields section</a>",
                 "operationId": "custom_fields_upload",
                 "parameters": [
                     {
@@ -9708,7 +9708,7 @@
                     "projects"
                 ],
                 "summary": "Partially update project",
-                "description": "Partially update a project; only provided keys will be changed. For institutions with item-type based metadata enabled, send the keys to update inside `fields:{}` — keys not present are preserved. `funding_list` entries accept `{\"id\": <int>}` or `{\"title\": \"...\"}`. Unrecognised field names inside `fields` (e.g. a typo) are rejected with 422.",
+                "description": "Partially update a project; only provided keys will be changed. For institutions with item-type based metadata enabled, send the keys to update inside `fields:{}` \u2014 keys not present are preserved. `funding_list` entries accept `{\"id\": <int>}` or `{\"title\": \"...\"}`. Unrecognised field names inside `fields` (e.g. a typo) are rejected with 422.",
                 "operationId": "private_project_partial_update",
                 "parameters": [
                     {
@@ -12243,7 +12243,7 @@
                     },
                     "fields": {
                         "type": "object",
-                        "description": "All metadata fields keyed by underlying field name. Same structure as ItemCreate — `categories` entries accept `id` (int) or `source_id` (string), mixed allowed; `licence` is a single object with an `id` key. Bare integers are rejected.",
+                        "description": "All metadata fields keyed by underlying field name. Same structure as ItemCreate \u2014 `categories` entries accept `id` (int) or `source_id` (string), mixed allowed; `licence` is a single object with an `id` key. Bare integers are rejected.",
                         "additionalProperties": true
                     }
                 },
@@ -12264,7 +12264,7 @@
                     "fields": {
                         "type": "object",
                         "additionalProperties": true,
-                        "description": "Item-type based metadata field values keyed by field name. Only present for items with item-type based metadata enabled. Scalar/text/date/dropdown stock fields and custom fields are returned as-is. Relational fields are hydrated on GET as follows: authors → [{id, name, first_name, last_name, is_active, url_name, orcid_id, affiliations}]; funding_list → [{id, title, grant_code, funder_name, is_user_defined, url}] (url only when a Dimensions grant id exists); related_materials → [{id, title, relation, identifier, identifier_type}]; categories → [{id, title, parent_id, path, source_id, taxonomy_id}]; licence → {id, value, name, url}."
+                        "description": "Item-type based metadata field values keyed by field name. Only present for items with item-type based metadata enabled. Scalar/text/date/dropdown stock fields and custom fields are returned as-is. Relational fields are hydrated on GET as follows: authors \u2192 [{id, name, first_name, last_name, is_active, url_name, orcid_id, affiliations}]; funding_list \u2192 [{id, title, grant_code, funder_name, is_user_defined, url}] (url only when a Dimensions grant id exists); related_materials \u2192 [{id, title, relation, identifier, identifier_type}]; categories \u2192 [{id, title, parent_id, path, source_id, taxonomy_id}]; licence \u2192 {id, value, name, url}."
                     }
                 },
                 "x-tag": "items"
@@ -12284,7 +12284,7 @@
                     "fields": {
                         "type": "object",
                         "additionalProperties": true,
-                        "description": "Item-type based metadata field values keyed by field name. Only present for items with item-type based metadata enabled. Scalar/text/date/dropdown stock fields and custom fields are returned as-is. Relational fields are hydrated on GET as follows: authors → [{id, name, first_name, last_name, is_active, url_name, orcid_id, affiliations}]; funding_list → [{id, title, grant_code, funder_name, is_user_defined, url}] (url only when a Dimensions grant id exists); related_materials → [{id, title, relation, identifier, identifier_type}]; categories → [{id, title, parent_id, path, source_id, taxonomy_id}]; licence → {id, value, name, url}."
+                        "description": "Item-type based metadata field values keyed by field name. Only present for items with item-type based metadata enabled. Scalar/text/date/dropdown stock fields and custom fields are returned as-is. Relational fields are hydrated on GET as follows: authors \u2192 [{id, name, first_name, last_name, is_active, url_name, orcid_id, affiliations}]; funding_list \u2192 [{id, title, grant_code, funder_name, is_user_defined, url}] (url only when a Dimensions grant id exists); related_materials \u2192 [{id, title, relation, identifier, identifier_type}]; categories \u2192 [{id, title, parent_id, path, source_id, taxonomy_id}]; licence \u2192 {id, value, name, url}."
                     }
                 },
                 "x-tag": "items"
@@ -13519,7 +13519,7 @@
                     },
                     "fields": {
                         "type": "object",
-                        "description": "Item-type based metadata field values keyed by field name. Only present when the collection belongs to an institution with item-type based metadata enabled. Scalar/text stock fields (e.g. publisher) and custom fields are returned as-is. Relational fields are hydrated on GET as follows: authors → [{id, name, first_name, last_name, is_active, url_name, orcid_id, affiliations}]; funding_list → [{id, title, grant_code, funder_name, is_user_defined, url}] (url only when a Dimensions grant id exists); related_materials → [{id, title, relation, identifier, identifier_type}]; categories → [{id, title, parent_id, path, source_id, taxonomy_id}].",
+                        "description": "Item-type based metadata field values keyed by field name. Only present when the collection belongs to an institution with item-type based metadata enabled. Scalar/text stock fields (e.g. publisher) and custom fields are returned as-is. Relational fields are hydrated on GET as follows: authors \u2192 [{id, name, first_name, last_name, is_active, url_name, orcid_id, affiliations}]; funding_list \u2192 [{id, title, grant_code, funder_name, is_user_defined, url}] (url only when a Dimensions grant id exists); related_materials \u2192 [{id, title, relation, identifier, identifier_type}]; categories \u2192 [{id, title, parent_id, path, source_id, taxonomy_id}].",
                         "additionalProperties": {}
                     },
                     "group_resource_id": {
@@ -13717,7 +13717,7 @@
                     },
                     "fields": {
                         "type": "object",
-                        "description": "Item-type based metadata field values keyed by field name. Only present when the collection belongs to an institution with item-type based metadata enabled. Scalar/text stock fields (e.g. publisher) and custom fields are returned as-is. Relational fields are hydrated on GET as follows: authors → [{id, name, first_name, last_name, is_active, url_name, orcid_id, affiliations}]; funding_list → [{id, title, grant_code, funder_name, is_user_defined, url}] (url only when a Dimensions grant id exists); related_materials → [{id, title, relation, identifier, identifier_type}]; categories → [{id, title, parent_id, path, source_id, taxonomy_id}].",
+                        "description": "Item-type based metadata field values keyed by field name. Only present when the collection belongs to an institution with item-type based metadata enabled. Scalar/text stock fields (e.g. publisher) and custom fields are returned as-is. Relational fields are hydrated on GET as follows: authors \u2192 [{id, name, first_name, last_name, is_active, url_name, orcid_id, affiliations}]; funding_list \u2192 [{id, title, grant_code, funder_name, is_user_defined, url}] (url only when a Dimensions grant id exists); related_materials \u2192 [{id, title, relation, identifier, identifier_type}]; categories \u2192 [{id, title, parent_id, path, source_id, taxonomy_id}].",
                         "additionalProperties": {}
                     },
                     "group_resource_id": {
@@ -16594,7 +16594,7 @@
             },
             "TimelineUpdate": {
                 "type": "object",
-                "description": "Legacy timeline input (used by /v2/account/articles). Items with item-type based metadata do not use this object — pass dates as stock fields inside fields: {} instead.",
+                "description": "Legacy timeline input (used by /v2/account/articles). Items with item-type based metadata do not use this object \u2014 pass dates as stock fields inside fields: {} instead.",
                 "properties": {
                     "firstOnline": {
                         "type": "string",

@@ -1253,7 +1253,7 @@ paths:
       parameters:
       - name: item_id
         in: path
-        description: Item Unique identifier
+        description: Item unique identifier
         required: true
         schema:
           minimum: 1
@@ -1294,7 +1294,7 @@ paths:
       parameters:
       - name: item_id
         in: path
-        description: Item Unique identifier
+        description: Item unique identifier
         required: true
         schema:
           minimum: 1
@@ -1342,7 +1342,7 @@ paths:
       parameters:
       - name: item_id
         in: path
-        description: Item Unique identifier
+        description: Item unique identifier
         required: true
         schema:
           minimum: 1
@@ -1409,7 +1409,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorMessage'
       security: []
-      x-subcategory: Public Item files
+      x-subcategory: Public Item Files
   /items/{item_id}/files:
     get:
       tags:
@@ -1420,7 +1420,7 @@ paths:
       parameters:
       - name: item_id
         in: path
-        description: Item Unique identifier
+        description: Item unique identifier
         required: true
         schema:
           minimum: 1
@@ -1480,7 +1480,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorMessage'
       security: []
-      x-subcategory: Public Item files
+      x-subcategory: Public Item Files
   /items/{item_id}/files/{file_id}:
     get:
       tags:
@@ -1491,7 +1491,7 @@ paths:
       parameters:
       - name: item_id
         in: path
-        description: Item Unique identifier
+        description: Item unique identifier
         required: true
         schema:
           minimum: 1
@@ -1526,7 +1526,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ErrorMessage'
       security: []
-      x-subcategory: Public Item files
+      x-subcategory: Public Item Files
   /account/items/{item_id}/versions/{version_id}:
     put:
       tags:
@@ -1564,11 +1564,14 @@ paths:
               description: Location of updated item version
               schema:
                 type: string
-                format: link
+                format: uri
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/LocationWarningsUpdate'
+        '400':
+          description: Bad Request
+          content: {}
         '403':
           description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
@@ -1577,6 +1580,9 @@ paths:
                 $ref: '#/components/schemas/ErrorMessage'
         '404':
           description: Not Found
+          content: {}
+        '422':
+          description: Unprocessable Entity
           content: {}
         '500':
           description: Internal Server Error
@@ -1622,11 +1628,14 @@ paths:
               description: Location of updated item version
               schema:
                 type: string
-                format: link
+                format: uri
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/LocationWarningsUpdate'
+        '400':
+          description: Bad Request
+          content: {}
         '403':
           description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
           content:
@@ -1635,6 +1644,9 @@ paths:
                 $ref: '#/components/schemas/ErrorMessage'
         '404':
           description: Not Found
+          content: {}
+        '422':
+          description: Unprocessable Entity
           content: {}
         '500':
           description: Internal Server Error
@@ -1838,7 +1850,7 @@ paths:
               description: Location of list of authors
               schema:
                 type: string
-                format: url
+                format: uri
           content: {}
         '400':
           description: Bad Request. Item ID must be an integer and bigger than 0. Author with ID Not Found.
@@ -1890,7 +1902,7 @@ paths:
               description: Location of list of authors
               schema:
                 type: string
-                format: url
+                format: uri
           content: {}
         '400':
           description: Bad Request
@@ -1982,7 +1994,7 @@ paths:
               description: Location of newly published item
               schema:
                 type: string
-                format: link
+                format: uri
           content:
             application/json:
               schema:
@@ -2080,7 +2092,7 @@ paths:
               description: Location of item
               schema:
                 type: string
-                format: url
+                format: uri
           content:
             application/json:
               schema:
@@ -2186,7 +2198,7 @@ paths:
               description: Location of new items
               schema:
                 type: string
-                format: url
+                format: uri
           content:
             application/json:
               schema:
@@ -2369,7 +2381,7 @@ paths:
               description: Location of project
               schema:
                 type: string
-                format: link
+                format: uri
           content: {}
         '403':
           description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
@@ -2463,7 +2475,7 @@ paths:
               description: Location of project
               schema:
                 type: string
-                format: link
+                format: uri
           content: {}
         '403':
           description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
@@ -2599,7 +2611,7 @@ paths:
               description: Location of collection
               schema:
                 type: string
-                format: link
+                format: uri
           content:
             application/json:
               schema:
@@ -2696,7 +2708,7 @@ paths:
               description: Location of collection
               schema:
                 type: string
-                format: link
+                format: uri
           content:
             application/json:
               schema:
