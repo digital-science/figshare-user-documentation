@@ -15,6 +15,58 @@
     },
     "servers": [],
     "paths": {
+        "/altmetric/institutions": {
+            "get": {
+                "tags": [
+                    "altmetric"
+                ],
+                "summary": "List Altmetric Institutions",
+                "description": "Returns a list of institutions available for Altmetric reporting",
+                "operationId": "altmetric_institutions_list",
+                "x-internal": true,
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Where to start the listing. The offset of the first item.",
+                        "schema": {
+                            "minimum": 0,
+                            "type": "integer",
+                            "default": 0
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. An array of Altmetric institutions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/AltmetricInstitution"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                }
+            }
+        },
         "/account/authors/search": {
             "post": {
                 "tags": [
@@ -4209,6 +4261,178 @@
                 "security": []
             }
         },
+        "/account/profile": {
+            "put": {
+                "tags": [
+                    "profiles"
+                ],
+                "summary": "Update public profile",
+                "description": "Updates the fields of the user's public profile.",
+                "operationId": "update_user_profile",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "query",
+                        "description": "User ID",
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "institution_user_id",
+                        "in": "query",
+                        "description": "Institutional user ID",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProfileUpdateData"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "example": {
+                                        "code": 200,
+                                        "message": "OK"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-codegen-request-body-name": "User profile data"
+            }
+        },
+        "/account/profile/{user_id}/picture": {
+            "post": {
+                "tags": [
+                    "profiles"
+                ],
+                "summary": "Update public profile picture",
+                "description": "Updates the profile picture of the user's public profile.",
+                "operationId": "update_user_profile_picture",
+                "parameters": [
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "description": "User ID",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "profile_picture"
+                                ],
+                                "type": "object",
+                                "properties": {
+                                    "profile_picture": {
+                                        "type": "string",
+                                        "description": "User profile picture",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "example": {
+                                        "code": 200,
+                                        "message": "OK"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
         "/projects": {
             "get": {
                 "tags": [
@@ -4972,6 +5196,845 @@
                 ],
                 "x-subcategory": "Private Project",
                 "x-codegen-request-body-name": "Project"
+            }
+        },
+        "/account/projects/{project_id}/publish": {
+            "post": {
+                "tags": [
+                    "projects"
+                ],
+                "summary": "Private Project Publish",
+                "description": "Publish a project. Possible after all items inside it are public",
+                "operationId": "private_project_publish",
+                "parameters": [
+                    {
+                        "name": "project_id",
+                        "in": "path",
+                        "description": "Project unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResponseMessage"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/account/projects/{project_id}/notes": {
+            "get": {
+                "tags": [
+                    "projects"
+                ],
+                "summary": "List project notes",
+                "description": "List project notes",
+                "operationId": "private_project_notes_list",
+                "parameters": [
+                    {
+                        "name": "project_id",
+                        "in": "path",
+                        "description": "Project unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number. Used for pagination with page_size",
+                        "schema": {
+                            "maximum": 5000,
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "in": "query",
+                        "description": "The number of results included on a page. Used for pagination with page",
+                        "schema": {
+                            "maximum": 1000,
+                            "minimum": 1,
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of results included on a page. Used for pagination with query",
+                        "schema": {
+                            "maximum": 1000,
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Where to start the listing (the offset of the first result). Used for pagination with limit",
+                        "schema": {
+                            "maximum": 5000,
+                            "minimum": 0,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. List of project notes",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ProjectNote"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Project Notes"
+            },
+            "post": {
+                "tags": [
+                    "projects"
+                ],
+                "summary": "Create project note",
+                "description": "Create a new project note",
+                "operationId": "private_project_notes_create",
+                "parameters": [
+                    {
+                        "name": "project_id",
+                        "in": "path",
+                        "description": "Project unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Note message",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProjectNoteCreate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "headers": {
+                            "Location": {
+                                "description": "Location note",
+                                "schema": {
+                                    "type": "string",
+                                    "format": "url"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Location"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Project Notes",
+                "x-codegen-request-body-name": "Note"
+            }
+        },
+        "/account/projects/{project_id}/notes/{note_id}": {
+            "get": {
+                "tags": [
+                    "projects"
+                ],
+                "summary": "Project note details",
+                "operationId": "private_project_note",
+                "parameters": [
+                    {
+                        "name": "project_id",
+                        "in": "path",
+                        "description": "Project unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "note_id",
+                        "in": "path",
+                        "description": "Note unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. Note representation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ProjectNotePrivate"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Project Notes"
+            },
+            "put": {
+                "tags": [
+                    "projects"
+                ],
+                "summary": "Update project note",
+                "operationId": "private_project_note_update",
+                "parameters": [
+                    {
+                        "name": "project_id",
+                        "in": "path",
+                        "description": "Project unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "note_id",
+                        "in": "path",
+                        "description": "Note unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Note message",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProjectNoteCreate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "205": {
+                        "description": "Reset Content",
+                        "headers": {
+                            "Location": {
+                                "description": "Location note",
+                                "schema": {
+                                    "type": "string",
+                                    "format": "url"
+                                }
+                            }
+                        },
+                        "content": {}
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Project Notes",
+                "x-codegen-request-body-name": "Note"
+            },
+            "delete": {
+                "tags": [
+                    "projects"
+                ],
+                "summary": "Delete project note",
+                "operationId": "private_project_note_delete",
+                "parameters": [
+                    {
+                        "name": "project_id",
+                        "in": "path",
+                        "description": "Project unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "note_id",
+                        "in": "path",
+                        "description": "Note unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Project Notes"
+            }
+        },
+        "/account/projects/{project_id}/leave": {
+            "post": {
+                "tags": [
+                    "projects"
+                ],
+                "summary": "Private Project Leave",
+                "description": "Please note: project's owner cannot leave the project.",
+                "operationId": "private_project_leave",
+                "parameters": [
+                    {
+                        "name": "project_id",
+                        "in": "path",
+                        "description": "Project unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content",
+                        "content": {}
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Project Collaborators"
+            }
+        },
+        "/account/projects/{project_id}/collaborators": {
+            "get": {
+                "tags": [
+                    "projects"
+                ],
+                "summary": "List project collaborators",
+                "description": "List Project collaborators and invited users",
+                "operationId": "private_project_collaborators_list",
+                "parameters": [
+                    {
+                        "name": "project_id",
+                        "in": "path",
+                        "description": "Project unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. List of Collaborators",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ProjectCollaborator"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Project Collaborators"
+            },
+            "post": {
+                "tags": [
+                    "projects"
+                ],
+                "summary": "Invite project collaborators",
+                "description": "Invite users to collaborate on project or view the project",
+                "operationId": "private_project_collaborators_invite",
+                "parameters": [
+                    {
+                        "name": "project_id",
+                        "in": "path",
+                        "description": "Project unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "viewer or collaborator role. User user_id or email of user",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/ProjectCollaboratorInvite"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResponseMessage"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Project Collaborators",
+                "x-codegen-request-body-name": "Collaborator"
+            }
+        },
+        "/account/projects/{project_id}/collaborators/{user_id}": {
+            "delete": {
+                "tags": [
+                    "projects"
+                ],
+                "summary": "Remove project collaborator",
+                "description": "Remove project collaborator",
+                "operationId": "private_project_collaborator__Delete",
+                "parameters": [
+                    {
+                        "name": "project_id",
+                        "in": "path",
+                        "description": "Project unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "user_id",
+                        "in": "path",
+                        "description": "User unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "OK",
+                        "content": {}
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Project Collaborators"
+            }
+        },
+        "/status": {
+            "get": {
+                "tags": [
+                    "other"
+                ],
+                "summary": "Status",
+                "description": "Diagnostic endpoint used for health checks.",
+                "operationId": "status",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "OK"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                }
+            }
+        },
+        "/readcube": {
+            "post": {
+                "tags": [
+                    "other"
+                ],
+                "summary": "Readcube citation webhook",
+                "description": "Receives citation notifications from Readcube and records them against the referenced items.",
+                "operationId": "readcube_add_cites",
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "additionalProperties": true,
+                                "required": [
+                                    "figshare_articles"
+                                ],
+                                "properties": {
+                                    "figshare_articles": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "object",
+                                            "additionalProperties": true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string",
+                                    "example": "OK"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
             }
         },
         "/echo": {
