@@ -15,6 +15,131 @@
     },
     "servers": [],
     "paths": {
+        "/account/authors/search": {
+            "post": {
+                "tags": [
+                    "authors"
+                ],
+                "summary": "Search Authors",
+                "description": "Search for authors",
+                "operationId": "private_authors_search",
+                "requestBody": {
+                    "description": "Search Parameters",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/PrivateAuthorsSearch"
+                            }
+                        }
+                    },
+                    "required": false
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK. An array of authors",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/AuthorComplete"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-codegen-request-body-name": "search"
+            }
+        },
+        "/account/authors/{author_id}": {
+            "get": {
+                "tags": [
+                    "authors"
+                ],
+                "summary": "Author details",
+                "description": "View author details",
+                "operationId": "private_author_details",
+                "parameters": [
+                    {
+                        "name": "author_id",
+                        "in": "path",
+                        "description": "Author unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. Article representation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AuthorComplete"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
         "/collections": {
             "get": {
                 "tags": [
@@ -256,6 +381,115 @@
                                 }
                             }
                         }
+                    }
+                },
+                "security": [],
+                "x-subcategory": "Public Collection"
+            }
+        },
+        "/collections/{collection_id}/versions": {
+            "get": {
+                "tags": [
+                    "collections"
+                ],
+                "summary": "Collection Versions list",
+                "description": "Returns a list of public collection Versions",
+                "operationId": "collection_versions",
+                "parameters": [
+                    {
+                        "name": "collection_id",
+                        "in": "path",
+                        "description": "Collection Unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. An array of versions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CollectionVersions"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [],
+                "x-subcategory": "Public Collection"
+            }
+        },
+        "/collections/{collection_id}/versions/{version_id}": {
+            "get": {
+                "tags": [
+                    "collections"
+                ],
+                "summary": "Collection Version details",
+                "description": "View details for a certain version of a collection",
+                "operationId": "collection_version_details",
+                "parameters": [
+                    {
+                        "name": "collection_id",
+                        "in": "path",
+                        "description": "Collection Unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "version_id",
+                        "in": "path",
+                        "description": "Version Number",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. Collection for that version",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CollectionComplete"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
                     }
                 },
                 "security": [],
@@ -791,6 +1025,2877 @@
                 "x-codegen-request-body-name": "search"
             }
         },
+        "/account/collections/{collection_id}/reserve_doi": {
+            "post": {
+                "tags": [
+                    "collections"
+                ],
+                "summary": "Private Collection Reserve DOI",
+                "description": "Reserve DOI for collection",
+                "operationId": "private_collection_reserve_doi",
+                "parameters": [
+                    {
+                        "name": "collection_id",
+                        "in": "path",
+                        "description": "Collection Unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CollectionDOI"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/account/collections/{collection_id}/reserve_handle": {
+            "post": {
+                "tags": [
+                    "collections"
+                ],
+                "summary": "Private Collection Reserve Handle",
+                "description": "Reserve Handle for collection",
+                "operationId": "private_collection_reserve_handle",
+                "parameters": [
+                    {
+                        "name": "collection_id",
+                        "in": "path",
+                        "description": "Collection Unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CollectionHandle"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/account/collections/{collection_id}/resource": {
+            "post": {
+                "tags": [
+                    "collections"
+                ],
+                "summary": "Private Collection Resource",
+                "description": "Edit collection resource data.",
+                "operationId": "private_collection_resource",
+                "parameters": [
+                    {
+                        "name": "collection_id",
+                        "in": "path",
+                        "description": "Collection unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Resource data",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Resource"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "205": {
+                        "description": "Reset Content",
+                        "headers": {
+                            "Location": {
+                                "description": "Location for account collection details",
+                                "schema": {
+                                    "type": "string",
+                                    "format": "link"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Location"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-codegen-request-body-name": "Resource"
+            }
+        },
+        "/account/collections/{collection_id}/publish": {
+            "post": {
+                "tags": [
+                    "collections"
+                ],
+                "summary": "Private Collection Publish",
+                "description": "When a collection is published, a new public version will be generated. Any further updates to the collection will affect the private collection data. In order to make these changes publicly visible, an explicit publish operation is needed.",
+                "operationId": "private_collection_publish",
+                "parameters": [
+                    {
+                        "name": "collection_id",
+                        "in": "path",
+                        "description": "Collection Unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "headers": {
+                            "Location": {
+                                "description": "Location of collection",
+                                "schema": {
+                                    "type": "string",
+                                    "format": "link"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Location"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/account/collections/{collection_id}/authors": {
+            "get": {
+                "tags": [
+                    "collections"
+                ],
+                "summary": "List collection authors",
+                "description": "List collection authors",
+                "operationId": "private_collection_authors_list",
+                "parameters": [
+                    {
+                        "name": "collection_id",
+                        "in": "path",
+                        "description": "Collection unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. Embargo for article",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Author"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Collection Authors"
+            },
+            "put": {
+                "tags": [
+                    "collections"
+                ],
+                "summary": "Replace collection authors",
+                "description": "Associate new authors with the collection. This will remove all already associated authors and add these new ones",
+                "operationId": "private_collection_authors_replace",
+                "parameters": [
+                    {
+                        "name": "collection_id",
+                        "in": "path",
+                        "description": "Collection unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "List of authors",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthorsCreator"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "205": {
+                        "description": "Reset Content",
+                        "headers": {
+                            "Location": {
+                                "description": "Location of list of authors",
+                                "schema": {
+                                    "type": "string",
+                                    "format": "url"
+                                }
+                            }
+                        },
+                        "content": {}
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Collection Authors",
+                "x-codegen-request-body-name": "Authors"
+            },
+            "post": {
+                "tags": [
+                    "collections"
+                ],
+                "summary": "Add collection authors",
+                "description": "Associate new authors with the collection. This will add new authors to the list of already associated authors",
+                "operationId": "private_collection_authors_add",
+                "parameters": [
+                    {
+                        "name": "collection_id",
+                        "in": "path",
+                        "description": "Collection unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "List of authors",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthorsCreator"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Reset Content",
+                        "headers": {
+                            "Location": {
+                                "description": "Location of list of authors",
+                                "schema": {
+                                    "type": "string",
+                                    "format": "url"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Location"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Collection Authors",
+                "x-codegen-request-body-name": "Authors"
+            }
+        },
+        "/account/collections/{collection_id}/authors/{author_id}": {
+            "delete": {
+                "tags": [
+                    "collections"
+                ],
+                "summary": "Delete collection author",
+                "description": "Delete collection author",
+                "operationId": "private_collection_author_delete",
+                "parameters": [
+                    {
+                        "name": "collection_id",
+                        "in": "path",
+                        "description": "Collection unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "author_id",
+                        "in": "path",
+                        "description": "Collection Author unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Collection Authors"
+            }
+        },
+        "/account/collections/{collection_id}/categories": {
+            "get": {
+                "tags": [
+                    "collections"
+                ],
+                "summary": "List collection categories",
+                "description": "List collection categories",
+                "operationId": "private_collection_categories_list",
+                "parameters": [
+                    {
+                        "name": "collection_id",
+                        "in": "path",
+                        "description": "Collection unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. Categories list",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Category"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Collection Categories"
+            },
+            "put": {
+                "tags": [
+                    "collections"
+                ],
+                "summary": "Replace collection categories",
+                "description": "Associate new categories with the collection. This will remove all already associated categories and add these new ones",
+                "operationId": "private_collection_categories_replace",
+                "parameters": [
+                    {
+                        "name": "collection_id",
+                        "in": "path",
+                        "description": "Collection unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Categories list",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CategoriesCreator"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "205": {
+                        "description": "Reset Content",
+                        "headers": {
+                            "Location": {
+                                "description": "Location of list of categories",
+                                "schema": {
+                                    "type": "string",
+                                    "format": "url"
+                                }
+                            }
+                        },
+                        "content": {}
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Collection Categories",
+                "x-codegen-request-body-name": "categories"
+            },
+            "post": {
+                "tags": [
+                    "collections"
+                ],
+                "summary": "Add collection categories",
+                "description": "Associate new categories with the collection. This will add new categories to the list of already associated categories",
+                "operationId": "private_collection_categories_add",
+                "parameters": [
+                    {
+                        "name": "collection_id",
+                        "in": "path",
+                        "description": "Collection unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Categories list",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CategoriesCreator"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Reset Content",
+                        "headers": {
+                            "Location": {
+                                "description": "Location of list of categories",
+                                "schema": {
+                                    "type": "string",
+                                    "format": "url"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Location"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Collection Categories",
+                "x-codegen-request-body-name": "categories"
+            }
+        },
+        "/account/collections/{collection_id}/categories/{category_id}": {
+            "delete": {
+                "tags": [
+                    "collections"
+                ],
+                "summary": "Delete collection category",
+                "description": "De-associate category from collection",
+                "operationId": "private_collection_category_delete",
+                "parameters": [
+                    {
+                        "name": "collection_id",
+                        "in": "path",
+                        "description": "Collection unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "category_id",
+                        "in": "path",
+                        "description": "Collection category unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Collection Categories"
+            }
+        },
+        "/account/collections/{collection_id}/private_links": {
+            "get": {
+                "tags": [
+                    "collections"
+                ],
+                "summary": "List collection private links",
+                "description": "List article private links",
+                "operationId": "private_collection_private_links_list",
+                "parameters": [
+                    {
+                        "name": "collection_id",
+                        "in": "path",
+                        "description": "Collection unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. Collection private links",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/PrivateLink"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Collection Private Links"
+            },
+            "post": {
+                "tags": [
+                    "collections"
+                ],
+                "summary": "Create collection private link",
+                "description": "Create new private link",
+                "operationId": "private_collection_private_link_create",
+                "parameters": [
+                    {
+                        "name": "collection_id",
+                        "in": "path",
+                        "description": "Collection unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CollectionPrivateLinkCreator"
+                            }
+                        }
+                    },
+                    "required": false
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "headers": {
+                            "Location": {
+                                "description": "Location of private link",
+                                "schema": {
+                                    "type": "string",
+                                    "format": "url"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PrivateLinkResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Collection Private Links",
+                "x-codegen-request-body-name": "private_link"
+            }
+        },
+        "/account/collections/{collection_id}/private_links/{link_id}": {
+            "get": {
+                "tags": [
+                    "collections"
+                ],
+                "summary": "View collection private link",
+                "description": "View existing private link for this collection",
+                "operationId": "private_collection_private_link_details",
+                "parameters": [
+                    {
+                        "name": "collection_id",
+                        "in": "path",
+                        "description": "Collection unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "link_id",
+                        "in": "path",
+                        "description": "Private link token",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. Collection private link",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/PrivateLink"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Collection Private Links"
+            },
+            "put": {
+                "tags": [
+                    "collections"
+                ],
+                "summary": "Update collection private link",
+                "description": "Update existing private link for this collection",
+                "operationId": "private_collection_private_link_update",
+                "parameters": [
+                    {
+                        "name": "collection_id",
+                        "in": "path",
+                        "description": "Collection unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "link_id",
+                        "in": "path",
+                        "description": "Private link token",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CollectionPrivateLinkCreator"
+                            }
+                        }
+                    },
+                    "required": false
+                },
+                "responses": {
+                    "205": {
+                        "description": "Reset Content",
+                        "headers": {
+                            "Location": {
+                                "description": "Location of new private link",
+                                "schema": {
+                                    "type": "string",
+                                    "format": "url"
+                                }
+                            }
+                        },
+                        "content": {}
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Collection Private Links",
+                "x-codegen-request-body-name": "private_link"
+            },
+            "delete": {
+                "tags": [
+                    "collections"
+                ],
+                "summary": "Disable private link",
+                "description": "Disable/delete private link for this collection",
+                "operationId": "private_collection_private_link_delete",
+                "parameters": [
+                    {
+                        "name": "collection_id",
+                        "in": "path",
+                        "description": "Collection unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "link_id",
+                        "in": "path",
+                        "description": "Private link token",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content",
+                        "content": {}
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Collection Private Links"
+            }
+        },
+        "/account/institution": {
+            "get": {
+                "tags": [
+                    "institutions"
+                ],
+                "summary": "Private Account Institutions",
+                "description": "Account institution details",
+                "operationId": "private_institution_details",
+                "responses": {
+                    "200": {
+                        "description": "OK. An array of institutions",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Institution"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/account/institution/embargo_options": {
+            "get": {
+                "tags": [
+                    "institutions"
+                ],
+                "summary": "Private Account Institution embargo options",
+                "description": "Account institution embargo options details",
+                "operationId": "private_institution_embargo_options_details",
+                "responses": {
+                    "200": {
+                        "description": "OK. An array of embargo options",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GroupEmbargoOptions"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/account/groups/{group_id}/metadata/item": {
+            "get": {
+                "tags": [
+                    "institutions"
+                ],
+                "summary": "Group custom fields",
+                "description": "Returns the custom fields for the specified group. Deprecated in favour of GET /account/items/fields/item-type/{item_type_id}. Will be removed after 2027-01-01.",
+                "operationId": "account_group_custom_fields",
+                "parameters": [
+                    {
+                        "name": "group_id",
+                        "in": "path",
+                        "description": "Group unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. An array of custom fields",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CustomArticleField"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Institution - DEPRECATED"
+            }
+        },
+        "/account/institution/custom_fields": {
+            "get": {
+                "tags": [
+                    "institutions"
+                ],
+                "summary": "Private account institution group custom fields",
+                "description": "Returns the custom fields in the group the user belongs to, or the ones in the group specified, if the user has access. Deprecated in favour of GET /account/items/fields/item-type/{item_type_id}. Will be removed after 2027-01-01.",
+                "operationId": "custom_fields_list",
+                "parameters": [
+                    {
+                        "name": "group_id",
+                        "in": "query",
+                        "description": "Group_id",
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. An array of custom fields",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ShortCustomField"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Institution - DEPRECATED"
+            }
+        },
+        "/account/institution/custom_fields/{custom_field_id}/items/upload": {
+            "post": {
+                "tags": [
+                    "institutions"
+                ],
+                "summary": "Custom fields values files upload",
+                "description": "Uploads a CSV containing values for a specific custom field of type <b>dropdown_large_list</b>. The <code>custom_field_id</code> path parameter accepts both classic custom field IDs (legacy) and underlying field IDs (v2). The lookup is performed automatically — no additional parameter is required. More details in the <a href=\"#custom_fields\">Custom Fields section</a>",
+                "operationId": "custom_fields_upload",
+                "parameters": [
+                    {
+                        "name": "custom_field_id",
+                        "in": "path",
+                        "description": "Identifier of the custom field or underlying field (v2) of type <b>dropdown_large_list</b>",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "external_file": {
+                                        "type": "string",
+                                        "description": "CSV file to be uploaded",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "example": {
+                                        "code": 200,
+                                        "message": "OK"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/account/categories": {
+            "get": {
+                "tags": [
+                    "institutions"
+                ],
+                "summary": "Private Account Categories",
+                "description": "List institution categories (including parent Categories)",
+                "operationId": "private_categories_list",
+                "responses": {
+                    "200": {
+                        "description": "OK. An array of categories",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CategoryList"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/account/institution/groups": {
+            "get": {
+                "tags": [
+                    "institutions"
+                ],
+                "summary": "Private Account Institution Groups",
+                "description": "Returns the groups for which the account has administrative privileges (assigned and inherited).",
+                "operationId": "private_institution_groups_list",
+                "responses": {
+                    "200": {
+                        "description": "OK. An array of Groups",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Group"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/account/institution/groups/{group_id}/embargo_options": {
+            "get": {
+                "tags": [
+                    "institutions"
+                ],
+                "summary": "Private Account Institution Group Embargo Options",
+                "description": "Account institution group embargo options details",
+                "operationId": "private_group_embargo_options_details",
+                "parameters": [
+                    {
+                        "name": "group_id",
+                        "in": "path",
+                        "description": "Group identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. An array of embargo options",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/GroupEmbargoOptions"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/account/institution/roles": {
+            "get": {
+                "tags": [
+                    "institutions"
+                ],
+                "summary": "Private Account Institution Roles",
+                "description": "Returns the roles available for groups and the institution group.",
+                "operationId": "private_institution_roles_list",
+                "responses": {
+                    "200": {
+                        "description": "OK. An array of Roles",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Role"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/account/institution/accounts": {
+            "get": {
+                "tags": [
+                    "institutions"
+                ],
+                "summary": "Private Account Institution Accounts",
+                "description": "Returns the accounts for which the account has administrative privileges (assigned and inherited).",
+                "operationId": "private_institution_accounts_list",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Page number. Used for pagination with page_size",
+                        "schema": {
+                            "maximum": 5000,
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "page_size",
+                        "in": "query",
+                        "description": "The number of results included on a page. Used for pagination with page",
+                        "schema": {
+                            "maximum": 1000,
+                            "minimum": 1,
+                            "type": "integer",
+                            "default": 10
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of results included on a page. Used for pagination with query",
+                        "schema": {
+                            "maximum": 1000,
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Where to start the listing (the offset of the first result). Used for pagination with limit",
+                        "schema": {
+                            "maximum": 5000,
+                            "minimum": 0,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "is_active",
+                        "in": "query",
+                        "description": "Filter by active status",
+                        "schema": {
+                            "maximum": 1,
+                            "minimum": 0,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "institution_user_id",
+                        "in": "query",
+                        "description": "Filter by institution_user_id",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "email",
+                        "in": "query",
+                        "description": "Filter by email",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "id_lte",
+                        "in": "query",
+                        "description": "Retrieve accounts with an ID lower or equal to the specified value",
+                        "schema": {
+                            "minimum": 0,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "id_gte",
+                        "in": "query",
+                        "description": "Retrieve accounts with an ID greater or equal to the specified value",
+                        "schema": {
+                            "minimum": 0,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. An array of Accounts",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ShortAccount"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "institutions"
+                ],
+                "summary": "Create new Institution Account",
+                "description": "Create a new Account by sending account information. When the institution_user_id is provided, no verification email will be sent. The email_verified flag will automatically be set to true. If the institution_user_id is not provided, a verification email will be sent. The email_verified flag will be set to true once the account is created.",
+                "operationId": "private_institution_accounts_create",
+                "requestBody": {
+                    "description": "Account description",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AccountCreate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AccountCreateResponse"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-codegen-request-body-name": "Account"
+            }
+        },
+        "/account/institution/accounts/{account_id}": {
+            "get": {
+                "tags": [
+                    "institutions"
+                ],
+                "summary": "Private Institution Account information",
+                "description": "Private Institution Account information",
+                "operationId": "private_institution_account",
+                "parameters": [
+                    {
+                        "name": "account_id",
+                        "in": "path",
+                        "description": "Account identifier the user is associated to",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. Account",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Account"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "institutions"
+                ],
+                "summary": "Update Institution Account",
+                "description": "Update Institution Account",
+                "operationId": "private_institution_accounts_update",
+                "parameters": [
+                    {
+                        "name": "account_id",
+                        "in": "path",
+                        "description": "Account identifier the user is associated to",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Account description",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AccountUpdate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "205": {
+                        "description": "Reset Content",
+                        "headers": {
+                            "Location": {
+                                "description": "Location of newly created article",
+                                "schema": {
+                                    "type": "string",
+                                    "format": "link"
+                                }
+                            }
+                        },
+                        "content": {}
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-codegen-request-body-name": "Account"
+            }
+        },
+        "/account/institution/roles/{account_id}": {
+            "get": {
+                "tags": [
+                    "institutions"
+                ],
+                "summary": "List Institution Account Group Roles",
+                "description": "List Institution Account Group Roles",
+                "operationId": "private_institution_account_group_roles",
+                "parameters": [
+                    {
+                        "name": "account_id",
+                        "in": "path",
+                        "description": "Account identifier the user is associated to",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. Account Group Roles",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/AccountGroupRoles"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "institutions"
+                ],
+                "summary": "Add Institution Account Group Roles",
+                "description": "Add Institution Account Group Roles",
+                "operationId": "private_institution_account_group_roles_create",
+                "parameters": [
+                    {
+                        "name": "account_id",
+                        "in": "path",
+                        "description": "Account identifier the user is associated to",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "Account description",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AccountGroupRolesCreate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {}
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-codegen-request-body-name": "Account"
+            }
+        },
+        "/account/institution/roles/{account_id}/{group_id}/{role_id}": {
+            "delete": {
+                "tags": [
+                    "institutions"
+                ],
+                "summary": "Delete Institution Account Group Role",
+                "description": "Delete Institution Account Group Role",
+                "operationId": "private_institution_account_group_role_delete",
+                "parameters": [
+                    {
+                        "name": "account_id",
+                        "in": "path",
+                        "description": "Account identifier for which to remove the role",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "group_id",
+                        "in": "path",
+                        "description": "Group identifier for which to remove the role",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "role_id",
+                        "in": "path",
+                        "description": "Role identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content",
+                        "content": {}
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/account/institution/accounts/search": {
+            "post": {
+                "tags": [
+                    "institutions"
+                ],
+                "summary": "Private Account Institution Accounts Search",
+                "description": "Returns the accounts for which the account has administrative privileges (assigned and inherited).",
+                "operationId": "private_institution_accounts_search",
+                "requestBody": {
+                    "description": "Search Parameters",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/InstitutionAccountsSearch"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK. An array of Accounts",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/ShortAccount"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-codegen-request-body-name": "search"
+            }
+        },
+        "/account/institution/users/{account_id}": {
+            "get": {
+                "tags": [
+                    "institutions"
+                ],
+                "summary": "Private Account Institution User",
+                "description": "Retrieve institution user information using the account_id",
+                "operationId": "private_account_institution_user",
+                "parameters": [
+                    {
+                        "name": "account_id",
+                        "in": "path",
+                        "description": "Account identifier the user is associated to",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. User representation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/account/institution/reviews": {
+            "get": {
+                "tags": [
+                    "institutions"
+                ],
+                "summary": "Institution Curation Reviews",
+                "description": "Retrieve a list of curation reviews for this institution",
+                "operationId": "account_institution_curations",
+                "parameters": [
+                    {
+                        "name": "group_id",
+                        "in": "query",
+                        "description": "Filter by the group ID",
+                        "schema": {
+                            "minimum": 0,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "article_id",
+                        "in": "query",
+                        "description": "Retrieve the reviews for this article",
+                        "schema": {
+                            "minimum": 0,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "status",
+                        "in": "query",
+                        "description": "Filter by the status of the review",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "pending",
+                                "approved",
+                                "rejected",
+                                "closed"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of results included on a page. Used for pagination with query",
+                        "schema": {
+                            "maximum": 1000,
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Where to start the listing (the offset of the first result). Used for pagination with limit",
+                        "schema": {
+                            "maximum": 5000,
+                            "minimum": 0,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. A list of curation reviews.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Curation"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/account/institution/review/{curation_id}": {
+            "get": {
+                "tags": [
+                    "institutions"
+                ],
+                "summary": "Institution Curation Review",
+                "description": "Retrieve a certain curation review by its ID",
+                "operationId": "account_institution_curation",
+                "parameters": [
+                    {
+                        "name": "curation_id",
+                        "in": "path",
+                        "description": "ID of the curation",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. A curation review.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CurationDetail"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/account/institution/review/{curation_id}/comments": {
+            "get": {
+                "tags": [
+                    "institutions"
+                ],
+                "summary": "Institution Curation Review Comments",
+                "description": "Retrieve a certain curation review's comments.",
+                "operationId": "get_account_institution_curation_comments",
+                "parameters": [
+                    {
+                        "name": "curation_id",
+                        "in": "path",
+                        "description": "ID of the curation",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Number of results included on a page. Used for pagination with query",
+                        "schema": {
+                            "maximum": 1000,
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "description": "Where to start the listing (the offset of the first result). Used for pagination with limit",
+                        "schema": {
+                            "maximum": 5000,
+                            "minimum": 0,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. A curation review's comments.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/CurationComment"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "institutions"
+                ],
+                "summary": "POST Institution Curation Review Comment",
+                "description": "Add a new comment to the review.",
+                "operationId": "post_account_institution_curation_comments",
+                "parameters": [
+                    {
+                        "name": "curation_id",
+                        "in": "path",
+                        "description": "ID of the curation",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "description": "The content/value of the comment.",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CurationCommentCreate"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK.",
+                        "content": {}
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-codegen-request-body-name": "CurationComment"
+            }
+        },
+        "/institution/hrfeed/upload": {
+            "post": {
+                "tags": [
+                    "institutions"
+                ],
+                "summary": "Private Institution HRfeed Upload",
+                "description": "More info in the <a href=\"#hr_feed\">HR Feed section</a>",
+                "operationId": "institution_hrfeed_upload",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "hrfeed": {
+                                        "type": "string",
+                                        "description": "You can find an example in the Hr Feed section",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ResponseMessage"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/token": {
+            "get": {
+                "tags": [
+                    "oauth"
+                ],
+                "summary": "Get OAuth token information",
+                "description": "Returns information about the current OAuth token",
+                "operationId": "get_token_info",
+                "parameters": [
+                    {
+                        "name": "access_token",
+                        "in": "query",
+                        "description": "OAuth access token",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. Token information",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OAuthToken"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": []
+            },
+            "post": {
+                "tags": [
+                    "oauth"
+                ],
+                "summary": "Create OAuth token",
+                "description": "Creates OAuth token using various grant types",
+                "operationId": "create_token",
+                "requestBody": {
+                    "description": "Create OAuth Token Parameters",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateOAuthToken"
+                            }
+                        },
+                        "application/x-www-form-urlencoded": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateOAuthToken"
+                            }
+                        }
+                    },
+                    "required": false
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK. Token created successfully <a href='http://tools.ietf.org/html/rfc6749#section-5.1' target='_blank'>RFC 6749 Section 5.1</a>.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/OAuthToken"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request <a href='http://tools.ietf.org/html/rfc6749#section-5.2' target='_blank'>RFC 6749 Section 5.2</a>.",
+                        "content": {}
+                    }
+                },
+                "security": [],
+                "x-codegen-request-body-name": "body"
+            }
+        },
         "/item_types": {
             "get": {
                 "tags": [
@@ -855,6 +3960,253 @@
                         ]
                     }
                 ]
+            }
+        },
+        "/account/funding/search": {
+            "post": {
+                "tags": [
+                    "other"
+                ],
+                "summary": "Search Funding",
+                "description": "Search for fundings",
+                "operationId": "private_funding_search",
+                "requestBody": {
+                    "description": "Search Parameters",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FundingSearch"
+                            }
+                        }
+                    },
+                    "required": false
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK. An array of funding information",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/FundingInformation"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-codegen-request-body-name": "search"
+            }
+        },
+        "/account": {
+            "get": {
+                "tags": [
+                    "other"
+                ],
+                "summary": "Private Account information",
+                "description": "Account information for token/personal token",
+                "operationId": "private_account",
+                "responses": {
+                    "200": {
+                        "description": "OK. Account representation",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Account"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/categories": {
+            "get": {
+                "tags": [
+                    "other"
+                ],
+                "summary": "Public Categories",
+                "description": "Returns a list of public categories",
+                "operationId": "categories_list",
+                "responses": {
+                    "200": {
+                        "description": "OK. An array of categories",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/CategoryList"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": []
+            }
+        },
+        "/licenses": {
+            "get": {
+                "tags": [
+                    "other"
+                ],
+                "summary": "Public Licenses",
+                "description": "Returns a list of public licenses",
+                "operationId": "licenses_list",
+                "responses": {
+                    "200": {
+                        "description": "OK. An array of licenses",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/License"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": []
+            }
+        },
+        "/account/licenses": {
+            "get": {
+                "tags": [
+                    "other"
+                ],
+                "summary": "Private Account Licenses",
+                "description": "This is a private endpoint that requires OAuth. It will return a list with figshare public licenses AND licenses defined for account's institution.",
+                "operationId": "private_licenses_list",
+                "responses": {
+                    "200": {
+                        "description": "OK. An array of personal licenses",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/License"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/file/download/{file_id}": {
+            "get": {
+                "tags": [
+                    "other"
+                ],
+                "summary": "Public File Download",
+                "description": "Starts the download of a file",
+                "operationId": "file_download",
+                "parameters": [
+                    {
+                        "name": "file_id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": []
             }
         },
         "/projects": {
@@ -1620,6 +4972,189 @@
                 ],
                 "x-subcategory": "Private Project",
                 "x-codegen-request-body-name": "Project"
+            }
+        },
+        "/echo": {
+            "get": {
+                "tags": [
+                    "other"
+                ],
+                "summary": "Echo request",
+                "description": "Diagnostic endpoint that echoes a fixed payload for the authenticated account.",
+                "operationId": "echo",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/whoami": {
+            "get": {
+                "tags": [
+                    "other"
+                ],
+                "summary": "Authenticated account information",
+                "description": "Returns the account information for the authenticated OAuth account.",
+                "operationId": "whoami",
+                "responses": {
+                    "200": {
+                        "description": "OK. Account representation, nested under an `account` key.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "account"
+                                    ],
+                                    "properties": {
+                                        "account": {
+                                            "$ref": "#/components/schemas/Account"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/institutions/{string_id}/groups/{group_id}/submissions/{token}": {
+            "put": {
+                "tags": [
+                    "institutions"
+                ],
+                "summary": "Create institution submission token",
+                "description": "Creates a submission token for a given institution group, used by external submission integrations.",
+                "operationId": "institution_create_submission_token",
+                "parameters": [
+                    {
+                        "name": "string_id",
+                        "in": "path",
+                        "description": "Institution string identifier",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "group_id",
+                        "in": "path",
+                        "description": "Group identifier",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "minimum": 1
+                        }
+                    },
+                    {
+                        "name": "token",
+                        "in": "path",
+                        "description": "Submission token value",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK. Submission token created.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "required": [
+                                        "token"
+                                    ],
+                                    "properties": {
+                                        "token": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
             }
         },
         "/items": {

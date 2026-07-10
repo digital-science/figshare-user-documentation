@@ -1,4 +1,123 @@
 paths:
+  # /echo and /whoami are undocumented in the v2.0 baseline too — so unlike the other 9
+  # core/account routes, there's no v2 spec entry for exclusions.yaml to un-exclude; they
+  # need a fresh entry here instead.
+  /echo:
+    get:
+      tags:
+      - other
+      summary: Echo request
+      description: Diagnostic endpoint that echoes a fixed payload for the authenticated account.
+      operationId: echo
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+  /whoami:
+    get:
+      tags:
+      - other
+      summary: Authenticated account information
+      description: Returns the account information for the authenticated OAuth account.
+      operationId: whoami
+      responses:
+        '200':
+          description: OK. Account representation, nested under an `account` key.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - account
+                properties:
+                  account:
+                    $ref: '#/components/schemas/Account'
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+  # Undocumented in the v2.0 baseline too — no existing spec entry for exclusions.yaml to
+  # un-exclude, so it needs a fresh entry here instead.
+  /institutions/{string_id}/groups/{group_id}/submissions/{token}:
+    put:
+      tags:
+      - institutions
+      summary: Create institution submission token
+      description: Creates a submission token for a given institution group, used by external submission integrations.
+      operationId: institution_create_submission_token
+      parameters:
+      - name: string_id
+        in: path
+        description: Institution string identifier
+        required: true
+        schema:
+          type: string
+      - name: group_id
+        in: path
+        description: Group identifier
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+      - name: token
+        in: path
+        description: Submission token value
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK. Submission token created.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                - token
+                properties:
+                  token:
+                    type: string
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
   /items:
     get:
       tags:
