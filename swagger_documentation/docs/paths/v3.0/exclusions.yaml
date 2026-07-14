@@ -50,3 +50,6 @@ exclude_paths:
 - /symplectic/articles
 - /symplectic/articles/{article_id}
 - /symplectic/users/{user_id}
+- /account/institution/custom_fields
+- /account/groups/{group_id}/metadata/item
+- /account/institution/custom_fields/{custom_field_id}/items/upload

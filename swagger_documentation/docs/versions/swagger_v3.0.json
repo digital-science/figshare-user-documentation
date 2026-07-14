@@ -2398,213 +2398,6 @@
                 ]
             }
         },
-        "/account/groups/{group_id}/metadata/item": {
-            "get": {
-                "tags": [
-                    "institutions"
-                ],
-                "summary": "Group custom fields",
-                "description": "Returns the custom fields for the specified group. Deprecated in favour of GET /account/items/fields/item-type/{item_type_id}. Will be removed after 2027-01-01.",
-                "operationId": "account_group_custom_fields",
-                "parameters": [
-                    {
-                        "name": "group_id",
-                        "in": "path",
-                        "description": "Group unique identifier",
-                        "required": true,
-                        "schema": {
-                            "minimum": 1,
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK. An array of custom fields",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/CustomArticleField"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorMessage"
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "content": {}
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "content": {}
-                    }
-                },
-                "security": [
-                    {
-                        "OAuth2": [
-                            "all"
-                        ]
-                    }
-                ],
-                "x-subcategory": "Private Institution - DEPRECATED"
-            }
-        },
-        "/account/institution/custom_fields": {
-            "get": {
-                "tags": [
-                    "institutions"
-                ],
-                "summary": "Private account institution group custom fields",
-                "description": "Returns the custom fields in the group the user belongs to, or the ones in the group specified, if the user has access. Deprecated in favour of GET /account/items/fields/item-type/{item_type_id}. Will be removed after 2027-01-01.",
-                "operationId": "custom_fields_list",
-                "parameters": [
-                    {
-                        "name": "group_id",
-                        "in": "query",
-                        "description": "Group_id",
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK. An array of custom fields",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/ShortCustomField"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "content": {}
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorMessage"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "content": {}
-                    }
-                },
-                "security": [
-                    {
-                        "OAuth2": [
-                            "all"
-                        ]
-                    }
-                ],
-                "x-subcategory": "Private Institution - DEPRECATED"
-            }
-        },
-        "/account/institution/custom_fields/{custom_field_id}/items/upload": {
-            "post": {
-                "tags": [
-                    "institutions"
-                ],
-                "summary": "Custom fields values files upload",
-                "description": "Uploads a CSV containing values for a specific custom field of type <b>dropdown_large_list</b>. The <code>custom_field_id</code> path parameter accepts both classic custom field IDs (legacy) and underlying field IDs (v2). The lookup is performed automatically — no additional parameter is required. More details in the <a href=\"#custom_fields\">Custom Fields section</a>",
-                "operationId": "custom_fields_upload",
-                "parameters": [
-                    {
-                        "name": "custom_field_id",
-                        "in": "path",
-                        "description": "Identifier of the custom field or underlying field (v2) of type <b>dropdown_large_list</b>",
-                        "required": true,
-                        "schema": {
-                            "minimum": 1,
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "content": {
-                        "multipart/form-data": {
-                            "schema": {
-                                "type": "object",
-                                "properties": {
-                                    "external_file": {
-                                        "type": "string",
-                                        "description": "CSV file to be uploaded",
-                                        "format": "binary"
-                                    }
-                                }
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "object",
-                                    "example": {
-                                        "code": 200,
-                                        "message": "OK"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "content": {}
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorMessage"
-                                }
-                            }
-                        }
-                    },
-                    "409": {
-                        "description": "Conflict",
-                        "content": {}
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "content": {}
-                    }
-                },
-                "security": [
-                    {
-                        "OAuth2": [
-                            "all"
-                        ]
-                    }
-                ]
-            }
-        },
         "/account/categories": {
             "get": {
                 "tags": [
@@ -11333,6 +11126,89 @@
                     },
                     "404": {
                         "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/account/institution/fields/{field_id}/items/upload": {
+            "post": {
+                "tags": [
+                    "institutions"
+                ],
+                "summary": "Fields values files upload",
+                "description": "Uploads a CSV containing values for a specific field of type <b>dropdown_large_list</b>. The <code>field_id</code> path parameter accepts both classic custom field IDs (legacy) and underlying field IDs. The lookup is performed automatically — no additional parameter is required.",
+                "operationId": "account_institution_fields_upload",
+                "parameters": [
+                    {
+                        "name": "field_id",
+                        "in": "path",
+                        "description": "Identifier of the custom field or underlying field of type <b>dropdown_large_list</b>",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "external_file": {
+                                        "type": "string",
+                                        "description": "CSV file to be uploaded",
+                                        "format": "binary"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "example": {
+                                        "code": 200,
+                                        "message": "OK"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Conflict",
                         "content": {}
                     },
                     "500": {
