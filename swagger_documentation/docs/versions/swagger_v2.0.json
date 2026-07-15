@@ -14755,7 +14755,8 @@
                     "id",
                     "name",
                     "parent_id",
-                    "resource_id"
+                    "resource_id",
+                    "upload_access"
                 ],
                 "type": "object",
                 "properties": {
@@ -14783,6 +14784,16 @@
                         "type": "string",
                         "description": "HR code associated with group, if code exists",
                         "example": "IT"
+                    },
+                    "upload_access": {
+                        "type": "string",
+                        "description": "Who can upload to this group. Possible values are \"All Users\", \"Admin Only\", and \"None\"",
+                        "example": "All Users",
+                        "enum": [
+                            "All Users",
+                            "Admin Only",
+                            "None"
+                        ]
                     }
                 },
                 "x-tag": "institutions"
