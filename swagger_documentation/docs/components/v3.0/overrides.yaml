@@ -1,4 +1,4 @@
-# v3 (ITBM) schema overrides — AUTHORED to match the purpose-built presenter allowlists.
+# v3 schema overrides — AUTHORED to match the purpose-built presenter allowlists.
 # Flattened (no allOf) so each v3 schema documents EXACTLY the fields the v3 response returns.
 # Generated from the v2.0 baseline property definitions filtered to the kept set.
 schemas:
@@ -812,10 +812,10 @@ schemas:
     - modified_date
     - url
     x-tag: projects
-  # --- v3 (ITBM) REQUEST schemas: top-level allowlist + nested `fields`; examples omit group_id ---
+  # --- v3 REQUEST schemas: top-level allowlist + nested `fields`; examples omit group_id ---
   ItemCreate:
     type: object
-    description: v3 (ITBM) item creation payload. Structural inputs stay top-level; all metadata goes inside 'fields'.
+    description: v3 item creation payload. Structural inputs stay top-level; all metadata goes inside 'fields'.
     properties:
       item_type_id:
         type: integer
@@ -855,7 +855,7 @@ schemas:
     x-tag: items
   ItemUpdate:
     type: object
-    description: v3 (ITBM) item update payload. Same shape as ItemCreate; all properties optional (send only what changes
+    description: v3 item update payload. Same shape as ItemCreate; all properties optional (send only what changes
       inside 'fields').
     properties:
       item_type_id:
@@ -893,7 +893,7 @@ schemas:
     x-tag: items
   CollectionCreate:
     type: object
-    description: v3 (ITBM) collection creation payload. All metadata goes inside 'fields'; only group_id stays top-level.
+    description: v3 collection creation payload. All metadata goes inside 'fields'; only group_id stays top-level.
     properties:
       group_id:
         type: integer
@@ -912,7 +912,7 @@ schemas:
     x-tag: collections
   CollectionUpdate:
     type: object
-    description: v3 (ITBM) collection update payload. Send only the metadata that changes inside 'fields'.
+    description: v3 collection update payload. Send only the metadata that changes inside 'fields'.
     properties:
       group_id:
         type: integer
@@ -931,7 +931,7 @@ schemas:
     x-tag: collections
   ProjectCreate:
     type: object
-    description: v3 (ITBM) project creation payload. All metadata goes inside 'fields'; only group_id stays top-level.
+    description: v3 project creation payload. All metadata goes inside 'fields'; only group_id stays top-level.
     properties:
       group_id:
         type: integer
@@ -950,7 +950,7 @@ schemas:
     x-tag: projects
   ProjectUpdate:
     type: object
-    description: v3 (ITBM) project update payload. Send only the metadata that changes inside 'fields'. The project group
+    description: v3 project update payload. Send only the metadata that changes inside 'fields'. The project group
       cannot be changed.
     properties:
       fields:
@@ -965,12 +965,12 @@ schemas:
         description: Updated project description
     x-tag: projects
   ProjectsSearch:
-    description: v3 (ITBM) project search payload. `order` accepts the ITBM date keys; legacy keys
-      (`published_date`, `modified_date`, `views`) are rejected for ITBM tenants.
+    description: v3 project search payload. `order` accepts the current date keys; legacy keys
+      (`published_date`, `modified_date`, `views`) are rejected for institutions with item-type based metadata enabled.
     properties:
       order:
         type: string
-        description: The field by which to order (ITBM date keys).
+        description: The field by which to order (current date keys).
         example: created_date
         default: created_date
         enum:
@@ -986,12 +986,12 @@ schemas:
     - $ref: '#/components/schemas/CommonSearch'
     x-tag: projects
   CollectionsSearch:
-    description: v3 (ITBM) collection search payload. `order` accepts the collection ITBM date keys;
-      legacy stats keys (`views`, `shares`, `cites`) are rejected for ITBM tenants.
+    description: v3 collection search payload. `order` accepts the collection's current date keys;
+      legacy stats keys (`views`, `shares`, `cites`) are rejected for institutions with item-type based metadata enabled.
     properties:
       order:
         type: string
-        description: The field by which to order (ITBM date keys).
+        description: The field by which to order (current date keys).
         example: created_date
         default: created_date
         enum:
@@ -1000,7 +1000,7 @@ schemas:
         - published_date
       item_type_id:
         type: integer
-        description: Only return collections with items of this ITBM item type.
+        description: Only return collections with items of this item type.
         example: 3
     allOf:
     - $ref: '#/components/schemas/CommonSearch'

@@ -593,7 +593,7 @@ schemas:
         description: >-
           All metadata fields keyed by underlying field name. Includes core fields (title,
           description, keywords, authors, licence, categories, funding_list, related_materials)
-          and stock fields (journal, volume, issue, etc.). Use GET /account/items/fields/item-type/{item_type_id}
+          and stock fields (journal, volume, issue, etc.). Use GET /account/items/fields/configuration/{item_type_id}
           to discover available fields. `categories` is a list of objects, each identified by
           either an `id` (integer) or a `source_id` (string); entries may be mixed. Unresolved
           `source_id` values are reported in the response `warnings` array.
@@ -1812,9 +1812,9 @@ schemas:
         type: string
         description: >-
           Title of the collection. Required. Legacy requests send it at the top
-          level; ITBM (item-type based metadata) requests send it inside the
-          `fields` object, where it is validated. Not listed in top-level
-          `required` because ITBM payloads carry it within `fields`.
+          level; requests for institutions with item-type based metadata enabled send it
+          inside the `fields` object, where it is validated. Not listed in top-level
+          `required` because those payloads carry it within `fields`.
         example: Test collection title
       description:
         maxLength: 20000
@@ -2730,7 +2730,7 @@ schemas:
         type: array
         description: >-
           Available metadata fields for this item type. Only present when item-type based metadata
-          is enabled for the institution (`itbm_config` feature flag). Use GET /account/items/fields/item-type/{item_type_id}
+          is enabled for the institution. Use GET /account/items/fields/configuration/{item_type_id}
           for full detail.
         items:
           $ref: '#/components/schemas/ItemTypeField'
@@ -3512,9 +3512,9 @@ schemas:
         type: string
         description: >-
           The title for this project. Required, 3 - 1000 characters. Legacy
-          requests send it at the top level; ITBM (item-type based metadata)
-          requests send it inside the `fields` object, where it is validated.
-          Not listed in top-level `required` because ITBM payloads carry it
+          requests send it at the top level; requests for institutions with
+          item-type based metadata enabled send it inside the `fields` object, where it is
+          validated. Not listed in top-level `required` because those payloads carry it
           within `fields`.
         example: project title
       description:
@@ -4024,7 +4024,7 @@ schemas:
         description: Date when the item was accepted for publication
         example: '2015-12-31'
     x-tag: timeline_update
-  ItbmTimeline:
+  MetadataTimeline:
     type: object
     description: Timeline object returned in item and collection responses where item-type based metadata is enabled. Keys are snake_case.
     properties:
