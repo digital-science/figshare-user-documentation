@@ -190,11 +190,10 @@ paths:
     get:
       tags:
       - items
-      summary: Public ITBM Items
+      summary: Public Items
       description: >-
-        List public items from institutions with item-type based metadata enabled
-        (`itbm_enabled`). Returns the light list shape (system fields + project_id +
-        item_type); fetch `/v2/items/{item_id}` for the full ITBM detail including
+        List public items from institutions with item-type based metadata enabled. Returns the light list shape (system fields + project_id +
+        item_type); fetch `/v2/items/{item_id}` for the full detail including
         the `fields` object.
       operationId: items_public_list
       parameters:
@@ -225,7 +224,7 @@ paths:
           type: integer
       - name: order
         in: query
-        description: ITBM date keys differ from legacy. `posted_date` aliases the underlying `dates.published` field.
+        description: Date keys differ from legacy. `posted_date` aliases the underlying `dates.published` field.
         schema:
           type: string
           default: created_date
@@ -256,7 +255,7 @@ paths:
           type: integer
       - name: item_type_id
         in: query
-        description: Only return items of this ITBM item type
+        description: Only return items of this item type
         schema:
           type: integer
       responses:
@@ -269,7 +268,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/ArticleWithProject'
         '403':
-          description: Forbidden. ITBM is not enabled for the requested institution.
+          description: Forbidden. Item-type based metadata is not enabled for the requested institution.
           content:
             application/json:
               schema:
@@ -282,8 +281,8 @@ paths:
     post:
       tags:
       - items
-      summary: Public ITBM Items Search
-      description: Search public ITBM items. Same light list shape as `/v2/items`.
+      summary: Public Items Search
+      description: Search public items. Same light list shape as `/v2/items`.
       operationId: items_public_search
       requestBody:
         description: Search Parameters
@@ -302,7 +301,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/ArticleWithProject'
         '403':
-          description: Forbidden. ITBM is not enabled for the requested institution.
+          description: Forbidden. Item-type based metadata is not enabled for the requested institution.
           content:
             application/json:
               schema:
@@ -316,10 +315,10 @@ paths:
     get:
       tags:
       - items
-      summary: Private ITBM Items
+      summary: Private Items
       description: >-
-        List the caller's own ITBM items. Light list shape — fetch
-        `/v2/account/items/{item_id}` for the full ITBM detail.
+        List the caller's own items. Light list shape — fetch
+        `/v2/account/items/{item_id}` for the full detail.
       operationId: account_items_list
       parameters:
       - name: page
@@ -369,7 +368,7 @@ paths:
           - desc
       - name: item_type_id
         in: query
-        description: Only return items of this ITBM item type
+        description: Only return items of this item type
         schema:
           type: integer
       responses:
@@ -382,7 +381,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/ArticleWithProject'
         '403':
-          description: Forbidden. ITBM is not enabled for the caller's institution.
+          description: Forbidden. Item-type based metadata is not enabled for the caller's institution.
           content:
             application/json:
               schema:
@@ -401,7 +400,7 @@ paths:
       description: >-
         Create a new Item by sending item information.
         Stock fields (journal, volume, etc.) are sent inside the `fields` object.
-        Requires item-type based metadata (ITBM) to be enabled for the institution; returns 403 otherwise.
+        Requires item-type based metadata to be enabled for the institution; returns 403 otherwise.
         `categories` input is a list of objects, each identified by either `id` (int) or `source_id` (string);
         entries may be mixed (`[{"id": 69}, {"source_id": "3001"}]`). Unresolved `source_id` values are reported
         in the response `warnings` array.
@@ -427,7 +426,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -447,8 +446,8 @@ paths:
     post:
       tags:
       - items
-      summary: Private ITBM Items Search
-      description: Search the caller's own ITBM items. Same light list shape as `/v2/account/items`.
+      summary: Private Items Search
+      description: Search the caller's own items. Same light list shape as `/v2/account/items`.
       operationId: account_items_search
       requestBody:
         description: Search Parameters
@@ -467,7 +466,7 @@ paths:
                 items:
                   $ref: '#/components/schemas/ArticleWithProject'
         '403':
-          description: Forbidden. ITBM is not enabled for the caller's institution.
+          description: Forbidden. Item-type based metadata is not enabled for the caller's institution.
           content:
             application/json:
               schema:
@@ -485,7 +484,7 @@ paths:
       tags:
       - items
       summary: Public item details
-      description: View a public item. Metadata is returned under the `fields` object with relational fields hydrated (`authors`, `categories`, `licence`, `funding_list`, `related_materials`). Requires item-type based metadata (ITBM) to be enabled for the institution; returns 403 otherwise.
+      description: View a public item. Metadata is returned under the `fields` object with relational fields hydrated (`authors`, `categories`, `licence`, `funding_list`, `related_materials`). Requires item-type based metadata to be enabled for the institution; returns 403 otherwise.
       operationId: public_item_details
       parameters:
       - name: item_id
@@ -512,7 +511,7 @@ paths:
           description: Internal Server Error
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -523,7 +522,7 @@ paths:
       tags:
       - items
       summary: Item details
-      description: View a private item. Metadata is returned under the `fields` object with relational fields hydrated (`authors`, `categories`, `licence`, `funding_list`, `related_materials`). Requires item-type based metadata (ITBM) to be enabled for the institution; returns 403 otherwise.
+      description: View a private item. Metadata is returned under the `fields` object with relational fields hydrated (`authors`, `categories`, `licence`, `funding_list`, `related_materials`). Requires item-type based metadata to be enabled for the institution; returns 403 otherwise.
       operationId: private_item_details
       parameters:
       - name: item_id
@@ -544,7 +543,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/ItemCompletePrivate'
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -566,7 +565,7 @@ paths:
       description: >-
         Update an item by passing full body parameters.
         Stock fields are sent inside the `fields` object.
-        Requires item-type based metadata (ITBM) to be enabled for the institution; returns 403 otherwise.
+        Requires item-type based metadata to be enabled for the institution; returns 403 otherwise.
         `categories` entries accept `id` (int) or `source_id` (string), mixed allowed;
         `licence` input is `{"id": <int>}`. Bare integers are rejected.
       operationId: private_item_update
@@ -601,7 +600,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -661,7 +660,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -720,7 +719,7 @@ paths:
       summary: Item Field Definitions
       description: >-
         Returns the catalog of underlying field definitions (core, stock, custom) for items.
-        Requires item-type based metadata (ITBM) to be enabled for the institution; returns 403 otherwise.
+        Requires item-type based metadata to be enabled for the institution; returns 403 otherwise.
       operationId: items_fields_catalog
       responses:
         '200':
@@ -735,7 +734,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -746,7 +745,7 @@ paths:
       security:
       - OAuth2:
         - all
-  /account/items/fields/item-type/{item_type_id}:
+  /account/items/fields/configuration/{item_type_id}:
     get:
       tags:
       - other
@@ -754,8 +753,8 @@ paths:
       description: >-
         Returns the fields configured for a specific item type, including per-type overrides
         (display_name, hint_text, is_mandatory, order, display_area, settings).
-        Requires item-type based metadata (ITBM) to be enabled for the institution; returns 403 otherwise.
-      operationId: items_fields_by_item_type
+        Requires item-type based metadata to be enabled for the institution; returns 403 otherwise.
+      operationId: items_fields_configuration
       parameters:
       - name: item_type_id
         in: path
@@ -783,7 +782,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -804,7 +803,7 @@ paths:
       summary: Project Field Definitions
       description: >-
         Returns the catalog of underlying field definitions for projects.
-        Requires item-type based metadata (ITBM) to be enabled for the institution; returns 403 otherwise.
+        Requires item-type based metadata to be enabled for the institution; returns 403 otherwise.
       operationId: projects_fields_catalog
       responses:
         '200':
@@ -819,11 +818,55 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+  /account/projects/fields/configuration:
+    get:
+      tags:
+      - other
+      summary: Project Field Configuration
+      description: >-
+        Returns the fields configured for projects, including per-type overrides
+        (display_name, hint_text, is_mandatory, order, display_area, settings).
+        Requires item-type based metadata to be enabled for the institution; returns 403 otherwise.
+      operationId: projects_fields_configuration
+      parameters:
+      - name: group_id
+        in: query
+        description: Filter fields by group applicability
+        schema:
+          minimum: 1
+          type: integer
+      responses:
+        '200':
+          description: OK. An array of project field configurations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ItemTypeField'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
         '500':
           description: Internal Server Error
           content: {}
@@ -837,7 +880,7 @@ paths:
       summary: Collection Field Definitions
       description: >-
         Returns the catalog of underlying field definitions for collections.
-        Requires item-type based metadata (ITBM) to be enabled for the institution; returns 403 otherwise.
+        Requires item-type based metadata to be enabled for the institution; returns 403 otherwise.
       operationId: collections_fields_catalog
       responses:
         '200':
@@ -852,7 +895,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -863,15 +906,58 @@ paths:
       security:
       - OAuth2:
         - all
+  /account/collections/fields/configuration:
+    get:
+      tags:
+      - other
+      summary: Collection Field Configuration
+      description: >-
+        Returns the fields configured for collections, including per-type overrides
+        (display_name, hint_text, is_mandatory, order, display_area, settings).
+        Requires item-type based metadata to be enabled for the institution; returns 403 otherwise.
+      operationId: collections_fields_configuration
+      parameters:
+      - name: group_id
+        in: query
+        description: Filter fields by group applicability
+        schema:
+          minimum: 1
+          type: integer
+      responses:
+        '200':
+          description: OK. An array of collection field configurations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ItemTypeField'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
   /projects:
     get:
       tags:
       - projects
-      summary: Public ITBM Projects
+      summary: Public Projects
       description: >-
-        List public projects from institutions with item-type based metadata enabled
-        (`itbm_enabled`). Returns the light list shape; fetch `/v3/projects/{project_id}`
-        for the full ITBM detail including the `fields` object.
+        List public projects from institutions with item-type based metadata enabled. Returns the light list shape; fetch `/v3/projects/{project_id}`
+        for the full detail including the `fields` object.
       operationId: projects_public_list
       parameters:
       - name: page
@@ -901,7 +987,7 @@ paths:
           type: integer
       - name: order
         in: query
-        description: ITBM date keys. Legacy keys (`published_date`, `modified_date`, `views`) are rejected for ITBM tenants.
+        description: Date keys. Legacy keys (`published_date`, `modified_date`, `views`) are rejected for institutions with item-type based metadata enabled.
         schema:
           type: string
           default: created_date
@@ -942,13 +1028,13 @@ paths:
                 items:
                   $ref: '#/components/schemas/Project'
         '403':
-          description: Forbidden. ITBM is not enabled for the requested institution.
+          description: Forbidden. Item-type based metadata is not enabled for the requested institution.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorMessage'
         '422':
-          description: Unprocessable Entity. Malformed `institution` or unsupported `order` for an ITBM tenant.
+          description: Unprocessable Entity. Malformed `institution` or unsupported `order` for an institution with item-type based metadata enabled.
           content: {}
         '500':
           description: Internal Server Error
@@ -958,8 +1044,8 @@ paths:
     post:
       tags:
       - projects
-      summary: Public ITBM Projects Search
-      description: Search public ITBM projects. Same light list shape as `/v3/projects`.
+      summary: Public Projects Search
+      description: Search public projects. Same light list shape as `/v3/projects`.
       operationId: projects_public_search
       requestBody:
         description: Search Parameters
@@ -978,13 +1064,13 @@ paths:
                 items:
                   $ref: '#/components/schemas/Project'
         '403':
-          description: Forbidden. ITBM is not enabled for the requested institution.
+          description: Forbidden. Item-type based metadata is not enabled for the requested institution.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorMessage'
         '422':
-          description: Unprocessable Entity. Malformed `institution` or unsupported `order` for an ITBM tenant.
+          description: Unprocessable Entity. Malformed `institution` or unsupported `order` for an institution with item-type based metadata enabled.
           content: {}
         '500':
           description: Internal Server Error
@@ -995,11 +1081,10 @@ paths:
     get:
       tags:
       - projects
-      summary: Private ITBM Projects
+      summary: Private Projects
       description: >-
-        List the caller's own ITBM projects (light list shape). 403 when ITBM is not
-        enabled for the caller's institution; fetch `/v3/account/projects/{project_id}`
-        for the full ITBM detail.
+        List the caller's own projects (light list shape). 403 when item-type based metadata is not enabled for the caller's institution; fetch `/v3/account/projects/{project_id}`
+        for the full detail.
       operationId: private_projects_list
       parameters:
       - name: page
@@ -1029,7 +1114,7 @@ paths:
           type: integer
       - name: order
         in: query
-        description: ITBM date keys. Legacy keys (`published_date`, `modified_date`, `views`) are rejected for ITBM tenants.
+        description: Date keys. Legacy keys (`published_date`, `modified_date`, `views`) are rejected for institutions with item-type based metadata enabled.
         schema:
           type: string
           default: created_date
@@ -1073,13 +1158,13 @@ paths:
                 items:
                   $ref: '#/components/schemas/ProjectPrivate'
         '403':
-          description: Forbidden. ITBM is not enabled for the caller's institution.
+          description: Forbidden. Item-type based metadata is not enabled for the caller's institution.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorMessage'
         '422':
-          description: Unprocessable Entity. Unsupported `order`, `roles`, or `storage` for an ITBM tenant.
+          description: Unprocessable Entity. Unsupported `order`, `roles`, or `storage` for an institution with item-type based metadata enabled.
           content: {}
         '500':
           description: Internal Server Error
@@ -1092,7 +1177,7 @@ paths:
       - projects
       summary: Create project
       description: >-
-        Create a new ITBM project. All metadata is wrapped in a `fields` object
+        Create a new project. All metadata is wrapped in a `fields` object
         (`title` is required; `description`, `funding_list`, and any configured
         custom fields are optional); `group_id` is the only top-level key. Legacy
         flat-payload top-level metadata is rejected with 422. `funding_list`
@@ -1118,7 +1203,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -1135,8 +1220,8 @@ paths:
     post:
       tags:
       - projects
-      summary: Private ITBM Projects Search
-      description: Search the caller's own ITBM projects. Same light list shape as `/v3/account/projects`.
+      summary: Private Projects Search
+      description: Search the caller's own projects. Same light list shape as `/v3/account/projects`.
       operationId: private_projects_search
       requestBody:
         description: Search Parameters
@@ -1155,13 +1240,13 @@ paths:
                 items:
                   $ref: '#/components/schemas/ProjectPrivate'
         '403':
-          description: Forbidden. ITBM is not enabled for the caller's institution.
+          description: Forbidden. Item-type based metadata is not enabled for the caller's institution.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorMessage'
         '422':
-          description: Unprocessable Entity. Unsupported `order`, `roles`, or `storage` for an ITBM tenant.
+          description: Unprocessable Entity. Unsupported `order`, `roles`, or `storage` for an institution with item-type based metadata enabled.
           content: {}
         '500':
           description: Internal Server Error
@@ -1174,11 +1259,10 @@ paths:
     get:
       tags:
       - collections
-      summary: Public ITBM Collections
+      summary: Public Collections
       description: >-
-        List public collections from institutions with item-type based metadata enabled
-        (`itbm_enabled`). Returns the light list shape; fetch `/v3/collections/{collection_id}`
-        for the full ITBM detail including the `fields` object.
+        List public collections from institutions with item-type based metadata enabled. Returns the light list shape; fetch `/v3/collections/{collection_id}`
+        for the full detail including the `fields` object.
       operationId: collections_public_list
       parameters:
       - name: page
@@ -1208,7 +1292,7 @@ paths:
           type: integer
       - name: order
         in: query
-        description: Collection ITBM date keys.
+        description: Collection date keys.
         schema:
           type: string
           default: created_date
@@ -1236,7 +1320,7 @@ paths:
           type: integer
       - name: item_type_id
         in: query
-        description: Only return collections with items of this ITBM item type
+        description: Only return collections with items of this item type
         schema:
           type: integer
       responses:
@@ -1249,13 +1333,13 @@ paths:
                 items:
                   $ref: '#/components/schemas/Collection'
         '403':
-          description: Forbidden. ITBM is not enabled for the requested institution.
+          description: Forbidden. Item-type based metadata is not enabled for the requested institution.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorMessage'
         '422':
-          description: Unprocessable Entity. Malformed `institution` or unsupported `order` for an ITBM tenant.
+          description: Unprocessable Entity. Malformed `institution` or unsupported `order` for an institution with item-type based metadata enabled.
           content: {}
         '500':
           description: Internal Server Error
@@ -1265,8 +1349,8 @@ paths:
     post:
       tags:
       - collections
-      summary: Public ITBM Collections Search
-      description: Search public ITBM collections. Same light list shape as `/v3/collections`.
+      summary: Public Collections Search
+      description: Search public collections. Same light list shape as `/v3/collections`.
       operationId: collections_public_search
       requestBody:
         description: Search Parameters
@@ -1285,13 +1369,13 @@ paths:
                 items:
                   $ref: '#/components/schemas/Collection'
         '403':
-          description: Forbidden. ITBM is not enabled for the requested institution.
+          description: Forbidden. Item-type based metadata is not enabled for the requested institution.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorMessage'
         '422':
-          description: Unprocessable Entity. Malformed `institution` or unsupported `order` for an ITBM tenant.
+          description: Unprocessable Entity. Malformed `institution` or unsupported `order` for an institution with item-type based metadata enabled.
           content: {}
         '500':
           description: Internal Server Error
@@ -1302,11 +1386,10 @@ paths:
     get:
       tags:
       - collections
-      summary: Private ITBM Collections
+      summary: Private Collections
       description: >-
-        List the caller's own ITBM collections (light list shape). 403 when ITBM is not
-        enabled for the caller's institution; fetch `/v3/account/collections/{collection_id}`
-        for the full ITBM detail.
+        List the caller's own collections (light list shape). 403 when item-type based metadata is not enabled for the caller's institution; fetch `/v3/account/collections/{collection_id}`
+        for the full detail.
       operationId: private_collections_list
       parameters:
       - name: page
@@ -1336,7 +1419,7 @@ paths:
           type: integer
       - name: order
         in: query
-        description: Collection ITBM date keys.
+        description: Collection date keys.
         schema:
           type: string
           default: created_date
@@ -1354,7 +1437,7 @@ paths:
           - desc
       - name: item_type_id
         in: query
-        description: Only return collections with items of this ITBM item type
+        description: Only return collections with items of this item type
         schema:
           type: integer
       responses:
@@ -1367,13 +1450,13 @@ paths:
                 items:
                   $ref: '#/components/schemas/Collection'
         '403':
-          description: Forbidden. ITBM is not enabled for the caller's institution.
+          description: Forbidden. Item-type based metadata is not enabled for the caller's institution.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorMessage'
         '422':
-          description: Unprocessable Entity. Unsupported `order` for an ITBM tenant.
+          description: Unprocessable Entity. Unsupported `order` for an institution with item-type based metadata enabled.
           content: {}
         '500':
           description: Internal Server Error
@@ -1386,7 +1469,7 @@ paths:
       - collections
       summary: Create collection
       description: >-
-        Create a new ITBM collection. All metadata is wrapped in a `fields` object
+        Create a new collection. All metadata is wrapped in a `fields` object
         (`title` is required); `group_id` is the only other top-level key. Legacy
         flat-payload top-level metadata is rejected with 422. `categories` entries
         accept `id` (int) or `source_id` (string), mixed allowed; unresolved
@@ -1411,7 +1494,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -1428,8 +1511,8 @@ paths:
     post:
       tags:
       - collections
-      summary: Private ITBM Collections Search
-      description: Search the caller's own ITBM collections. Same light list shape as `/v3/account/collections`.
+      summary: Private Collections Search
+      description: Search the caller's own collections. Same light list shape as `/v3/account/collections`.
       operationId: private_collections_search
       requestBody:
         description: Search Parameters
@@ -1448,13 +1531,13 @@ paths:
                 items:
                   $ref: '#/components/schemas/Collection'
         '403':
-          description: Forbidden. ITBM is not enabled for the caller's institution.
+          description: Forbidden. Item-type based metadata is not enabled for the caller's institution.
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorMessage'
         '422':
-          description: Unprocessable Entity. Unsupported `order` for an ITBM tenant.
+          description: Unprocessable Entity. Unsupported `order` for an institution with item-type based metadata enabled.
           content: {}
         '500':
           description: Internal Server Error
@@ -1498,7 +1581,7 @@ paths:
           description: Internal Server Error
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -1546,7 +1629,7 @@ paths:
           description: Internal Server Error
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -1624,7 +1707,7 @@ paths:
           description: Internal Server Error
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -1695,7 +1778,7 @@ paths:
           description: Internal Server Error
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -1741,7 +1824,7 @@ paths:
           description: Internal Server Error
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -1794,7 +1877,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -1858,7 +1941,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -1935,7 +2018,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -1983,7 +2066,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -2026,7 +2109,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -2077,7 +2160,7 @@ paths:
           description: Bad Request. Item ID must be an integer and bigger than 0. Author with ID Not Found.
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -2129,7 +2212,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -2172,7 +2255,7 @@ paths:
           description: No Content
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -2224,7 +2307,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -2268,7 +2351,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -2322,7 +2405,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -2342,7 +2425,7 @@ paths:
       tags:
       - items
       summary: List project items
-      description: List project items Requires item-type based metadata (ITBM) to be enabled for the institution;
+      description: List project items Requires item-type based metadata to be enabled for the institution;
         returns 403 otherwise.
       operationId: private_project_items_list
       parameters:
@@ -2380,7 +2463,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -2430,7 +2513,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -2529,7 +2612,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -2549,7 +2632,7 @@ paths:
       tags:
       - items
       summary: List collection items
-      description: List collection items Requires item-type based metadata (ITBM) to be enabled for the institution;
+      description: List collection items Requires item-type based metadata to be enabled for the institution;
         returns 403 otherwise.
       operationId: private_collection_items_list
       parameters:
@@ -2602,7 +2685,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -2669,13 +2752,13 @@ paths:
         - all
       x-subcategory: Private Collection Items
       x-codegen-request-body-name: items
-  # Baseline-inherited v3 paths overridden with the ITBM-only contract (single shape + 403 gate).
+  # Baseline-inherited v3 paths overridden with a single response shape and a 403 gate when item-type based metadata is disabled.
   /item_types:
     get:
       tags:
       - other
       summary: Item Types
-      description: List the institution's selectable item types with their ITBM field configuration.
+      description: List the institution's selectable item types with their field configuration.
       operationId: item_types_list
       parameters:
       - name: group_id
@@ -2698,7 +2781,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -2719,7 +2802,7 @@ paths:
       summary: Public Project
       description: View a public project. Metadata is returned under the `fields` object with relational
         fields hydrated (`authors`, `categories`, `licence`, `funding_list`, `related_materials`). Requires
-        item-type based metadata (ITBM) to be enabled for the institution; returns 403 otherwise.
+        item-type based metadata to be enabled for the institution; returns 403 otherwise.
       operationId: project_details
       parameters:
       - name: project_id
@@ -2746,7 +2829,7 @@ paths:
           description: Internal Server Error
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -2759,7 +2842,7 @@ paths:
       summary: View project details
       description: View a private project. Metadata is returned under the `fields` object with relational
         fields hydrated (`authors`, `categories`, `licence`, `funding_list`, `related_materials`). Requires
-        item-type based metadata (ITBM) to be enabled for the institution; returns 403 otherwise.
+        item-type based metadata to be enabled for the institution; returns 403 otherwise.
       operationId: private_project_details
       parameters:
       - name: project_id
@@ -2780,7 +2863,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -2801,7 +2884,7 @@ paths:
       summary: Update project
       description: 'Update a project by passing full body parameters. Metadata is wrapped in a
         `fields` object. `funding_list` entries accept `{"id": <int>}` or `{"title": "..."}`.
-        Requires item-type based metadata (ITBM) to be enabled for the institution;
+        Requires item-type based metadata to be enabled for the institution;
         returns 403 otherwise.'
       operationId: private_project_update
       parameters:
@@ -2830,7 +2913,7 @@ paths:
                 format: uri
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -2857,7 +2940,7 @@ paths:
 
 
         When a group project is deleted, all the articles and files are deleted as well. Only project owner,
-        group admin and above can delete a project. Requires item-type based metadata (ITBM) to be enabled
+        group admin and above can delete a project. Requires item-type based metadata to be enabled
         for the institution; returns 403 otherwise.'
       operationId: private_project_delete
       parameters:
@@ -2873,7 +2956,7 @@ paths:
           description: No Content
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -2895,8 +2978,7 @@ paths:
       description: 'Partially update a project; only provided keys will be changed. For institutions with
         item-type based metadata enabled, send the keys to update inside `fields:{}` — keys not present
         are preserved. `funding_list` entries accept `{"id": <int>}` or `{"title": "..."}`. Unrecognised
-        field names inside `fields` (e.g. a typo) are rejected with 422. Requires item-type based metadata
-        (ITBM) to be enabled for the institution; returns 403 otherwise.'
+        field names inside `fields` (e.g. a typo) are rejected with 422. Requires item-type based metadata to be enabled for the institution; returns 403 otherwise.'
       operationId: private_project_partial_update
       parameters:
       - name: project_id
@@ -2924,7 +3006,7 @@ paths:
                 format: uri
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -2947,7 +3029,7 @@ paths:
       summary: Collection details
       description: View a public collection. Metadata is returned under the `fields` object with relational
         fields hydrated (`authors`, `categories`, `licence`, `funding_list`, `related_materials`). Requires
-        item-type based metadata (ITBM) to be enabled for the institution; returns 403 otherwise.
+        item-type based metadata to be enabled for the institution; returns 403 otherwise.
       operationId: collection_details
       parameters:
       - name: collection_id
@@ -2974,7 +3056,7 @@ paths:
           description: Internal Server Error
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -2988,7 +3070,7 @@ paths:
       summary: Collection details
       description: View a private collection. Metadata is returned under the `fields` object with relational
         fields hydrated (`authors`, `categories`, `licence`, `funding_list`, `related_materials`). Requires
-        item-type based metadata (ITBM) to be enabled for the institution; returns 403 otherwise.
+        item-type based metadata to be enabled for the institution; returns 403 otherwise.
       operationId: private_collection_details
       parameters:
       - name: collection_id
@@ -3015,7 +3097,7 @@ paths:
           description: Internal Server Error
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -3031,7 +3113,7 @@ paths:
       description: Update a collection by passing full body parameters. Metadata is wrapped in a
         `fields` object; `categories` entries accept `id` (int) or `source_id` (string), mixed allowed
         (bare integers rejected). Unresolved `source_id` values are reported in the response `warnings`
-        array. Requires item-type based metadata (ITBM) to be enabled for the institution;
+        array. Requires item-type based metadata to be enabled for the institution;
         returns 403 otherwise.
       operationId: private_collection_update
       parameters:
@@ -3066,7 +3148,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -3086,7 +3168,7 @@ paths:
       tags:
       - collections
       summary: Delete collection
-      description: Delete a collection. Requires item-type based metadata (ITBM) to be enabled for the institution;
+      description: Delete a collection. Requires item-type based metadata to be enabled for the institution;
         returns 403 otherwise.
       operationId: private_collection_delete
       parameters:
@@ -3105,7 +3187,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -3128,7 +3210,7 @@ paths:
         item-type based metadata, send the keys to update inside `fields:{}` — keys not present are preserved.
         `categories` entries accept `id` (int) or `source_id` (string), mixed allowed (bare integers rejected).
         Unresolved `source_id` values are reported in the response `warnings` array. Unrecognised field
-        names inside `fields` (e.g. a typo) are rejected with 422. Requires item-type based metadata (ITBM)
+        names inside `fields` (e.g. a typo) are rejected with 422. Requires item-type based metadata
         to be enabled for the institution; returns 403 otherwise.
       operationId: private_collection_patch
       parameters:
@@ -3163,7 +3245,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -3181,7 +3263,7 @@ paths:
       x-codegen-request-body-name: Collection
 
   # Article-family routes renamed to item-nomenclature (business logic unchanged, only
-  # the path/operationId is renamed; a handful also gained item-type based metadata (ITBM)
+  # the path/operationId is renamed; a handful also gained item-type based metadata
   # gating where the response body was reshaped through item presenters -- see the
   # migration plan for the full mapping).
   /items/{item_id}/versions/{version_id}/embargo:
@@ -4246,7 +4328,7 @@ paths:
       tags:
       - items
       summary: Public Collection Items
-      description: Returns a list of public collection items Requires item-type based metadata (ITBM) to be enabled
+      description: Returns a list of public collection items Requires item-type based metadata to be enabled
         for the institution; returns 403 otherwise.
       operationId: collection_items
       parameters:
@@ -4308,7 +4390,7 @@ paths:
           description: Internal Server Error
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -4320,7 +4402,7 @@ paths:
       - items
       summary: Private Institution Items
       description: Get Items from own institution. User must be administrator of the institution Requires item-type
-        based metadata (ITBM) to be enabled for the institution; returns 403 otherwise.
+        based metadata to be enabled for the institution; returns 403 otherwise.
       operationId: private_institution_items
       parameters:
       - name: page
@@ -4423,7 +4505,7 @@ paths:
           description: Bad Request
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -4439,7 +4521,7 @@ paths:
       tags:
       - items
       summary: Public Institution Items
-      description: Returns a list of items belonging to the institution Requires item-type based metadata (ITBM)
+      description: Returns a list of items belonging to the institution Requires item-type based metadata
         to be enabled for the institution; returns 403 otherwise.
       operationId: institution_items
       parameters:
@@ -4471,7 +4553,7 @@ paths:
           description: Internal Server Error
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:
@@ -4481,7 +4563,7 @@ paths:
       tags:
       - items
       summary: Public Project Items
-      description: List items in project Requires item-type based metadata (ITBM) to be enabled for the institution;
+      description: List items in project Requires item-type based metadata to be enabled for the institution;
         returns 403 otherwise.
       operationId: project_items
       parameters:
@@ -4540,7 +4622,7 @@ paths:
           description: Internal Server Error
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata (ITBM) is not enabled for the institution.
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
           content:
             application/json:
               schema:

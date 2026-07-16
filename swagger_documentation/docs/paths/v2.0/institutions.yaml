@@ -215,7 +215,7 @@ paths:
       summary: Group custom fields
       description: >-
         Returns the custom fields for the specified group. Deprecated in favour of
-        GET /account/items/fields/item-type/{item_type_id}. Will be removed after 2027-01-01.
+        GET /account/items/fields/configuration/{item_type_id}. Will be removed after 2027-01-01.
       operationId: account_group_custom_fields
       parameters:
       - name: group_id
@@ -256,7 +256,7 @@ paths:
       - institutions
       summary: Private account institution group custom fields
       description: Returns the custom fields in the group the user belongs to, or the ones in the group specified, if the
-        user has access. Deprecated in favour of GET /account/items/fields/item-type/{item_type_id}. Will be removed after 2027-01-01.
+        user has access. Deprecated in favour of GET /account/items/fields/configuration/{item_type_id}. Will be removed after 2027-01-01.
       operationId: custom_fields_list
       parameters:
       - name: group_id

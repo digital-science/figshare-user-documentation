@@ -1,4 +1,4 @@
-# Auto-derived: keep only the ITBM v3 surface from the v2.0 baseline.
+# Auto-derived: keep only the item-type-based-metadata v3 surface from the v2.0 baseline.
 # v3 also adds the item endpoints via inclusions.yaml.
 exclude_paths:
 - /account/articles

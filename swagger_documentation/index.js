@@ -1415,7 +1415,7 @@
                 if (el) el.style.display = displayValue;
             });
 
-            // v3 (ITBM) intro — the inverse: shown only on v3, hidden elsewhere.
+            // v3 intro — the inverse: shown only on v3, hidden elsewhere.
             var v3Intro = document.getElementById('documentation-sections-v3');
             if (v3Intro) v3Intro.style.display = major === '3' ? '' : 'none';
 
@@ -2980,7 +2980,7 @@
         // This ensures API endpoint documentation (Articles, Authors, Collections, etc.) appears in between
         swaggerWrapper.insertAdjacentHTML('beforeend', docContentAfter);
 
-        // v3 (ITBM) intro — shown only on the v3 version (see applyVersionDocVisibility). Starts
+        // v3 intro — shown only on the v3 version (see applyVersionDocVisibility). Starts
         // hidden and is inserted at the very top so it precedes the API operations when shown.
         let docContentV3 = '<div id="documentation-sections-v3" style="max-width: 100%; display: none;">';
         docContentV3 += '<div id="doc-section-v3-intro" class="guide-section" style="margin-bottom: 40px;">';
