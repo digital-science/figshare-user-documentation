@@ -14512,11 +14512,11 @@
                     },
                     "group_id": {
                         "type": "integer",
-                        "description": "The group in which the article is present."
+                        "description": "The group in which the item is present."
                     },
                     "account_id": {
                         "type": "integer",
-                        "description": "The ID of the account of the owner of the article of this review."
+                        "description": "The ID of the account of the owner of the item of this review."
                     },
                     "assigned_to": {
                         "type": "integer",
@@ -14528,7 +14528,7 @@
                     },
                     "version": {
                         "type": "integer",
-                        "description": "The Version number of the article in review."
+                        "description": "The Version number of the item in review."
                     },
                     "comments_count": {
                         "type": "integer",
@@ -14633,7 +14633,7 @@
                 ],
                 "properties": {
                     "item": {
-                        "$ref": "#/components/schemas/ArticleComplete"
+                        "$ref": "#/components/schemas/ItemComplete"
                     }
                 },
                 "allOf": [
