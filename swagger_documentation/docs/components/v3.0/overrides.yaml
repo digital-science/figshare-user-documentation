@@ -477,9 +477,9 @@ schemas:
         type: integer
         description: Collection institution
         example: 1
-      articles_count:
+      items_count:
         type: integer
-        description: Number of articles in collection
+        description: Number of items in collection
         example: 1
       public:
         type: boolean
@@ -514,7 +514,7 @@ schemas:
         example: 1000001
     required:
     - account_id
-    - articles_count
+    - items_count
     - created_date
     - doi
     - group_id
@@ -586,9 +586,9 @@ schemas:
         type: integer
         description: Collection institution
         example: 1
-      articles_count:
+      items_count:
         type: integer
-        description: Number of articles in collection
+        description: Number of items in collection
         example: 1
       public:
         type: boolean
@@ -618,7 +618,7 @@ schemas:
           \ identifier, identifier_type}]; categories \u2192 [{id, title, parent_id, path, source_id, taxonomy_id}]."
         additionalProperties: {}
     required:
-    - articles_count
+    - items_count
     - created_date
     - doi
     - group_id
@@ -1005,3 +1005,66 @@ schemas:
     allOf:
     - $ref: '#/components/schemas/CommonSearch'
     x-tag: collections
+  # v3 review shape: article_id renamed to item_id (item nomenclature); v2 keeps article_id.
+  Curation:
+    required:
+    - account_id
+    - item_id
+    - assigned_to
+    - comments_count
+    - created_date
+    - group_id
+    - id
+    - modified_date
+    - request_number
+    - resolution_comment
+    - status
+    - version
+    type: object
+    properties:
+      id:
+        type: integer
+        description: The review id
+      group_id:
+        type: integer
+        description: The group in which the article is present.
+      account_id:
+        type: integer
+        description: The ID of the account of the owner of the article of this review.
+      assigned_to:
+        type: integer
+        description: The ID of the account to which this review is assigned.
+      item_id:
+        type: integer
+        description: The ID of the item of this review.
+      version:
+        type: integer
+        description: The Version number of the article in review.
+      comments_count:
+        type: integer
+        description: The number of comments in the review.
+      status:
+        type: string
+        description: The status of the review.
+        enum:
+        - pending
+        - approved
+        - rejected
+        - closed
+      created_date:
+        type: string
+        description: The creation date of the review.
+      modified_date:
+        type: string
+        description: The date the review has been modified.
+      request_number:
+        type: integer
+        description: The request number of the review.
+      resolution_comment:
+        type: string
+        description: The resolution comment of the review.
+      review_date:
+        type: string
+        description: The date of the review.
+        example: '2021-11-16T13:03:38'
+    x-tag: institutions

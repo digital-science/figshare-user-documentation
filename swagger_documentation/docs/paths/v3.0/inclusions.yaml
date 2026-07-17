@@ -2871,7 +2871,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ArticlesCreator'
+              $ref: '#/components/schemas/ItemsCreator'
         required: true
       responses:
         '205':
@@ -5655,6 +5655,76 @@ paths:
                 $ref: '#/components/schemas/ErrorMessage'
         '409':
           description: Conflict
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+  # v3 override: the review-list filter is exposed as item_id (item nomenclature); v2 keeps article_id.
+  /account/institution/reviews:
+    get:
+      tags:
+      - institutions
+      summary: Institution Curation Reviews
+      description: Retrieve a list of curation reviews for this institution
+      operationId: account_institution_curations
+      parameters:
+      - name: group_id
+        in: query
+        description: Filter by the group ID
+        schema:
+          minimum: 0
+          type: integer
+      - name: item_id
+        in: query
+        description: Retrieve the reviews for this item
+        schema:
+          minimum: 0
+          type: integer
+      - name: status
+        in: query
+        description: Filter by the status of the review
+        schema:
+          type: string
+          enum:
+          - pending
+          - approved
+          - rejected
+          - closed
+      - name: limit
+        in: query
+        description: Number of results included on a page. Used for pagination with query
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+      - name: offset
+        in: query
+        description: Where to start the listing (the offset of the first result). Used for pagination with limit
+        schema:
+          maximum: 5000
+          minimum: 0
+          type: integer
+      responses:
+        '200':
+          description: OK. A list of curation reviews.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Curation'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
           content: {}
         '500':
           description: Internal Server Error

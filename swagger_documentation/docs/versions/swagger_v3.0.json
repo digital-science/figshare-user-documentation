@@ -3290,9 +3290,9 @@
                         }
                     },
                     {
-                        "name": "article_id",
+                        "name": "item_id",
                         "in": "query",
-                        "description": "Retrieve the reviews for this article",
+                        "description": "Retrieve the reviews for this item",
                         "schema": {
                             "minimum": 0,
                             "type": "integer"
@@ -9096,7 +9096,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/ArticlesCreator"
+                                "$ref": "#/components/schemas/ItemsCreator"
                             }
                         }
                     },
@@ -14005,9 +14005,9 @@
                         "description": "Collection institution",
                         "example": 1
                     },
-                    "articles_count": {
+                    "items_count": {
                         "type": "integer",
-                        "description": "Number of articles in collection",
+                        "description": "Number of items in collection",
                         "example": 1
                     },
                     "public": {
@@ -14039,7 +14039,7 @@
                     }
                 },
                 "required": [
-                    "articles_count",
+                    "items_count",
                     "created_date",
                     "doi",
                     "group_id",
@@ -14126,9 +14126,9 @@
                         "description": "Collection institution",
                         "example": 1
                     },
-                    "articles_count": {
+                    "items_count": {
                         "type": "integer",
-                        "description": "Number of articles in collection",
+                        "description": "Number of items in collection",
                         "example": 1
                     },
                     "public": {
@@ -14166,7 +14166,7 @@
                 },
                 "required": [
                     "account_id",
-                    "articles_count",
+                    "items_count",
                     "created_date",
                     "doi",
                     "group_id",
@@ -14483,7 +14483,7 @@
             "Curation": {
                 "required": [
                     "account_id",
-                    "article_id",
+                    "item_id",
                     "assigned_to",
                     "comments_count",
                     "created_date",
@@ -14513,9 +14513,9 @@
                         "type": "integer",
                         "description": "The ID of the account to which this review is assigned."
                     },
-                    "article_id": {
+                    "item_id": {
                         "type": "integer",
-                        "description": "The ID of the article of this review."
+                        "description": "The ID of the item of this review."
                     },
                     "version": {
                         "type": "integer",
