@@ -6041,7 +6041,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/ArticleWithProject"
+                                        "$ref": "#/components/schemas/ItemWithProject"
                                     }
                                 }
                             }
@@ -6092,7 +6092,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/ArticleWithProject"
+                                        "$ref": "#/components/schemas/ItemWithProject"
                                     }
                                 }
                             }
@@ -6208,7 +6208,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/ArticleWithProject"
+                                        "$ref": "#/components/schemas/ItemWithProject"
                                     }
                                 }
                             }
@@ -6328,7 +6328,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/ArticleWithProject"
+                                        "$ref": "#/components/schemas/ItemWithProject"
                                     }
                                 }
                             }
@@ -7078,7 +7078,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/ArticleVersions"
+                                        "$ref": "#/components/schemas/ItemVersions"
                                     }
                                 }
                             }
@@ -8638,7 +8638,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/Article"
+                                        "$ref": "#/components/schemas/Item"
                                     }
                                 }
                             }
@@ -8969,7 +8969,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/Article"
+                                        "$ref": "#/components/schemas/Item"
                                     }
                                 }
                             }
@@ -9121,7 +9121,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ArticleEmbargo"
+                                    "$ref": "#/components/schemas/ItemEmbargo"
                                 }
                             }
                         }
@@ -9178,7 +9178,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ArticleConfidentiality"
+                                    "$ref": "#/components/schemas/ItemConfidentiality"
                                 }
                             }
                         }
@@ -9404,7 +9404,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ArticleEmbargo"
+                                    "$ref": "#/components/schemas/ItemEmbargo"
                                 }
                             }
                         }
@@ -9681,7 +9681,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ArticleDOI"
+                                    "$ref": "#/components/schemas/ItemDOI"
                                 }
                             }
                         }
@@ -9744,7 +9744,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ArticleHandle"
+                                    "$ref": "#/components/schemas/ItemHandle"
                                 }
                             }
                         }
@@ -10072,7 +10072,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ArticleConfidentiality"
+                                    "$ref": "#/components/schemas/ItemConfidentiality"
                                 }
                             }
                         }
@@ -10747,7 +10747,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/Article"
+                                        "$ref": "#/components/schemas/Item"
                                     }
                                 }
                             }
@@ -10927,7 +10927,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/ArticleWithProject"
+                                        "$ref": "#/components/schemas/ItemWithProject"
                                     }
                                 }
                             }
@@ -11003,7 +11003,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/Article"
+                                        "$ref": "#/components/schemas/Item"
                                     }
                                 }
                             }
@@ -11095,7 +11095,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/ArticleWithProject"
+                                        "$ref": "#/components/schemas/ItemWithProject"
                                     }
                                 }
                             }
@@ -16879,6 +16879,274 @@
                         "format": "url"
                     }
                 }
+            },
+            "Item": {
+                "required": [
+                    "created_date",
+                    "doi",
+                    "handle",
+                    "id",
+                    "resource_doi",
+                    "resource_title",
+                    "thumb",
+                    "title",
+                    "url",
+                    "url_private_api",
+                    "url_private_html",
+                    "url_public_api",
+                    "url_public_html"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "description": "Unique identifier for item",
+                        "example": 1434614
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "Title of item",
+                        "example": "Test item title"
+                    },
+                    "doi": {
+                        "type": "string",
+                        "description": "DOI",
+                        "example": "10.6084/m9.figshare.1434614"
+                    },
+                    "handle": {
+                        "type": "string",
+                        "description": "Handle",
+                        "example": "111184/figshare.1234"
+                    },
+                    "url": {
+                        "type": "string",
+                        "description": "Api endpoint for item",
+                        "format": "url",
+                        "example": "http://api.figshare.com/v3/items/1434614"
+                    },
+                    "url_public_html": {
+                        "type": "string",
+                        "description": "Public site endpoint for item",
+                        "format": "url"
+                    },
+                    "url_public_api": {
+                        "type": "string",
+                        "description": "Public Api endpoint for item",
+                        "format": "url"
+                    },
+                    "url_private_html": {
+                        "type": "string",
+                        "description": "Private site endpoint for item",
+                        "format": "url"
+                    },
+                    "url_private_api": {
+                        "type": "string",
+                        "description": "Private Api endpoint for item",
+                        "format": "url"
+                    },
+                    "thumb": {
+                        "type": "string",
+                        "description": "Thumbnail image",
+                        "format": "url"
+                    },
+                    "item_type_id": {
+                        "type": "integer",
+                        "nullable": true,
+                        "description": "Item type id",
+                        "example": 3
+                    },
+                    "item_type_name": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Item type name",
+                        "example": "dataset"
+                    },
+                    "resource_doi": {
+                        "type": "string",
+                        "description": "Deprecated by related materials. Not applicable to regular users. In a publisher case, this is the publisher item DOI.",
+                        "default": ""
+                    },
+                    "resource_title": {
+                        "type": "string",
+                        "description": "Deprecated by related materials. Not applicable to regular users. In a publisher case, this is the publisher item title.",
+                        "default": ""
+                    },
+                    "created_date": {
+                        "type": "string",
+                        "description": "Date when item was created",
+                        "example": "2017-05-18T11:49:03Z"
+                    },
+                    "modified_date": {
+                        "type": "string",
+                        "description": "Date when item was last modified",
+                        "example": "2017-05-18T11:49:03Z"
+                    },
+                    "published_date": {
+                        "type": "string",
+                        "description": "Date when item was first published, null if not published",
+                        "example": "2017-05-18T11:49:03Z"
+                    },
+                    "group_id": {
+                        "type": "integer",
+                        "description": "Group ID of the item",
+                        "example": 1
+                    }
+                },
+                "x-tag": "items"
+            },
+            "ItemWithProject": {
+                "required": [
+                    "project_id"
+                ],
+                "properties": {
+                    "project_id": {
+                        "type": "integer",
+                        "description": "Project id for this item.",
+                        "example": 1,
+                        "default": 0
+                    }
+                },
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/Item"
+                    }
+                ],
+                "x-tag": "items"
+            },
+            "ItemConfidentiality": {
+                "required": [
+                    "is_confidential",
+                    "reason"
+                ],
+                "type": "object",
+                "properties": {
+                    "is_confidential": {
+                        "type": "boolean",
+                        "description": "True if item is confidential",
+                        "example": true
+                    },
+                    "reason": {
+                        "type": "string",
+                        "description": "Reason for confidentiality",
+                        "example": "need to"
+                    }
+                },
+                "x-tag": "items"
+            },
+            "ItemEmbargo": {
+                "required": [
+                    "embargo_options",
+                    "embargo_reason",
+                    "embargo_title",
+                    "is_embargoed"
+                ],
+                "type": "object",
+                "properties": {
+                    "is_embargoed": {
+                        "type": "boolean",
+                        "description": "True if embargoed",
+                        "example": true
+                    },
+                    "embargo_date": {
+                        "type": "string",
+                        "description": "Date when the embargo expires and the item gets published, null if not embargoed",
+                        "example": "2018-05-22T04:04:04"
+                    },
+                    "embargo_type": {
+                        "type": "string",
+                        "description": "Embargo level. Possible values: article, file",
+                        "example": "file",
+                        "enum": [
+                            "article",
+                            "file"
+                        ]
+                    },
+                    "embargo_title": {
+                        "type": "string",
+                        "description": "Title for embargo",
+                        "example": "File(s) under embargo"
+                    },
+                    "embargo_reason": {
+                        "type": "string",
+                        "description": "Reason for embargo",
+                        "example": ""
+                    },
+                    "embargo_options": {
+                        "type": "array",
+                        "description": "List of embargo permissions that are associated with the item. If the type is logged_in and the group_ids list is empty, then the whole institution can see the item; if there are multiple group_ids, then only users that are under those groups can see the item.",
+                        "example": [
+                            {
+                                "id": 13,
+                                "type": "ip_range",
+                                "group_ids": [],
+                                "ip_name": "bacau"
+                            },
+                            {
+                                "id": 12,
+                                "type": "logged_in",
+                                "ip_name": "",
+                                "group_ids": [
+                                    550,
+                                    9448
+                                ]
+                            }
+                        ],
+                        "items": {
+                            "type": "object",
+                            "properties": {}
+                        }
+                    }
+                },
+                "x-tag": "items"
+            },
+            "ItemDOI": {
+                "required": [
+                    "doi"
+                ],
+                "type": "object",
+                "properties": {
+                    "doi": {
+                        "type": "string",
+                        "description": "Reserved DOI",
+                        "example": "10.5072/FK2.FIGSHARE.20345"
+                    }
+                },
+                "x-tag": "items"
+            },
+            "ItemHandle": {
+                "required": [
+                    "handle"
+                ],
+                "type": "object",
+                "properties": {
+                    "handle": {
+                        "type": "string",
+                        "description": "Reserved Handle",
+                        "example": "11172/FK2.FIGSHARE.20345"
+                    }
+                },
+                "x-tag": "items"
+            },
+            "ItemVersions": {
+                "required": [
+                    "url",
+                    "version"
+                ],
+                "type": "object",
+                "properties": {
+                    "version": {
+                        "type": "integer",
+                        "description": "Version number",
+                        "example": 1
+                    },
+                    "url": {
+                        "type": "string",
+                        "description": "Api endpoint for the item version",
+                        "format": "url",
+                        "example": "https://api.figshare.com/v3/items/2000005/versions/1"
+                    }
+                },
+                "x-tag": "items"
             },
             "CollectionsSearch": {
                 "description": "v3 collection search payload. `order` accepts the collection's current date keys; legacy stats keys (`views`, `shares`, `cites`) are rejected for institutions with item-type based metadata enabled.",

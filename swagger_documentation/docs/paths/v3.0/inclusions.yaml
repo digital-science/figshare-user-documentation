@@ -266,7 +266,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ArticleWithProject'
+                  $ref: '#/components/schemas/ItemWithProject'
         '403':
           description: Forbidden. Item-type based metadata is not enabled for the requested institution.
           content:
@@ -299,7 +299,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ArticleWithProject'
+                  $ref: '#/components/schemas/ItemWithProject'
         '403':
           description: Forbidden. Item-type based metadata is not enabled for the requested institution.
           content:
@@ -379,7 +379,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ArticleWithProject'
+                  $ref: '#/components/schemas/ItemWithProject'
         '403':
           description: Forbidden. Item-type based metadata is not enabled for the caller's institution.
           content:
@@ -464,7 +464,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ArticleWithProject'
+                  $ref: '#/components/schemas/ItemWithProject'
         '403':
           description: Forbidden. Item-type based metadata is not enabled for the caller's institution.
           content:
@@ -1570,7 +1570,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ArticleVersions'
+                  $ref: '#/components/schemas/ItemVersions'
         '400':
           description: Bad Request. Item ID must be an integer and bigger than 0.
           content: {}
@@ -2619,7 +2619,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Article'
+                  $ref: '#/components/schemas/Item'
         '400':
           description: Bad Request
           content: {}
@@ -2841,7 +2841,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Article'
+                  $ref: '#/components/schemas/Item'
         '400':
           description: Bad Request
           content: {}
@@ -3455,7 +3455,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ArticleEmbargo'
+                $ref: '#/components/schemas/ItemEmbargo'
         '400':
           description: Bad Request
           content: {}
@@ -3497,7 +3497,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ArticleConfidentiality'
+                $ref: '#/components/schemas/ItemConfidentiality'
         '400':
           description: Bad Request
           content: {}
@@ -3647,7 +3647,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ArticleEmbargo'
+                $ref: '#/components/schemas/ItemEmbargo'
         '400':
           description: Bad Request
           content: {}
@@ -3828,7 +3828,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ArticleDOI'
+                $ref: '#/components/schemas/ItemDOI'
         '400':
           description: Bad Request
           content: {}
@@ -3868,7 +3868,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ArticleHandle'
+                $ref: '#/components/schemas/ItemHandle'
         '400':
           description: Bad Request
           content: {}
@@ -4086,7 +4086,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ArticleConfidentiality'
+                $ref: '#/components/schemas/ItemConfidentiality'
         '400':
           description: Bad Request
           content: {}
@@ -4537,7 +4537,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Article'
+                  $ref: '#/components/schemas/Item'
         '400':
           description: Bad Request
           content: {}
@@ -4661,7 +4661,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ArticleWithProject'
+                  $ref: '#/components/schemas/ItemWithProject'
         '400':
           description: Bad Request
           content: {}
@@ -4709,7 +4709,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Article'
+                  $ref: '#/components/schemas/Item'
         '500':
           description: Internal Server Error
           content: {}
@@ -4772,7 +4772,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ArticleWithProject'
+                  $ref: '#/components/schemas/ItemWithProject'
         '400':
           description: Bad Request
           content: {}
