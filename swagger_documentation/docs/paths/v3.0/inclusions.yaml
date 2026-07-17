@@ -2033,6 +2033,63 @@ paths:
       - OAuth2:
         - all
       x-subcategory: Private Item Files
+    post:
+      tags:
+      - items
+      summary: Initiate Upload
+      description: Initiate a new file upload within the item. Either use the link property to point to an existing file
+        that resides elsewhere and will not be uploaded to Figshare or use the other 3 parameters (md5, name, size).
+      operationId: private_item_upload_initiate
+      parameters:
+      - name: item_id
+        in: path
+        description: Item unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FileCreator'
+        required: true
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              description: Location of new file
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '422':
+          description: Unprocessable Entity. Parameters missing or incorrect
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Item Files
+      x-codegen-request-body-name: File
   /account/items/{item_id}/files/{file_id}:
     get:
       tags:
@@ -2062,6 +2119,100 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PrivateFile'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Item Files
+    post:
+      tags:
+      - items
+      summary: Complete Upload
+      description: Complete file upload
+      operationId: private_item_upload_complete
+      parameters:
+      - name: item_id
+        in: path
+        description: Item unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+      - name: file_id
+        in: path
+        description: File unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+      responses:
+        '202':
+          description: Accepted
+          headers:
+            Location:
+              description: Location of the file
+              schema:
+                type: string
+                format: url
+          content: {}
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Item Files
+    delete:
+      tags:
+      - items
+      summary: File Delete
+      description: Delete a file from the item
+      operationId: private_item_file_delete
+      parameters:
+      - name: item_id
+        in: path
+        description: Item unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+      - name: file_id
+        in: path
+        description: File unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+      responses:
+        '204':
+          description: No Content
+          content: {}
         '400':
           description: Bad Request
           content: {}
