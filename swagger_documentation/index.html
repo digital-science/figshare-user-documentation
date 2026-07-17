@@ -78,7 +78,7 @@
             </div>
 
             <ul>
-                <li>
+                <li data-guide-version="2">
                     <div class="parent-item-wrapper">
                         <a href="javascript:void(0)"
                            onclick="toggleSubmenuAndScroll(event, 'figshare-docs-menu', 'intro')"
@@ -134,9 +134,65 @@
                         </li>
                     </ul>
                 </li>
+                <li data-guide-version="3">
+                    <div class="parent-item-wrapper">
+                        <a href="javascript:void(0)"
+                           onclick="toggleSubmenuAndScroll(event, 'v3-figshare-docs-menu', 'v3-intro')"
+                           class="sidebar-link parent-link">Figshare Documentation</a>
+                    </div>
+                    <ul id="v3-figshare-docs-menu" class="collapsed">
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-intro')"
+                               class="sidebar-link child-link">Introduction</a></li>
+                        <li>
+                            <a href="javascript:void(0)" onclick="toggleSubmenu(event, 'v3-oauth-submenu')"
+                               class="sidebar-link child-link">OAuth</a>
+                            <ul id="v3-oauth-submenu" class="collapsed">
+                                <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-oauth-intro')"
+                                       class="sidebar-link child-link" style="padding-left: 24px;">Introduction</a></li>
+                                <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-oauth-quick')"
+                                       class="sidebar-link child-link" style="padding-left: 24px;">Quick Guide</a></li>
+                                <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-oauth-scope')"
+                                       class="sidebar-link child-link" style="padding-left: 24px;">Scope</a></li>
+                                <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-oauth-grant')"
+                                       class="sidebar-link child-link" style="padding-left: 24px;">Grant Types</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="javascript:void(0)" onclick="toggleSubmenu(event, 'v3-api-features')"
+                               class="sidebar-link child-link">API Features</a>
+                            <ul id="v3-api-features" class="collapsed">
+                                <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-api-parameters')"
+                                       class="sidebar-link child-link" style="padding-left: 24px;">Sending
+                                    Parameters</a></li>
+                                <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-api-resource')"
+                                       class="sidebar-link child-link" style="padding-left: 24px;">Resource
+                                    Representations</a></li>
+                                <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-api-auth')"
+                                       class="sidebar-link child-link" style="padding-left: 24px;">Authentication</a>
+                                </li>
+                                <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-api-errors')"
+                                       class="sidebar-link child-link" style="padding-left: 24px;">Errors</a></li>
+                                <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-api-search')"
+                                       class="sidebar-link child-link" style="padding-left: 24px;">Searching &amp;
+                                    Pagination</a></li>
+                                <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-api-ratelimit')"
+                                       class="sidebar-link child-link" style="padding-left: 24px;">Rate Limiting</a>
+                                </li>
+                                <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-api-requests')"
+                                       class="sidebar-link child-link" style="padding-left: 24px;">Conditional
+                                    Requests</a></li>
+                                <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-api-cors')"
+                                       class="sidebar-link child-link" style="padding-left: 24px;">CORS Policy</a></li>
+                                <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-api-impersonation')"
+                                       class="sidebar-link child-link" style="padding-left: 24px;">Impersonation</a>
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
                 <!-- API endpoint menu items are dynamically generated from the swagger spec -->
                 <li id="api-menu-insertion-point" style="display:none"></li>
-                <li>
+                <li data-guide-version="2">
                     <div class="parent-item-wrapper">
                         <a href="javascript:void(0)" onclick="toggleSubmenuAndScroll(event, 'upload-menu', 'upload')"
                            class="sidebar-link parent-link">Upload Files</a>
@@ -158,7 +214,7 @@
                                class="sidebar-link child-link">Upload S3 File to Figshare</a></li>
                     </ul>
                 </li>
-                <li>
+                <li data-guide-version="2">
                     <div class="parent-item-wrapper">
                         <a href="javascript:void(0)" onclick="toggleSubmenuAndScroll(event, 'search-menu', 'search')"
                            class="sidebar-link parent-link">Search</a>
@@ -180,7 +236,7 @@
                                class="sidebar-link child-link">Complex searches</a></li>
                     </ul>
                 </li>
-                <li>
+                <li data-guide-version="2">
                     <div class="parent-item-wrapper">
                         <a href="javascript:void(0)" onclick="toggleSubmenuAndScroll(event, 'stats-menu', 'stats')"
                            class="sidebar-link parent-link">Stats</a>
@@ -200,7 +256,7 @@
                                class="sidebar-link child-link">Count Articles</a></li>
                     </ul>
                 </li>
-                <li>
+                <li data-guide-version="2">
                     <div class="parent-item-wrapper">
                         <a href="javascript:void(0)" onclick="toggleSubmenuAndScroll(event, 'oai-menu', 'oai')"
                            class="sidebar-link parent-link">OAI PMH</a>
@@ -230,7 +286,7 @@
                                class="sidebar-link child-link">Some examples</a></li>
                     </ul>
                 </li>
-                <li>
+                <li data-guide-version="2">
                     <div class="parent-item-wrapper">
                         <a href="javascript:void(0)" onclick="toggleSubmenuAndScroll(event, 'hrfeed-menu', 'hrfeed')"
                            class="sidebar-link parent-link">HR Feed</a>
@@ -250,7 +306,7 @@
                                class="sidebar-link child-link">Notes</a></li>
                     </ul>
                 </li>
-                <li>
+                <li data-guide-version="2">
                     <div class="parent-item-wrapper">
                         <a href="javascript:void(0)"
                            onclick="toggleSubmenuAndScroll(event, 'custom-fields-menu', 'custom-fields')"
@@ -268,6 +324,91 @@
                         <li><a href="javascript:void(0)" onclick="scrollToDocSection('custom-fields-errors')"
                                class="sidebar-link child-link">Errors</a></li>
                         <li><a href="javascript:void(0)" onclick="scrollToDocSection('custom-fields-notes')"
+                               class="sidebar-link child-link">Notes</a></li>
+                    </ul>
+                </li>
+                <li data-guide-version="3">
+                    <div class="parent-item-wrapper">
+                        <a href="javascript:void(0)" onclick="toggleSubmenuAndScroll(event, 'v3-upload-menu', 'v3-upload')"
+                           class="sidebar-link parent-link">Upload Files</a>
+                    </div>
+                    <ul id="v3-upload-menu" class="collapsed">
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-upload-steps')"
+                               class="sidebar-link child-link">Steps to upload file</a></li>
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-upload-api')"
+                               class="sidebar-link child-link">Uploads API</a></li>
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-upload-parts')"
+                               class="sidebar-link child-link">Parts API</a></li>
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-upload-example')"
+                               class="sidebar-link child-link">Example Upload on figshare</a></li>
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-upload-output')"
+                               class="sidebar-link child-link">Output of Script</a></li>
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-upload-bash')"
+                               class="sidebar-link child-link">Upload Bash Script</a></li>
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-upload-s3')"
+                               class="sidebar-link child-link">Upload S3 File to Figshare</a></li>
+                    </ul>
+                </li>
+                <li data-guide-version="3">
+                    <div class="parent-item-wrapper">
+                        <a href="javascript:void(0)" onclick="toggleSubmenuAndScroll(event, 'v3-search-menu', 'v3-search')"
+                           class="sidebar-link parent-link">Search</a>
+                    </div>
+                    <ul id="v3-search-menu" class="collapsed">
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-search-intro')"
+                               class="sidebar-link child-link">How to find data on figshare</a></li>
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-search-operators')"
+                               class="sidebar-link child-link">Search operators</a></li>
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-search-attributes')"
+                               class="sidebar-link child-link">Searchable attributes</a></li>
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-search-quick')"
+                               class="sidebar-link child-link">Quick search</a></li>
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-search-advanced')"
+                               class="sidebar-link child-link">Advanced search</a></li>
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-search-combined')"
+                               class="sidebar-link child-link">Combined field search</a></li>
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-search-complex')"
+                               class="sidebar-link child-link">Complex searches</a></li>
+                    </ul>
+                </li>
+                <li data-guide-version="3">
+                    <div class="parent-item-wrapper">
+                        <a href="javascript:void(0)" onclick="toggleSubmenuAndScroll(event, 'v3-hrfeed-menu', 'v3-hrfeed')"
+                           class="sidebar-link parent-link">HR Feed</a>
+                    </div>
+                    <ul id="v3-hrfeed-menu" class="collapsed">
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-hrfeed-endpoint')"
+                               class="sidebar-link child-link">HR Feed Private Endpoint</a></li>
+                        <li>
+                            <a href="javascript:void(0)" onclick="scrollToDocSection('v3-hrfeed-examples')"
+                               class="sidebar-link child-link">HR Feed examples</a>
+                        </li>
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-hrfeed-response')"
+                               class="sidebar-link child-link">Response</a></li>
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-hrfeed-errors')"
+                               class="sidebar-link child-link">Errors</a></li>
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-hrfeed-notes')"
+                               class="sidebar-link child-link">Notes</a></li>
+                    </ul>
+                </li>
+                <li data-guide-version="3">
+                    <div class="parent-item-wrapper">
+                        <a href="javascript:void(0)"
+                           onclick="toggleSubmenuAndScroll(event, 'v3-custom-fields-menu', 'v3-custom-fields')"
+                           class="sidebar-link parent-link">Custom Fields</a>
+                    </div>
+                    <ul id="v3-custom-fields-menu" class="collapsed">
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-custom-fields-endpoint')"
+                               class="sidebar-link child-link">Fields &amp; item types</a></li>
+                        <li>
+                            <a href="javascript:void(0)" onclick="scrollToDocSection('v3-custom-fields-examples')"
+                               class="sidebar-link child-link">Field values examples</a>
+                        </li>
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-custom-fields-response')"
+                               class="sidebar-link child-link">Response</a></li>
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-custom-fields-errors')"
+                               class="sidebar-link child-link">Errors</a></li>
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-custom-fields-notes')"
                                class="sidebar-link child-link">Notes</a></li>
                     </ul>
                 </li>
@@ -1124,6 +1265,1741 @@ if __name__ == '__main__':
         <p>Figshare supports the OAuth 2.0 Authorization Framework. See more about it in the OAuth section of
             the <a href="?version=2.0">v2 documentation</a>; the same tokens apply here.</p>
     </div>
+
+    <!-- v3 guide content divs (item-type based metadata API). Kept separate from the v2 description_* divs. -->
+    <div id="description_v3_oauth_intro">
+        <p>Since January 2016 figshare supports the <a href="http://tutorials.jenkov.com/oauth2/index.html">OAuth 2.0
+            Authorization Framework</a>. If you're new to OAuth make sure you have at least a basic understanding before
+            moving on.</p>
+        <p>OAuth tokens are not version specific &mdash; the same tokens are used to authenticate requests against both
+            the v2 and v3 APIs.</p>
+    </div>
+    <div id="description_v3_oauth_quick">
+        <h2 id="v3-quick-guide">Quick guide</h2>
+        <p>To receive a client id and secret you need to register an application in
+            our system. You can easily do this from the <a href="https://figshare.com/account/applications">figshare
+                applications
+                page</a> in your account.</p>
+        <h3 id="v3-authorization-endpoint">Authorization endpoint</h3>
+        <p>The authorization endpoint is located at
+            <code>https://figshare.com/account/applications/authorize</code>. The endpoint
+            supports both
+            <a href="http://tools.ietf.org/html/rfc6749#section-4.1.1">authorization code grant</a> and <a
+                    href="http://tools.ietf.org/html/rfc6749#section-4.2">implicit grant</a>.</p>
+        <h4 id="v3-request-params">Request params</h4>
+        <ul>
+            <li><code>client_id</code></li>
+            <li><code>response_type</code></li>
+            <li><code>scope</code></li>
+            <li><code>state</code></li>
+            <li><code>redirect_uri</code></li>
+        </ul>
+        <h4 id="v3-response-params">Response params</h4>
+        <p>User is redirected back to <code>redirect_uri</code> with the following params
+            added to the query:</p>
+        <p><strong>Success</strong> as described in <a href="http://tools.ietf.org/html/rfc6749#section-4.1.2">rfc6749#section-4.1.2</a>
+            or <a href="http://tools.ietf.org/html/rfc6749#section-4.2.2">rfc6749#section-4.2.2</a>:</p>
+        <ul>
+            <li><code>code</code></li>
+            <li><code>state</code></li>
+        </ul>
+        <p><strong>Error</strong> as described in <a href="http://tools.ietf.org/html/rfc6749#section-4.1.2.1">rfc6749#4.1.2.1</a>:
+        </p>
+        <ul>
+            <li><code>error</code></li>
+            <li><code>error_description</code></li>
+        </ul>
+        <h3 id="v3-token-endpoint">Token endpoint</h3>
+        <p>The token endpoint is located at <code>https://api.figshare.com/v3/token</code>.
+            In order to receive an access token you need to make a <code>POST</code> request.</p>
+        <p>To get info about an existing access token use the <code>GET</code> method with the usual authorization
+            means.</p>
+        <h4 id="v3-token-request">Request</h4>
+        <p>Then endpoint accepts both <code>application/x-www-form-urlencoded</code> and
+            <code>application/json</code> content types. It will only respond with JSON
+            content.</p>
+        <ul>
+            <li><code>client_id</code></li>
+            <li><code>client_secret</code></li>
+            <li><code>grant_type</code></li>
+        </ul>
+        <p>and, based on the value of <code>grant_type</code>:</p>
+        <ul>
+            <li><code>code</code></li>
+            <li><code>refresh_token</code></li>
+            <li><code>username</code></li>
+            <li><code>password</code></li>
+        </ul>
+        <h4 id="v3-token-response">Response</h4>
+        <p>Successful responses are always <code>200</code> and failed ones are always <code>400</code>,
+            even for failed authorization.</p>
+        <p><strong>Success</strong> response is a JSON as described in <a
+                href="http://tools.ietf.org/html/rfc6749#section-5.1">http://tools.ietf.org/html/rfc6749#section-5.1</a>.
+        </p>
+        <ul>
+            <li><code>access_token</code></li>
+            <li><code>token_type</code></li>
+            <li><code>expires_in</code></li>
+            <li><code>refresh_token</code></li>
+            <li><code>scope</code> - <em>not available yet</em></li>
+        </ul>
+        <p><strong>Error</strong> response as described in <a href="http://tools.ietf.org/html/rfc6749#section-5.2">rfc6749#section-5.2</a>
+        </p>
+    </div>
+    <div id="description_v3_oauth_scope">
+        <h2 id="v3-scope">Scope</h2>
+        <p>Currently the only scope available is <code>all</code> which grants full access to
+            the resource owner's data. We're working on a more flexible approach.</p>
+    </div>
+    <div id="description_v3_oauth_grant">
+        <h2 id="v3-grant-types">Grant Types</h2>
+        <p>The supported grant types at this moment are:</p>
+        <ul>
+            <li><code>authorization_code</code></li>
+            <li><code>refresh_token</code></li>
+            <li><code>password</code></li>
+        </ul>
+    </div>
+
+    <div id="description_v3_api_features">
+        <p>The figshare api v3 is accessible at https://api.figshare.com/v3. All
+            communication is done through <em>https</em> and all data is encoded as <code>JSON</code>.</p>
+        <p>Version <strong>3.0</strong> exposes the item-type based metadata API. Resources are modelled as
+            <strong>items</strong> (rather than v2 articles) and their metadata is set through a single
+            <code>fields</code> object.</p>
+    </div>
+    <div id="description_v3_api_parameters">
+        <h2 id="v3-sending-parameters">Sending parameters</h2>
+        <p>More often than not you need to send parameters to an endpoint. For
+            <code>GET</code> requests these are usualy sent in the query string but for <code>POST</code>
+            and <code>PUT</code> requests they are usually in the body of the request.</p>
+        <h3 id="v3-query-string">Query string</h3>
+        <p>Query strings can contain parameters encoded as <code>application/x-www-form-urlencoded</code>. Very common
+            for <code>GET</code> requests.</p>
+        <p><strong>Example</strong>: Sending <code>page</code> parameter when listing items:</p>
+        <pre><code class="http">GET /v3/items?page=3 HTTP/1.1
+      Host: api.figshare.com
+      Authorization: token a287ab8c7ebdbe6
+      </code></pre>
+
+        <h3 id="v3-request-json-body">Request json body</h3>
+        <p><code>POST</code> and <code>PUT</code> request usualy read their params from the body of the
+            http request. Our API only understands <code>application/json</code> encoded
+            bodies.</p>
+        <p><strong>Example</strong>: Sending <code>search_for</code> parameter when searching for items:</p>
+        <pre><code class="http">POST /v3/items/search HTTP/1.1
+      Host: api.figshare.com
+      Authorization: token a287ab8c7ebdbe6
+
+      {
+          &quot;search_for&quot;: &quot;figshare&quot;
+      }
+      </code></pre>
+
+    </div>
+    <div id="description_v3_api_resourcerepresentation">
+        <h2 id="v3-resource-representations">Resource representations</h2>
+        <p>Resources can be presented differently across endpoints. Usually
+            endpoints that return a list of resources will send a <em>lighter</em>
+            representation of each resource while an endpoint for an individual
+            resource will use a more <em>detailed</em> and <em>complete</em> representation.</p>
+        <p>Representations for each resource type are documented inside each endpoint in the Body Schema section.</p>
+        <p>Blank resource fields are included in the representation as <code>null</code> instead
+            of being omitted.</p>
+    </div>
+    <div id="description_v3_api_auth">
+        <h2 id="v3-authentication">Authentication</h2>
+        <p>The v3 API supports OAuth2 access tokens, issued as
+            described in the <a href="#doc-section-v3-oauth">oauth section</a>.</p>
+        <p>In addition to oauth access tokens, you can also use a <em>personal token</em>
+            which grants you full access to your account. Personal tokens can be
+            created and managed from the <a href="https://figshare.com/account/applications">applications
+                page</a> at figshare.</p>
+        <p>Any of these tokens can be used to authenticate and there are 2 options
+            to include them in requests:</p>
+        <h3 id="v3-http-header-recommended">HTTP header (<em>recommended</em>)</h3>
+        <pre><code class="http">GET /v3/token HTTP/1.1
+      Host: api.figshare.com
+      Authorization: token ACCESS_TOKEN
+      </code></pre>
+
+        <p>Example with <code>curl</code>:</p>
+        <pre><code class="bash">curl -H &quot;Authorization: token ACCESS_TOKEN&quot; https://api.figshare.com/v3
+      </code></pre>
+
+        <h3 id="v3-query-param">Query param:</h3>
+        <pre><code class="http">GET /v3/token?access_token=ACCESS_TOKEN HTTP/1.1
+      Host: api.figshare.com
+      </code></pre>
+
+        <p>Example with <code>curl</code>:</p>
+        <pre><code class="bash">curl https://api.figshare.com/v3?access_token=ACCESS_TOKEN
+      </code></pre>
+    </div>
+    <div id="description_v3_api_errors">
+        <p>Endpoints can respond with error responses. The common error responses
+            for all endpoints are presented below and errors specific to individual
+            enpoints are documented along with the endpoint.</p>
+        <p>Each error response will have a specific HTTP status code and a JSON
+            body with the following fields:</p>
+        <table>
+            <thead>
+            <tr>
+                <th>Field</th>
+                <th>Description</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>message</td>
+                <td>A human friendly message explaining the error.</td>
+            </tr>
+            <tr>
+                <td>code</td>
+                <td>A machine friendly error code, used by the dev team to identify the error.</td>
+            </tr>
+            <tr>
+                <td>data</td>
+                <td>An object containing extra information about the error. Documented for each error.</td>
+            </tr>
+            </tbody>
+        </table>
+        <h3 id="v3-404-not-found">404 Not found</h3>
+        <p>Trying to access resources that do not exist, will trigger this response
+            from the API.</p>
+        <p>This is also returned if you try to access a resource on which you don't
+            have a <code>read</code> permission.</p>
+        <h3 id="v3-400-bad-request">400 Bad request</h3>
+        <p>Sending a body that cannot be parsed as JSON will result in this error
+            response.</p>
+        <h3 id="v3-422-unprocessable-entity">422 Unprocessable Entity</h3>
+        <p>Sending an invalid data structure in the body will trigger this error.
+            Invalid data can be any of the following:</p>
+        <ul>
+            <li>missing field</li>
+            <li>invalid value for a field</li>
+            <li>any other rules specific to an endpoint</li>
+        </ul>
+        <h3 id="v3-401-unauthorized">401 Unauthorized</h3>
+        <p>This error is returned when the authorization was unsuccessfull. This can
+            be either due to:</p>
+        <ul>
+            <li>missing authorization info in the request</li>
+            <li>invalid or unknown authorization info</li>
+            <li>expired or disabled account</li>
+        </ul>
+        <h3 id="v3-403-forbidden">403 Forbidden</h3>
+        <p>This response is presented whenever you try to do something which is not
+            permitted for your current authorization.
+            authorization info</p>
+    </div>
+    <div id="description_v3_api_search">
+        <h2 id="v3-searching-filtering-and-pagination">Searching, filtering and pagination</h2>
+        <p>Endpoints that list items usually support any of the following features:</p>
+        <ul>
+            <li>pagination</li>
+            <li>ordering</li>
+            <li>searching</li>
+            <li>filtering</li>
+        </ul>
+        <h4 id="v3-pagination-params">Pagination params</h4>
+        <p>Pagination can be done by specifing either <code>page</code> and <code>page_size</code> params
+            pair or the <code>limit</code> and <code>offset</code> params pair. If confusing combinations
+            appear in a request, a <code>422 Unprocessable Entity</code> will be returned.</p>
+        <table>
+            <thead>
+            <tr>
+                <th>field</th>
+                <th>type</th>
+                <th>default</th>
+                <th>description</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>page</code></td>
+                <td>int</td>
+                <td>1</td>
+                <td>Page number</td>
+            </tr>
+            <tr>
+                <td><code>page_size</code></td>
+                <td>int</td>
+                <td>10</td>
+                <td>The number of results included on a page</td>
+            </tr>
+            <tr>
+                <td><code>limit</code></td>
+                <td>int</td>
+                <td>10</td>
+                <td>Number of results included on a page</td>
+            </tr>
+            <tr>
+                <td><code>offset</code></td>
+                <td>int</td>
+                <td>0</td>
+                <td>Where to start the listing(the offset of the first result)</td>
+            </tr>
+            </tbody>
+        </table>
+        <p>Please note that there's a limit on the maximum offset or page number you can require.
+            The offset is currently limited at 1000 and if exceeded a <code>422 Unprocessable Entity</code> error will
+            be returned. For pages, it depends on the <code>page_size</code>
+            but for a <code>page_size</code> of <code>10</code>, the maximum page would be <code>1000 / 10 = 100</code>
+        </p>
+        <h4 id="v3-ordering-params">Ordering params</h4>
+        <p>Ordering is done via the <code>order</code> and <code>order_direction</code> params.</p>
+        <table>
+            <thead>
+            <tr>
+                <th>field</th>
+                <th>type</th>
+                <th>default</th>
+                <th>description</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>order</code></td>
+                <td>string</td>
+                <td><em>varies</em></td>
+                <td>The field by which to order. Default varies by endpoint/resource. For items and collections,
+                    valid values are: <code>published_date</code> and <code>modified_date</code>.
+                </td>
+            </tr>
+            <tr>
+                <td><code>order_direction</code></td>
+                <td>string</td>
+                <td><em>varies</em></td>
+                <td>Only <code>asc</code> and <code>desc</code> values are supported. Default varies by
+                    endpoint/resource
+                </td>
+            </tr>
+            </tbody>
+        </table>
+        <p><strong>Note:</strong> for institutions with item-type based metadata enabled, the legacy statistics sort
+            keys (<code>views</code>, <code>shares</code>, <code>cites</code>) are rejected. Order items by metadata
+            fields such as <code>created_date</code>, <code>modified_date</code> or <code>published_date</code>.</p>
+        <h4 id="v3-searching-params">Searching params</h4>
+        <table>
+            <thead>
+            <tr>
+                <th>field</th>
+                <th>type</th>
+                <th>description</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td><code>search_for</code></td>
+                <td>string</td>
+                <td>Search endpoints require this field. Usually min length is 3</td>
+            </tr>
+            </tbody>
+        </table>
+        <h4 id="v3-filtering-params">Filtering params</h4>
+        <p>Some endpoints allow filtering results. Filters are extra fields in the
+            body and the documentation for each endpoint will present them in detail.</p>
+    </div>
+    <div id="description_v3_api_ratelimit">
+        <h2 id="v3-rate-limiting">Rate limiting</h2>
+        <p>We do not have automatic rate limiting in place for API requests. However, we do carry out monitoring to
+            detect and mitigate abuse and prevent the platform's resources from being overused. We recommend that
+            clients use the API responsibly and do not make more than one request per second. We reserve the right to
+            throttle or block requests if we detect abuse.</p>
+    </div>
+    <div id="description_v3_api_requests">
+        <h2 id="v3-conditional-requests">Conditional requests</h2>
+        <p>Most responses should return an ETag header and a Last-Modified header.
+            You can use the values of these headers to create conditional requests.
+            We encourage to use these whenever possible.</p>
+    </div>
+    <div id="description_v3_api_cors">
+        <h2 id="v3-cors-policy">CORS policy</h2>
+        <p>The API supports CORS for AJAX requests from any origin.</p>
+    </div>
+    <div id="description_v3_api_impersonation">
+        <h2 id="v3-impersonation">Impersonation</h2>
+        <p>This feature is available only for institutional accounts with administrative privileges.</p>
+        <p>
+            To impersonate an account you have to include the <code>impersonate</code> option inside your http
+            request.<br/>
+            The value for <code>impersonate</code> must be the <code>account_id</code> of the account you wish to
+            impersonate.<br/>
+            You can see the accounts which can be impersonated using our <a href="#private_institution_accounts_list">account/institution/accounts</a>
+            endpoint.<br/>
+        </p>
+        <p>The <code>impersonate</code> option must be included in the query string when using the GET and DELETE
+            methods, and in the body when using the POST and PUT methods.</p>
+        <h3>GET Impersonation example:</h3>
+        <p>Request:</p>
+        <pre><code>GET /v3/account/items?impersonate=1000009 HTTP/1.1
+</code></pre>
+        <p>Response will contain items of the impersonated account</p>
+
+        <h3>POST Impersonation example:</h3>
+        <p>Request:</p>
+        <pre><code>POST /v3/account/items HTTP/1.1
+</code></pre>
+        <p>Body:</p>
+        <pre><code>{
+    "item_type_id": 1,
+    "fields": {
+        "title": "test"
+    },
+    "impersonate": 1000009
+}</code></pre>
+        <p>Will create an item for the impersonated account</p>
+
+    </div>
+
+    <div id="description_v3_upload_steps">
+        <ul>
+            <li><a href="#private_item_upload_initiate">Initiate file upload</a> - this request returns an endpoint
+                with file data
+            </li>
+            <li>Send a <code>GET</code> request to the <a href="#doc-section-v3-upload-api">Uploader Service</a> with the
+                <code>upload_url</code> (which also contains the<code>upload_token</code>) provided in previous step and
+                receive the number of file parts
+            </li>
+            <li>Upload / Delete / Retry uploading file parts until all parts are uploaded successfully</li>
+            <li><a href="#private_item_upload_complete">Complete file upload</a></li>
+        </ul>
+    </div>
+    <div id="description_v3_upload_api">
+        <h4 id="v3-upload-status">Upload status</h4>
+        <p>An upload status can be:</p>
+        <ul>
+            <li><code>PENDING</code> - waiting for it's parts to be uploaded</li>
+            <li><code>COMPLETED</code> - all parts were uploaded and the file was assembled on the storage</li>
+            <li><code>ABORTED</code> - canceled for some reason(user request, timeout, error)</li>
+        </ul>
+        <p>The uploader service is shared across API versions; only the figshare API endpoints used to initiate and
+            complete an upload differ (v3 uses <code>account/items</code> instead of v2 <code>account/articles</code>).</p>
+        <h4 id="v3-upload-endpoints">Endpoints</h4>
+        <ul>
+            <li><code>GET /upload/&lt;token&gt;</code> - get upload info</li>
+        </ul>
+        <p>Response:</p>
+        <table class="docutils">
+            <thead>
+            <tr>
+                <th>Status Code</th>
+                <th>Explanation</th>
+                <th>Body</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>200 OK</td>
+                <td>all good</td>
+                <td><em>explained below</em></td>
+            </tr>
+            <tr>
+                <td>500 Internal Server Error</td>
+                <td>internal error</td>
+                <td><em>empty</em></td>
+            </tr>
+            <tr>
+                <td>404 Not Found</td>
+                <td>unknown upload token</td>
+                <td><em>empty</em></td>
+            </tr>
+            </tbody>
+        </table>
+        <p><strong>200 OK</strong></p>
+        <p>Body:
+        <pre><code>js
+          {
+            token: "upload-token",
+            name: "my-file.zip",
+            size: 10249281,
+            md5: "filemd5",  // as provided on upload creation
+            status: "PENDING",
+            parts: [
+              {
+              // upload parts -- see parts API for representation
+              }
+            ]
+        }</code>
+      </pre>
+        </p>
+    </div>
+    <div id="description_v3_upload_parts_api">
+        <h4 id="v3-part-status">Part status</h4>
+        <ul>
+            <li><code>PENDING</code> -- part is ready to be uploaded</li>
+            <li><code>COMPLETE</code> -- part data has been complete and saved to storage</li>
+        </ul>
+        <h4 id="v3-part-locking">Part locking</h4>
+        <p>When a part is being uploaded it is being locked, by setting the
+            <code>locked</code> flag to true. No changes/uploads can happen on this part from
+            other requests.</p>
+        <h4 id="v3-byte-ranges">Byte ranges</h4>
+        <p>The part range is specified by <code>startOffset</code> and <code>endOffset</code>. They
+            indexes zero-based and inclusive. Example:</p>
+        <p>Given:</p>
+        <ul>
+            <li>the following file data: "abcdefghij"</li>
+            <li><code>part1</code> with <code>startOffset=0</code> and <code>endOffset=3</code></li>
+            <li><code>part2</code> with <code>startOffset=4</code> and <code>endOffset=7</code></li>
+        </ul>
+        <p>Then:</p>
+        <ul>
+            <li><code>part1</code> is <code>abcd</code></li>
+            <li><code>part2</code> is <code>efgh</code></li>
+        </ul>
+        <h4 id="v3-parts-endpoints">Endpoints</h4>
+        <ul>
+            <li><code>GET /upload/&lt;token&gt;/&lt;part_no&gt;</code> - get part info</li>
+        </ul>
+        <p>Responses:</p>
+        <table>
+            <thead>
+            <tr>
+                <th>Status Code</th>
+                <th>Explanation</th>
+                <th>Body</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>200 OK</td>
+                <td>all good</td>
+                <td><em>explained below</em></td>
+            </tr>
+            <tr>
+                <td>500 Internal Server Error</td>
+                <td>internal error</td>
+                <td><em>empty</em></td>
+            </tr>
+            <tr>
+                <td>404 Not Found</td>
+                <td>unknown upload token or part number</td>
+                <td><em>empty</em></td>
+            </tr>
+            </tbody>
+        </table>
+        <p><strong>200 OK</strong></p>
+        <p>Body:
+        <pre><code>js
+  {
+    partNo: 3,
+    startOffset: 1024,
+    endOffset: 2047,
+    status: "PENDING",
+    locked: false
+  }</code>
+        </pre>
+        </p>
+        <ul>
+            <li><code>PUT /upload/&lt;token&gt;/&lt;part_no&gt;</code> - receives part data</li>
+        </ul>
+        <p>The entire body of the request is piped as-is to S3. It is assumed that the
+            body is the correct piece of the file, from <code>startOffset</code> to <code>endOffset</code></p>
+        <p>While this requests is being processed the part is going to be in a
+            locked state. The request can end with a <code>409</code> status code if a
+            lock for the part could not be obtained.</p>
+        <p><strong>Warning</strong> if content length is less than part size the request will
+            timeout</p>
+        <p>Responses:</p>
+        <table>
+            <thead>
+            <tr>
+                <th>Status Code</th>
+                <th>Explanation</th>
+                <th>Body</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>200 OK</td>
+                <td>all good</td>
+                <td><em>explained below</em></td>
+            </tr>
+            <tr>
+                <td>500 Internal Server Error</td>
+                <td>internal error</td>
+                <td><em>empty</em></td>
+            </tr>
+            <tr>
+                <td>404 Not Found</td>
+                <td>unknown upload token or part number</td>
+                <td><em>empty</em></td>
+            </tr>
+            <tr>
+                <td>409 Conflict</td>
+                <td>part data cannot be uploaded</td>
+                <td><em>empty</em></td>
+            </tr>
+            </tbody>
+        </table>
+        <p><strong>200 OK</strong></p>
+        <ul>
+            <li><code>DELETE /upload/&lt;token&gt;/&lt;part_no&gt;</code> - reset part data</li>
+        </ul>
+        <p>This will reset the part to it's <code>PENDING</code> state and remove any
+            storage meta.</p>
+        <p>Responses:</p>
+        <table>
+            <thead>
+            <tr>
+                <th>Status Code</th>
+                <th>Explanation</th>
+                <th>Body</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>200 Accepted</td>
+                <td>all good</td>
+                <td><em>empty</em></td>
+            </tr>
+            <tr>
+                <td>500 Internal Server Error</td>
+                <td>internal error</td>
+                <td><em>empty</em></td>
+            </tr>
+            <tr>
+                <td>404 Not Found</td>
+                <td>unknown upload token or part number</td>
+                <td><em>empty</em></td>
+            </tr>
+            <tr>
+                <td>409 Conflict</td>
+                <td>upload completed or part locked</td>
+                <td><em>empty</em></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div id="description_v3_upload_example">
+        <p>To upload a file to fig<strong>share</strong>, one needs to use the standard
+            <em>fig<strong>share</strong> API</em>, coupled
+            with the <em>fig<strong>share</strong> upload system API</em>.
+            A full script that lists items <em>before</em> and <em>after</em> the new <strong>item</strong> and
+            <strong>file</strong> are created
+            would look like this:</p>
+        <pre><code class="python">#!/usr/bin/env python
+
+import hashlib
+import json
+import os
+
+import requests
+from requests.exceptions import HTTPError
+
+
+BASE_URL = 'https://api.figshare.com/v3/{endpoint}'
+TOKEN = '&lt;insert access token here&gt;'
+CHUNK_SIZE = 1048576
+
+FILE_PATH = '/path/to/work/directory/cat.obj'
+TITLE = 'A 3D cat object model'
+ITEM_TYPE_ID = 1  # see GET /v3/item_types for the values enabled for your institution
+
+
+def raw_issue_request(method, url, data=None, binary=False):
+    headers = {'Authorization': 'token ' + TOKEN}
+    if data is not None and not binary:
+        data = json.dumps(data)
+    response = requests.request(method, url, headers=headers, data=data)
+    try:
+        response.raise_for_status()
+        try:
+            data = json.loads(response.content)
+        except ValueError:
+            data = response.content
+    except HTTPError as error:
+        print('Caught an HTTPError: {}'.format(error))
+        print('Body:\n', response.content)
+        raise
+
+    return data
+
+
+def issue_request(method, endpoint, *args, **kwargs):
+    return raw_issue_request(method, BASE_URL.format(endpoint=endpoint), *args, **kwargs)
+
+
+def list_items():
+    result = issue_request('GET', 'account/items')
+    print('Listing current items:')
+    if result:
+        for item in result:
+            print(u'  {url} - {title}'.format(**item))
+    else:
+        print('  No items.')
+    print()
+
+
+def create_item(title):
+    # Structural inputs stay top-level; all metadata goes inside 'fields'.
+    data = {
+        'item_type_id': ITEM_TYPE_ID,
+        'fields': {
+            'title': title  # add any other configured fields here, e.g. 'description', 'keywords'
+        }
+    }
+    result = issue_request('POST', 'account/items', data=data)
+    print('Created item:', result['location'], '\n')
+
+    result = raw_issue_request('GET', result['location'])
+
+    return result['id']
+
+
+def list_files_of_item(item_id):
+    result = issue_request('GET', 'account/items/{}/files'.format(item_id))
+    print('Listing files for item {}:'.format(item_id))
+    if result:
+        for item in result:
+            print('  {id} - {name}'.format(**item))
+    else:
+        print('  No files.')
+    print()
+
+
+def get_file_check_data(file_name):
+    with open(file_name, 'rb') as fin:
+        md5 = hashlib.md5()
+        size = 0
+        data = fin.read(CHUNK_SIZE)
+        while data:
+            size += len(data)
+            md5.update(data)
+            data = fin.read(CHUNK_SIZE)
+        return md5.hexdigest(), size
+
+
+def initiate_new_upload(item_id, file_name):
+    endpoint = 'account/items/{}/files'
+    endpoint = endpoint.format(item_id)
+
+    md5, size = get_file_check_data(file_name)
+    name = os.path.basename(file_name)
+
+    data = {'md5': md5, 'size': size, 'name': name}
+
+    result = issue_request('POST', endpoint, data=data)
+    print('Initiated file upload:', result['location'], '\n')
+
+    result = raw_issue_request('GET', result['location'])
+
+    return result
+
+
+def complete_upload(item_id, file_id):
+    issue_request('POST', 'account/items/{}/files/{}'.format(item_id, file_id))
+
+
+def upload_parts(file_info):
+    url = '{upload_url}'.format(**file_info)
+    result = raw_issue_request('GET', url)
+
+    print('Uploading parts:')
+    with open(FILE_PATH, 'rb') as fin:
+        for part in result['parts']:
+            upload_part(file_info, fin, part)
+    print()
+
+
+def upload_part(file_info, stream, part):
+    udata = file_info.copy()
+    udata.update(part)
+    url = '{upload_url}/{partNo}'.format(**udata)
+
+    stream.seek(part['startOffset'])
+    data = stream.read(part['endOffset'] - part['startOffset'] + 1)
+
+    raw_issue_request('PUT', url, data=data, binary=True)
+    print('  Uploaded part {partNo} from {startOffset} to {endOffset}'.format(**part))
+
+
+def main():
+    # We first create the item
+    list_items()
+    item_id = create_item(TITLE)
+    list_items()
+    list_files_of_item(item_id)
+
+    # Then we upload the file.
+    file_info = initiate_new_upload(item_id, FILE_PATH)
+    # Until here we used the figshare API; following lines use the figshare upload service API.
+    upload_parts(file_info)
+    # We return to the figshare API to complete the file upload process.
+    complete_upload(item_id, file_info['id'])
+    list_files_of_item(item_id)
+
+
+if __name__ == '__main__':
+    main()
+        </code></pre>
+    </div>
+    <div id="description_v3_upload_output">
+        <p>This is an example of how the script would output on an account with no added items or files yet.</p>
+        <pre><code class="nohighlight">Listing current items:
+  No items.
+
+Created item: https://api.figshare.com/v3/account/items/2012182
+
+Listing current items:
+  https://api.figshare.com/v3/items/2012182 - A 3D cat object model
+
+Listing files for item 2012182:
+  No files.
+
+Initiated file upload: https://api.figshare.com/v3/account/items/2012182/files/3008150
+
+Uploading parts:
+  Uploaded part 1 from 0 to 213325
+
+Listing files for item 2012182:
+  3008150 - cat.obj
+</code></pre>
+
+    </div>
+    <div id="description_v3_upload_bash">
+        <p>This is a bash script for uploading files. You'll have to replace certain strings inside it with your
+            keys.</p>
+        <pre><code class="nohighlight">
+#!/bin/bash
+# exit script if any command fails
+set -e
+
+#modify BASE_URL, ACCESS_TOKEN, FILE_NAME and FILE_PATH according to your needs
+BASE_URL='https://api.figshare.com/v3/account/items'
+ACCESS_TOKEN='insert access token here'
+FILE_NAME='test.txt'
+FILE_PATH='/path/to/your/file/'$FILE_NAME
+# see GET /v3/item_types for the item type ids enabled for your institution
+ITEM_TYPE_ID=1
+
+# ####################################################################################
+
+#Retrieve the file size and MD5 values for the item which needs to be uploaded
+FILE_SIZE=$(stat -c%s $FILE_PATH)
+MD5=($(md5sum $FILE_PATH))
+
+
+# List all of the existing items
+echo 'List all of the existing items...'
+RESPONSE=$(curl -s -f -H 'Authorization: token '$ACCESS_TOKEN -X GET "$BASE_URL")
+echo "The item list dict contains: "$RESPONSE
+echo ''
+
+# Create a new item (structural inputs top-level, metadata inside "fields")
+echo 'Creating a new item...'
+RESPONSE=$(curl -s -f -d '{"item_type_id": '$ITEM_TYPE_ID', "fields": {"title": "Sample upload item"}}' -H 'Authorization: token '$ACCESS_TOKEN -H 'Content-Type: application/json' -X POST "$BASE_URL")
+echo "The location of the created item is "$RESPONSE
+echo ''
+
+# Retrieve item id
+echo 'Retrieving the item id...'
+ITEM_ID=$(echo "$RESPONSE" | sed -r "s/.*\/([0-9]+).*/\1/")
+echo "The item id is "$ITEM_ID
+echo ''
+
+# List item files
+echo 'Retrieving the item files...'
+FILES_LIST=$(curl -s -f -H 'Authorization: token '$ACCESS_TOKEN -X GET "$BASE_URL/$ITEM_ID/files")
+echo 'The files list of the newly-create item should be an empty one. Returned results: '$FILES_LIST
+echo ''
+
+# Initiate new upload:
+echo 'A new upload had been initiated...'
+RESPONSE=$(curl -s -f -d '{"md5": "'${MD5}'", "name": "'${FILE_NAME}'", "size": '${FILE_SIZE}'}' -H 'Content-Type: application/json' -H 'Authorization: token '$ACCESS_TOKEN -X POST "$BASE_URL/$ITEM_ID/files")
+echo $RESPONSE
+echo ''
+
+# Retrieve file id
+echo 'The file id is retrieved...'
+FILE_ID=$(echo "$RESPONSE" | sed -r "s/.*\/([0-9]+).*/\1/")
+echo 'The file id is: '$FILE_ID
+echo ''
+
+# Retrieve the upload url
+echo 'Retrieving the upload URL...'
+RESPONSE=$(curl -s -f -H 'Authorization: token '$ACCESS_TOKEN -X GET "$BASE_URL/$ITEM_ID/files/$FILE_ID")
+UPLOAD_URL=$(echo "$RESPONSE" | sed -r 's/.*"upload_url":\s"([^"]+)".*/\1/')
+echo 'The upload URL is: '$UPLOAD_URL
+echo ''
+
+# Retrieve the upload parts
+echo 'Retrieving the part value...'
+RESPONSE=$(curl -s -f -H 'Authorization: token '$ACCESS_TOKEN -X GET "$UPLOAD_URL")
+PARTS_SIZE=$(echo "$RESPONSE" | sed -r 's/"endOffset":([0-9]+).*/\1/' | sed -r 's/.*,([0-9]+)/\1/')
+PARTS_SIZE=$(($PARTS_SIZE+1))
+echo 'The part value is: '$PARTS_SIZE
+echo ''
+
+
+# Split item into needed parts
+echo 'Spliting the provided item into parts process had begun...'
+split -b$PARTS_SIZE $FILE_PATH part_ --numeric=1
+
+echo 'Process completed!'
+
+# Retrive the number of parts
+MAX_PART=$((($FILE_SIZE+$PARTS_SIZE-1)/$PARTS_SIZE))
+echo 'The number of parts is: '$MAX_PART
+echo ''
+
+# Perform the PUT operation of parts
+echo 'Perform the PUT operation of parts...'
+for ((i=1; i<=$MAX_PART; i++))
+do
+    PART_VALUE='part_'$i
+    if [ "$i" -le 9 ]
+    then
+        PART_VALUE='part_0'$i
+    fi
+    RESPONSE=$(curl -s -f -H 'Authorization: token '$ACCESS_TOKEN -X PUT "$UPLOAD_URL/$i" --data-binary @$PART_VALUE)
+    echo "Done uploading part nr: $i/"$MAX_PART
+done
+
+echo 'Process was finished!'
+echo ''
+
+# Complete upload
+echo 'Completing the file upload...'
+RESPONSE=$(curl -s -f -H 'Authorization: token '$ACCESS_TOKEN -X POST "$BASE_URL/$ITEM_ID/files/$FILE_ID")
+echo 'Done!'
+echo ''
+
+#remove the part files
+rm part_*
+
+# List all of the existing items
+RESPONSE=$(curl -s -f -H 'Authorization: token '$ACCESS_TOKEN -X GET "$BASE_URL")
+echo 'New list of items: '$RESPONSE
+echo ''
+</code></pre>
+
+    </div>
+    <div id="description_v3_upload_from_s3">
+        <p>This is a python script for uploading files. You'll have to replace certain strings inside it with your
+            keys.</p>
+        <pre><code class="nohighlight">
+import hashlib
+import json
+import requests
+
+from requests.exceptions import HTTPError
+from boto.s3.connection import S3Connection
+
+BASE_URL = "https://api.figshare.com/v3/{endpoint}"
+CHUNK_SIZE = 1048576  # bytes
+TOKEN = "&lt;insert access token here&gt;"
+BUCKET_NAME = "&lt;insert bucket name here&gt;"
+FILE_KEY = "&lt;insert file key here&gt;"
+AWS_KEY = "&lt;insert AWS key here&gt;"
+AWS_SECRET = "&lt;insert AWS secret here&gt;"
+
+RECORD_TITLE = "&lt;insert Figshare record title here&gt;"
+ITEM_TYPE_ID = 1  # see GET /v3/item_types for the values enabled for your institution
+
+
+def retrieve_key():
+    conn = S3Connection(AWS_KEY, AWS_SECRET, is_secure=False)
+    bucket = conn.get_bucket(BUCKET_NAME)
+    key = bucket.lookup(FILE_KEY)
+
+    return key
+
+
+def raw_issue_request(method, url, data=None, binary=False):
+    headers = {"Authorization": "token " + TOKEN}
+    if data is not None and not binary:
+        data = json.dumps(data)
+    response = requests.request(method, url, headers=headers, data=data)
+    try:
+        response.raise_for_status()
+        try:
+            data = json.loads(response.content)
+        except ValueError:
+            data = response.content
+    except HTTPError as error:
+        print("Caught an HTTPError: {}".format(error))
+        print("Body:\n", response.content)
+        raise
+
+    return data
+
+
+def issue_request(method, endpoint, *args, **kwargs):
+    return raw_issue_request(method, BASE_URL.format(endpoint=endpoint), *args, **kwargs)
+
+
+def list_items():
+    result = issue_request("GET", "account/items")
+    print("Listing current items:")
+    if result:
+        for item in result:
+            print(u"  {url} - {title}".format(**item))
+    else:
+        print("  No items.")
+
+
+def create_item(title):
+    # Structural inputs top-level; all metadata goes inside "fields".
+    data = {"item_type_id": ITEM_TYPE_ID, "fields": {"title": title}}
+    result = issue_request("POST", "account/items", data=data)
+    print("Created item:", result["location"], "\n")
+
+    result = raw_issue_request("GET", result["location"])
+
+    return result["id"]
+
+
+def list_files_of_item(item_id):
+    result = issue_request("GET", "account/items/{}/files".format(item_id))
+    print("Listing files for item {}:".format(item_id))
+    if result:
+        for item in result:
+            print("  {id} - {name}".format(**item))
+    else:
+        print("  No files.")
+
+
+def get_file_check_data(key):
+    md5 = hashlib.md5()
+    start_byte = 0
+    stop_byte = min(CHUNK_SIZE, key.size) - 1
+    headers = {"Range": "bytes={}-{}".format(start_byte, stop_byte)}
+    data = key.get_contents_as_string(headers=headers)
+    size = len(data)
+    while size &lt; key.size:
+        md5.update(data)
+        start_byte = size
+        stop_byte = min(size + CHUNK_SIZE, key.size) - 1
+        headers = {"Range": "bytes={}-{}".format(start_byte, stop_byte)}
+        data = key.get_contents_as_string(headers=headers)
+        size += len(data)
+    md5.update(data)
+
+    file_name = key.name.rsplit("/", 1)[1] if "/" in key.name else key.name
+
+    return md5.hexdigest(), key.size, file_name
+
+
+def initiate_new_upload(item_id, key):
+    endpoint = "account/items/{}/files"
+    endpoint = endpoint.format(item_id)
+
+    md5, size, name = get_file_check_data(key)
+
+    data = {"md5": md5, "size": size, "name": name}
+
+    result = issue_request("POST", endpoint, data=data)
+    print("Initiated file upload:", result["location"], "\n")
+
+    result = raw_issue_request("GET", result["location"])
+
+    return result
+
+
+def complete_upload(item_id, file_id):
+    issue_request("POST", "account/items/{}/files/{}".format(item_id, file_id))
+
+
+def upload_parts(file_info, key):
+    url = "{upload_url}".format(**file_info)
+    result = raw_issue_request("GET", url)
+
+    print("Uploading parts:")
+
+    for part in result["parts"]:
+        upload_part(file_info, part, key)
+
+
+def upload_part(file_info, part, key):
+    udata = file_info.copy()
+    udata.update(part)
+    url = "{upload_url}/{partNo}".format(**udata)
+
+    your_bytes = key.get_contents_as_string(
+        headers={"Range": "bytes=" + str(part["startOffset"]) + "-" + str(part["endOffset"])}
+    )
+
+    raw_issue_request("PUT", url, data=your_bytes, binary=True)
+    print("  Uploaded part {partNo} from {startOffset} to {endOffset}".format(**part))
+
+
+def main():
+    # We first create the item
+    list_items()
+    item_id = create_item(RECORD_TITLE)
+    list_files_of_item(item_id)
+
+    # Then we retrieve the file
+    file_key = retrieve_key()
+
+    # Then we upload the file.
+    file_info = initiate_new_upload(item_id, file_key)
+    # Until here we used the figshare API; following lines use the figshare upload service API.
+    upload_parts(file_info, file_key)
+    # We return to the figshare API to complete the file upload process.
+    complete_upload(item_id, file_info["id"])
+    list_files_of_item(item_id)
+
+
+if __name__ == "__main__":
+    main()
+        </code></pre>
+    </div>
+
+    <div id="description_v3_search_intro">
+        <p>Data appears on the portal homepage with the newest uploads appearing first, you also have the option to
+            browse by Popular content and Categories. Categories will only appear available for browsing if there are
+            public items with the category assigned.</p>
+        <p>The query syntax below applies to the <code>search_for</code> field of the v3 search endpoints
+            (<code>POST /v3/items/search</code> and <code>POST /v3/account/items/search</code>).</p>
+    </div>
+    <div id="description_v3_search_operators">
+        <p>figshare supports a predefined set of characters for the main search operators and for phrase searches.</p>
+        <table>
+            <thead>
+            <tr>
+                <th>Operator</th>
+                <th>Supported characters</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <td>AND</td>
+                <td>AND</td>
+            </tr>
+
+            <tr>
+                <td>OR</td>
+                <td>OR</td>
+            </tr>
+            <tr>
+                <td>NOT</td>
+                <td>NOT</td>
+            </tr>
+            <tr>
+                <td>field delimiter</td>
+                <td>:</td>
+            </tr>
+            <tr>
+                <td>phrase search delimiter</td>
+                <td>" "</td>
+            </tr>
+            <tr>
+                <td>grouping</td>
+                <td>( )</td>
+            </tr>
+            </tbody>
+        </table>
+
+    </div>
+    <div id="description_v3_search_attributes">
+        <p>You can build queries based on the following attributes:</p>
+        <ul>
+            <li>:title: - string (exact match),</li>
+            <li>:description: - string (exact match),</li>
+            <li>:tag: - string (exact match), the tag is the keyword used to describe an item such as ":tag: artificial
+                intelligence"
+            </li>
+            <li>:category: - string (exact match),</li>
+            <li>:author: - string (exact match),</li>
+            <li>:item_type: - string, the selectable item types are configured per institution; retrieve the available
+                values from <code>GET /v3/item_types</code>
+            </li>
+            <li>:search_term: - string (will search in all fields and match phrase)</li>
+            <li>:orcid: - string (exact match)</li>
+            <li>:extension: - string (exact match for the file extensions)</li>
+            <li>:references: - string (exact match)</li>
+            <li>:doi: - string (exact match)</li>
+            <li>:institution: - string, this is only for institutions that have figshare and you would use the string id
+                from the URL (for example, Loughborough University has the URL https://lboro.figshare.com/ and you would
+                type ":institutions: lboro" into the search bar)
+            </li>
+            <li>:project: - string (exact match)</li>
+            <li>:published_before: - string (exact match)</li>
+            <li>:published_after: - string (exact match)</li>
+            <li>:licence: - string (exact match), for example ":licence: CCBY"</li>
+
+            <li>:resource_doi: - string (exact match)</li>
+            <li>:resource_title: - string (exact match)</li>
+            <li>:resource_link: - string (exact match)</li>
+        </ul>
+        <p>In order for the search to filter the attribute the user must use the following syntax: <strong>:tag:
+            cell</strong></p>
+    </div>
+    <div id="description_v3_search_quick">
+        <h3>Simple search</h3>
+        <h4>Search string: cell</h4>
+        <p>As a result of this search you will see all figshare items that will contain the word "cell" in any of the
+            metadata fields. The search will also return the items that contain the term cells or all inflected words
+            derived from the common stem.</p>
+
+        <h3>Phrase search - phase 2</h3>
+        <h4>Search string: "stem cell"</h4>
+        <p>As a result of this search you will see all figshare items that will contain the exact phrase "stem cell"
+            in any of the metadata fields.</p>
+
+        <h3>Multi term search</h3>
+        <h4>Search string: cancer cells treatment</h4>
+        <p>As a result of this search you will see all figshare items that contain at least one of the query terms.
+            The results will be ordered by relevance first ones being the ones that would be found in a phrase search if
+            available.</p>
+        <p>As explained also in the table above the space is used by the figshare search as an OR operator. The search
+            will also return the items that contain all inflected words derived from the common stems.</p>
+
+    </div>
+    <div id="description_v3_search_advanced">
+        <p>As the tags might contain special characters they will have a special treatment within the figshare search,
+            where we would do an exact match. The examples below will illustrate how field search works in general and
+            how is customised for tags.</p>
+        <h4>Search string: :tag: cancer cell</h4>
+        <p>This search will return all items with the exact tag cancer cell.</p>
+        <h4>Search string: :tag: music and puppets</h4>
+        <p>This search will return all items with the exact tag music and puppets. Only the operator AND will work as
+            search delimiter.</p>
+        <h4>Search string: :tag: "scrf=(cpcm,solvent=benzene)"</h4>
+        <p>This search will return all items with the exact tag.</p>
+        <h4>Search string: :tag: cancer category chemistry</h4>
+        <p>This search will return all items with the exact tag "cancer category chemistry". If the user wants to
+            break the tag and search also for a specific category please see Combined field search below.</p>
+        <h4>Search string: :title: environmental science</h4>
+        <p>This search will return all items that have at least one of the words in the title working as in field
+            multi-term search by relevance.</p>
+        <h4>Search string: :title: Line balancing for improving production</h4>
+        <p>Figshare engine will add the space where needed between the operator and the actual term<br/>This search will
+            return only the items that have the specified phrase included in the title. As usual the search will
+            return also with a lower priority results containing all inflected words derived from the common stems.</p>
+        <h4>Search string: :description: growth of Indian manufacturing sector</h4>
+        <p>This search will return all items that have at least one of the words from above contained in the
+            description from the list above as multi-term search ordered by relevance. As usual, the search will return
+            also with a lower priority results containing all inflected words derived from the common stems.</p>
+        <h4>Search string: description: "industrial case study"</h4>
+        <p>This search will return all items that have the phrase from above contained in the description. As usual,
+            the search will return also with a lower priority results containing all inflected words derived from the
+            common stems.</p>
+    </div>
+    <div id="description_v3_search_combined">
+        <h4>Search string: :author: M. Hahnel OR :author: J. Smith OR :Author: Albert Einstein</h4>
+        <p>This search will return all items that have at least one of the authors from the list above.</p>
+        <h4>Search string: :title: Line balancing for improving production AND :tag: cancer cell</h4>
+        <p>This search will return all results where the title matches phrase (multi term search by relevance) from
+            above and has the "cancer cell" tag. As usual the search will return also with a lower priority results
+            containing all inflected words derived from the common stems.</p>
+        <h4>Search string: :tag: chemistry applied AND :category: biochemistry</h4>
+        <p>This search will return all results where the tag is chemistry applied and the category is biochemistry. As
+            usual the search will return also with a lower priority results containing all inflected words derived from
+            the common stems.</p>
+    </div>
+    <div id="description_v3_search_complex">
+        <h4>Search string: :title: science AND :tag: cell AND :search term: private research</h4>
+        <p>This search will return items that have the word science in the title and the tag cell and has the
+            expression private research in any metadata field.</p>
+        <h4>Search string: :title: law OR :tag: democrat AND :search term: respect</h4>
+        <p>This search will return all items that contain law in title or the tag democrat but also contain the word
+            respect in any of the metadata fields.</p>
+    </div>
+
+    <div id="description_v3_hrfeed_endpoint">
+        <h3 id="v3-upload-hrfeed-file">Upload HRFeed File</h3>
+        <h4 id="v3-hrfeed-request">Request</h4>
+        <pre><code class="http">POST /v3/institution/hrfeed/upload
+        </code></pre>
+
+        <p>The request needs to be of type <code>multipart/form-data</code> and have its <strong>Content-Type</strong>
+            header set to the same value; the body of the file is sent as the form data.
+            A typical request looks like this:</p>
+        <pre><code class="http">POST /v3/institution/hrfeed/upload HTTP/1.1
+Host: api.figshare.com
+Content-Length: 975
+Accept-Encoding: gzip, deflate
+Accept: */*
+User-Agent: python-requests/2.5.3 CPython/2.7.10 Linux/4.1.4-1-ARCH
+Connection: keep-alive
+Content-Type: multipart/form-data; boundary=529448d158064de596afd8f892c84e15
+Authorization: token 86bbaa5d6d51fc0ae2f2defd3a474dac77ae27179ff6d04dd37e74c531bd6ed059eda584b41356337c362a259e482eb36a34825c805344e0600bb875a77444df
+
+--529448d158064de596afd8f892c84e15
+Content-Disposition: form-data; name=&quot;hrfeed&quot;; filename=&quot;feed.xml&quot;
+
+&lt;?xml version=&quot;1.0&quot;?&gt;
+&lt;HRFeed&gt;
+    &lt;Record&gt;
+        &lt;UniqueID&gt;1234567&lt;/UniqueID&gt;
+        &lt;Orcid&gt;1122-1299-6202-273X&lt;/Orcid&gt;
+        &lt;FirstName&gt;Jane&lt;/FirstName&gt;
+        &lt;LastName&gt;Doe&lt;/LastName&gt;
+        &lt;Title&gt;Mrs&lt;/Title&gt;
+        &lt;Initials&gt;JD&lt;/Initials&gt;
+        &lt;Suffix&gt;&lt;/Suffix&gt;
+        &lt;Email&gt;j.doe@sillymail.io&lt;/Email&gt;
+        &lt;IsActive&gt;Y&lt;/IsActive&gt;
+        &lt;UserQuota&gt;1048576000&lt;/UserQuota&gt;
+        &lt;UserAssociationCriteria&gt;IT&lt;/UserAssociationCriteria&gt;
+    &lt;/Record&gt;
+    &lt;Record&gt;
+        &lt;UniqueID&gt;1234568&lt;/UniqueID&gt;
+        &lt;Orcid&gt;0000-0002-3109-4308&lt;/Orcid&gt;
+        &lt;FirstName&gt;John&lt;/FirstName&gt;
+        &lt;LastName&gt;Smith&lt;/LastName&gt;
+        &lt;Title&gt;Mr&lt;/Title&gt;
+        &lt;Initials&gt;&lt;/Initials&gt;
+        &lt;Suffix&gt;&lt;/Suffix&gt;
+        &lt;Email&gt;js@seriousness.com&lt;/Email&gt;
+        &lt;IsActive&gt;Y&lt;/IsActive&gt;
+        &lt;UserQuota&gt;10485760000&lt;/UserQuota&gt;
+        &lt;UserAssociationCriteria&gt;&lt;/UserAssociationCriteria&gt;
+    &lt;/Record&gt;
+&lt;/HRFeed&gt;
+
+--529448d158064de596afd8f892c84e15--
+
+</code></pre>
+
+    </div>
+    <div id="description_v3_hrfeed_examples_python">
+        <p>One of the simpler examples is in <em>python</em>. For this to work one would need to install the <em>requests</em>
+            python package.</p>
+        <pre><code class="python">#!/usr/bin/env python
+
+import requests
+
+
+FILE_NAME = 'feed.xml'
+API_URL = 'https://api.figshare.com/v3/institution/hrfeed/upload'
+TOKEN = '86bbaa5d6d51fc0ae2f2defd3a474dac77ae27179ff6d04dd37e74c531bd6ed059eda584b41356337c362a259e482eb36a34825c805344e0600bb875a77444df'
+
+
+def main():
+    headers = {&quot;Authorization&quot;: &quot;token &quot; + TOKEN}
+    with open(FILE_NAME, 'rb') as fin:
+        files = {'hrfeed': (FILE_NAME, fin)}
+        resp = requests.post(API_URL, files=files, headers=headers)
+
+        print(resp.content)
+
+        resp.raise_for_status()
+
+if __name__ == '__main__':
+    main()
+
+</code></pre>
+    </div>
+    <div id="description_v3_hrfeed_examples_java">
+        <p>For java one can use apache <em>httpcomponents</em>:</p>
+        <pre><code class="java">import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.lang.Throwable;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+
+public class HRFeedUploaderExample {
+    public static void main(String[] args) {
+        try {
+            HRFeedUploaderExample hfue = new HRFeedUploaderExample(args[0]);
+            hfue.upload();
+        } catch (Throwable t) {
+            t.printStackTrace(System.err);
+        }
+    }
+
+    private static final String API_URL = &quot;https://api.figshare.com/v3/institution/hrfeed/upload&quot;;
+    private static final String TOKEN = &quot;86bbaa5d6d51fc0ae2f2defd3a474dac77ae27179ff6d04dd37e74c531bd6ed059eda584b41356337c362a259e482eb36a34825c805344e0600bb875a77444df&quot;;
+
+    private String fileName = null;
+
+    HRFeedUploaderExample(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public void upload() throws IOException {
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        HttpPost uploadFile = new HttpPost(API_URL);
+
+        uploadFile.addHeader(&quot;Authorization&quot;, &quot;token &quot; + TOKEN);
+
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        File file = new File(fileName);
+
+        builder.addBinaryBody(&quot;hrfeed&quot;, new FileInputStream(file), ContentType.TEXT_PLAIN, file.getName());
+
+        HttpEntity multipart = builder.build();
+        uploadFile.setEntity(multipart);
+
+        CloseableHttpResponse response = httpClient.execute(uploadFile);
+        int status = response.getStatusLine().getStatusCode();
+
+        System.out.println(&quot;Status code was: &quot; + status);
+    }
+}
+</code></pre>
+    </div>
+    <div id="description_v3_hrfeed_examples_csharp">
+        <p>For the <strong>.NET / mono</strong> users there's this snippet of code:</p>
+        <pre><code class="Csharp">
+using System;
+using System.Net.Http;
+using System.IO;
+using System.Threading.Tasks;
+
+namespace HRFeedUploadExample
+{
+  class MainClass
+  {
+    private const String API_URL = &quot;https://api.figshare.com/v3/institution/hrfeed/upload&quot;;
+    private const String TOKEN = &quot;86bbaa5d6d51fc0ae2f2defd3a474dac77ae27179ff6d04dd37e74c531bd6ed059eda584b41356337c362a259e482eb36a34825c805344e0600bb875a77444df&quot;;
+    private String fileName = null;
+
+    public static void Main (string[] args)
+    {
+      MainClass app = new MainClass (args [0]);
+      app.Upload ();
+    }
+
+    MainClass(String fileName) {
+      this.fileName = fileName;
+    }
+
+    public void Upload() {
+      HttpClient httpClient = new HttpClient ();
+      httpClient.DefaultRequestHeaders.Add (&quot;Authorization&quot;, &quot;token &quot; + MainClass.TOKEN);
+
+      MultipartFormDataContent form = new MultipartFormDataContent ();
+      using (StreamReader sr = new StreamReader (this.fileName)) {
+        String content = sr.ReadToEnd ();
+        byte[] data = System.Text.Encoding.UTF8.GetBytes (content);
+
+        form.Add (new ByteArrayContent (data, 0, data.Length), &quot;hrfeed&quot;, this.fileName);
+      }
+
+      Task&lt;HttpResponseMessage&gt; task = httpClient.PostAsync (MainClass.API_URL, form);
+      task.Wait();
+      HttpResponseMessage response = task.Result;
+      response.EnsureSuccessStatusCode();
+
+      Console.WriteLine (&quot;Status code was: &quot; + response.StatusCode);
+
+      httpClient.Dispose();
+    }
+  }
+}
+</code></pre>
+    </div>
+    <div id="description_v3_hrfeed_examples_curl">
+        <p>Probably one of the most versatile ways of uploading an HRFeed is through <strong>curl</strong> given the
+            possibility
+            of integrating it into any other command line utility on linux/unix.</p>
+        <pre><code class="curl">curl -XPOST\
+    -H&quot;Authorization: token 86bbaa5d6d51fc0ae2f2defd3a474dac77ae27179ff6d04dd37e74c531bd6ed059eda584b41356337c362a259e482eb36a34825c805344e0600bb875a77444df&quot;\
+    -F&quot;hrfeed=@feed.csv&quot;\
+    https://api.figshare.com/v3/institution/hrfeed/upload
+</code></pre>
+
+
+    </div>
+    <div id="description_v3_hrfeed_response">
+        <pre><code class="json">{
+    &quot;message&quot;: &quot;OK&quot;,
+    "code": "200"
+}
+</code></pre>
+    </div>
+    <div id="description_v3_hrfeed_errors">
+        <p>Standard <a href="../#errors">error responses</a>
+            Most common:</p>
+        <pre><code class="json">{
+    &quot;message&quot;: &quot;Previous feed import not complete.&quot;,
+    &quot;data&quot;: null,
+    &quot;errcode&quot;: &quot;FigshareAPIException&quot;
+}
+</code></pre>
+
+        <p>when the feed has already been submitted within a 24 hour span.</p>
+
+
+    </div>
+    <div id="description_v3_hrfeed_notes">
+        <p>The <em>success</em> response doesn't give much information other than the fact that the system has
+            understood the request, has received the file and has initiated the necessary tasks.
+            There are plans for a way to get more in depth information for the state of the <strong>HRFeed
+                Process</strong>.</p>
+        <p>The <em>token</em> given in the upper examples is a general fig<strong>share</strong> API personal token of
+            any of
+            the admins at the institution. No other user should be able to access this endpoint, apart from
+            those given the express permission of uploading HR feeds.</p>
+
+    </div>
+
+    <div id="description_v3_custom_fields_endpoint">
+        <p>In the item-type based metadata API, item metadata (core, stock and custom fields) is set through the
+            <code>fields</code> object when creating or updating an item &mdash; see <code>POST /v3/account/items</code>
+            and <code>PUT /v3/account/items/{item_id}</code>. To discover the fields available to your institution and
+            how they are configured per item type, use the catalog endpoints:</p>
+        <ul>
+            <li><code>GET /v3/account/items/fields</code> - list the underlying field definitions (core, stock and
+                custom)</li>
+            <li><code>GET /v3/account/items/fields/configuration/{item_type_id}</code> - the fields configured for a
+                specific item type (display name, hint text, whether mandatory, order, display area, settings)</li>
+            <li><code>GET /v3/item_types</code> - the institution's selectable item types with their field
+                configuration</li>
+            <li>The equivalent catalogs exist for projects and collections:
+                <code>GET /v3/account/projects/fields</code> and <code>GET /v3/account/collections/fields</code>.</li>
+        </ul>
+        <h3 id="v3-upload-field-values-file">Upload Field Values File</h3>
+        <h4 id="v3-fields-request">Request</h4>
+        <pre><code class="http">POST /v3/account/institution/fields/{field_id}/items/upload
+        </code></pre>
+
+        <p>Uploads a CSV containing values for a specific field of type <strong>dropdown_large_list</strong>. The
+            <code>field_id</code> path parameter accepts both classic custom field IDs (legacy) and underlying field
+            IDs; the lookup is performed automatically, so no additional parameter is required.</p>
+        <p>The request needs to be of type <code>multipart/form-data</code> and have its <strong>Content-Type</strong>
+            header set to the same value; the body of the file is sent as the form data.
+            A typical request looks like this:</p>
+        <pre><code class="http">POST /v3/account/institution/fields/{field_id}/items/upload HTTP/1.1
+Host: api.figshare.com
+Content-Length: 975
+Accept-Encoding: gzip, deflate
+Accept: */*
+User-Agent: python-requests/2.5.3 CPython/2.7.10 Linux/4.1.4-1-ARCH
+Connection: keep-alive
+Content-Type: multipart/form-data; boundary=529448d158064de596afd8f892c84e15
+Authorization: token 86bbaa5d6d51fc0ae2f2defd3a474dac77ae27179ff6d04dd37e74c531bd6ed059eda584b41356337c362a259e482eb36a34825c805344e0600bb875a77444df
+
+--529448d158064de596afd8f892c84e15
+Content-Disposition: form-data; name="external_file"; filename="example_file.csv"
+
+[file content goes there]
+
+--529448d158064de596afd8f892c84e15--
+
+
+</code></pre>
+
+    </div>
+    <div id="description_v3_custom_fields_examples_python">
+        <p>One of the simpler examples is in <em>python</em>. For this to work one would need to install the <em>requests</em>
+            python package.</p>
+        <pre><code class="python">#!/usr/bin/env python
+
+import requests
+
+
+FILE_NAME = 'example_file.csv'
+API_URL = 'https://api.figshare.com/v3/account/institution/fields/{field_id}/items/upload'.format(field_id=1)
+TOKEN = '86bbaa5d6d51fc0ae2f2defd3a474dac77ae27179ff6d04dd37e74c531bd6ed059eda584b41356337c362a259e482eb36a34825c805344e0600bb875a77444df'
+
+
+def main():
+    headers = {"Authorization": "token " + TOKEN}
+    with open(FILE_NAME, 'rb') as fin:
+        files = {'external_file': (FILE_NAME, fin)}
+        resp = requests.post(API_URL, files=files, headers=headers)
+
+        print(resp.content)
+
+        resp.raise_for_status()
+
+</code></pre>
+    </div>
+    <div id="description_v3_custom_fields_examples_java">
+        <p>For java one can use apache <em>httpcomponents</em>:</p>
+        <pre><code class="java">import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.lang.Throwable;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+
+public class CSVUploaderExample {
+    public static void main(String[] args) {
+        try {
+            CSVUploaderExample ex = new CSVUploaderExample(args[0]);
+            ex.upload();
+        } catch (Throwable t) {
+            t.printStackTrace(System.err);
+        }
+    }
+
+    private static final String API_URL = "https://api.figshare.com/v3/account/institution/fields/1/items/upload";
+    private static final String TOKEN = "86bbaa5d6d51fc0ae2f2defd3a474dac77ae27179ff6d04dd37e74c531bd6ed059eda584b41356337c362a259e482eb36a34825c805344e0600bb875a77444df";
+
+    private String fileName = null;
+
+    CSVUploaderExample(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public void upload() throws IOException {
+        CloseableHttpClient httpClient = HttpClients.createDefault();
+        HttpPost uploadFile = new HttpPost(API_URL);
+
+        uploadFile.addHeader("Authorization", "token " + TOKEN);
+
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+        File file = new File(fileName);
+
+        builder.addBinaryBody("external_file", new FileInputStream(file), ContentType.TEXT_PLAIN, file.getName());
+
+        HttpEntity multipart = builder.build();
+        uploadFile.setEntity(multipart);
+
+        CloseableHttpResponse response = httpClient.execute(uploadFile);
+        int status = response.getStatusLine().getStatusCode();
+
+        System.out.println("Status code was: " + status);
+    }
+}
+
+</code></pre>
+    </div>
+    <div id="description_v3_custom_fields_examples_csharp">
+        <p>For the <strong>.NET / mono</strong> users there's this snippet of code:</p>
+        <pre><code class="Csharp">
+using System;
+using System.Net.Http;
+using System.IO;
+using System.Threading.Tasks;
+
+namespace CSVUploaderExample
+{
+  class MainClass
+  {
+    private const String API_URL = "https://api.figshare.com/v3/account/institution/fields/1/items/upload";
+    private const String TOKEN = "86bbaa5d6d51fc0ae2f2defd3a474dac77ae27179ff6d04dd37e74c531bd6ed059eda584b41356337c362a259e482eb36a34825c805344e0600bb875a77444df";
+    private String fileName = null;
+
+    public static void Main (string[] args)
+    {
+      MainClass app = new MainClass (args [0]);
+      app.Upload ();
+    }
+
+    MainClass(String fileName) {
+      this.fileName = fileName;
+    }
+
+    public void Upload() {
+      HttpClient httpClient = new HttpClient ();
+      httpClient.DefaultRequestHeaders.Add ("Authorization", "token " + MainClass.TOKEN);
+
+      MultipartFormDataContent form = new MultipartFormDataContent ();
+      using (StreamReader sr = new StreamReader (this.fileName)) {
+        String content = sr.ReadToEnd ();
+        byte[] data = System.Text.Encoding.UTF8.GetBytes (content);
+
+        form.Add (new ByteArrayContent (data, 0, data.Length), "external_file", this.fileName);
+      }
+
+      Task<HttpResponseMessage> task = httpClient.PostAsync (MainClass.API_URL, form);
+      task.Wait();
+      HttpResponseMessage response = task.Result;
+      response.EnsureSuccessStatusCode();
+
+      Console.WriteLine ("Status code was: " + response.StatusCode);
+
+      httpClient.Dispose();
+    }
+  }
+}
+</code></pre>
+    </div>
+    <div id="description_v3_custom_fields_examples_curl">
+        <p>Probably one of the most versatile ways of uploading a field values CSV is through
+            <strong>curl</strong> given the possibility
+            of integrating it into any other command line utility on linux/unix.</p>
+        <pre><code class="curl">curl -XPOST\
+    -H"Authorization: token 86bbaa5d6d51fc0ae2f2defd3a474dac77ae27179ff6d04dd37e74c531bd6ed059eda584b41356337c362a259e482eb36a34825c805344e0600bb875a77444df"\
+    -F"external_file=@my_file.csv"\
+    https://api.figshare.com/v3/account/institution/fields/1/items/upload
+</code></pre>
+
+
+    </div>
+    <div id="description_v3_custom_fields_response">
+        <pre><code class="json">{
+    &quot;message&quot;: &quot;OK&quot;,
+    "code": "200"
+}
+</code></pre>
+    </div>
+    <div id="description_v3_custom_fields_errors">
+        <p>Standard <a href="../#errors">error responses</a>
+        <p>
+        <p>Other specific errors:</p>
+        <pre><code class="json">{
+    &quot;message&quot;: &quot;Previous import still in progress!&quot;,
+    "code": "PreviousCustomFieldUploadNotComplete"
+}
+</code></pre>
+
+        <p>when the feed has already been submitted within a 60 minutes span.</p>
+
+        <pre><code class="json">{
+    &quot;message&quot;: &quot;You are not allowed to upload values for this field&quot;,
+    "code": "DropdownLargeListFieldUpdateUnauthorizedError"
+}
+</code></pre>
+
+        <p>when the user is not authorized to make the upload</p>
+
+        <pre><code class="json">{
+    &quot;message&quot;: &quot;This field cannot be updated via this method&quot;,
+    "code": "BadRequest"
+}
+</code></pre>
+
+        <p>when trying to upload a file for a field of a different type besides dropdown_large_list.</p>
+
+    </div>
+    <div id="description_v3_custom_fields_notes">
+        <p>The <em>success</em> response only indicates the fact that the system has
+            understood the request, has received the file and has initiated the necessary tasks. It is not a
+            confirmation that the file processing is complete.
+        <p>The <em>token</em> given in the upper examples is a general Fig<strong>share</strong> API personal belonging
+            to an admin/owner
+            of the group the field has been created in (either institutional admin or group admin/owner). No
+            other users
+            should be able to use this endpoint (otherwise an <strong>Unauthorised</strong> error will be returned).
+        </p>
+        <p>By default, only one file upload can be initiated every 60 minutes per portal. The enforced delay will not be
+            automatically lifted
+            if the field is deleted in the meantime. The length of this enforced delay can be customized by
+            submitting a request to Figshare support.</p>
+        <p>The only supported file format at the moment is CSV. The first line of the file will be ignored, as it is
+            assumed to be a header row.
+            For all further rows, the values in all columns will be concatenated, with a single space inserted between
+            each pair of values,
+            and the result will be added as an item for the field.
+            For example, the following file content:</p>
+        <pre><code class="csv">
+    header1,header2,header 3
+    123,My awesome field value,456
+</code></pre>
+
+        <p>will generate a single field value <strong>123 My awesome field value 456.</strong></p>
+        <p>Values must have a minimum of 3 characters and a maximum of 255 characters. All values outside of this
+            interval will simply be ignored.</p>
+
+
+    </div>
+
     <div id="description_intro">
         <p>The definite guide for figshare and the home of all user documentation.</p>
         <p>The sources for these pages are publicly hosted on github at <a
