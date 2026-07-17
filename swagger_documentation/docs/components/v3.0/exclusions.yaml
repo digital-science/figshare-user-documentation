@@ -1,0 +1,7 @@
+# v3-only component exclusions (applied after the v2.0 baseline, before inclusions/overrides).
+# Drop the American `license` property from ArticleProjectCreate on v3; the v3
+# /account/projects/{project_id}/items requestBody re-adds it as British `licence` via allOf.
+# v2 keeps `license`.
+exclude_schema_properties:
+  ArticleProjectCreate:
+  - license

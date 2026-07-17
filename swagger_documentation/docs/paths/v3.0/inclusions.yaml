@@ -2537,7 +2537,17 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ArticleProjectCreate'
+              # v3 uses British `licence`; the base schema's `license` property is dropped for v3
+              # via components/v3.0/exclusions.yaml (exclude_schema_properties) and re-added here.
+              allOf:
+              - $ref: '#/components/schemas/ArticleProjectCreate'
+              - type: object
+                properties:
+                  licence:
+                    type: integer
+                    description: Licence id for this item.
+                    example: 1
+                    default: 0
         required: true
       responses:
         '201':
@@ -5726,6 +5736,59 @@ paths:
         '404':
           description: Not Found
           content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+  # v3 licence catalogue: British-spelled paths (v2 /licenses + /account/licenses are excluded for v3).
+  /licences:
+    get:
+      tags:
+      - other
+      summary: Public Licences
+      description: Returns a list of public licences
+      operationId: licences_list
+      responses:
+        '200':
+          description: OK. An array of licences
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Licence'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+  /account/licences:
+    get:
+      tags:
+      - other
+      summary: Private Account Licences
+      description: This is a private endpoint that requires OAuth. It will return a list with figshare public licences AND
+        licences defined for account's institution.
+      operationId: private_licences_list
+      responses:
+        '200':
+          description: OK. An array of personal licences
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Licence'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
         '500':
           description: Internal Server Error
           content: {}

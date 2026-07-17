@@ -13,3 +13,21 @@ schemas:
         - 2000004
         items:
           type: integer
+  # v3 British-spelled licence catalogue object (v2 keeps `License`). Same shape as `License`.
+  Licence:
+    required:
+    - name
+    - url
+    - value
+    type: object
+    properties:
+      value:
+        type: integer
+        description: Licence value
+      name:
+        type: string
+        description: Licence name
+      url:
+        type: string
+        description: Licence url
+        format: url

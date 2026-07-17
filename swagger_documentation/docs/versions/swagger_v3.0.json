@@ -3942,86 +3942,6 @@
                 "security": []
             }
         },
-        "/licenses": {
-            "get": {
-                "tags": [
-                    "other"
-                ],
-                "summary": "Public Licenses",
-                "description": "Returns a list of public licenses",
-                "operationId": "licenses_list",
-                "responses": {
-                    "200": {
-                        "description": "OK. An array of licenses",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/License"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "content": {}
-                    }
-                },
-                "security": []
-            }
-        },
-        "/account/licenses": {
-            "get": {
-                "tags": [
-                    "other"
-                ],
-                "summary": "Private Account Licenses",
-                "description": "This is a private endpoint that requires OAuth. It will return a list with figshare public licenses AND licenses defined for account's institution.",
-                "operationId": "private_licenses_list",
-                "responses": {
-                    "200": {
-                        "description": "OK. An array of personal licenses",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/License"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "content": {}
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorMessage"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "content": {}
-                    }
-                },
-                "security": [
-                    {
-                        "OAuth2": [
-                            "all"
-                        ]
-                    }
-                ]
-            }
-        },
         "/file/download/{file_id}": {
             "get": {
                 "tags": [
@@ -8597,7 +8517,22 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/ArticleProjectCreate"
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/ArticleProjectCreate"
+                                    },
+                                    {
+                                        "type": "object",
+                                        "properties": {
+                                            "licence": {
+                                                "type": "integer",
+                                                "description": "Licence id for this item.",
+                                                "example": 1,
+                                                "default": 0
+                                            }
+                                        }
+                                    }
+                                ]
                             }
                         }
                     },
@@ -11581,6 +11516,86 @@
                     }
                 ]
             }
+        },
+        "/licences": {
+            "get": {
+                "tags": [
+                    "other"
+                ],
+                "summary": "Public Licences",
+                "description": "Returns a list of public licences",
+                "operationId": "licences_list",
+                "responses": {
+                    "200": {
+                        "description": "OK. An array of licences",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Licence"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": []
+            }
+        },
+        "/account/licences": {
+            "get": {
+                "tags": [
+                    "other"
+                ],
+                "summary": "Private Account Licences",
+                "description": "This is a private endpoint that requires OAuth. It will return a list with figshare public licences AND licences defined for account's institution.",
+                "operationId": "private_licences_list",
+                "responses": {
+                    "200": {
+                        "description": "OK. An array of personal licences",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Licence"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
         }
     },
     "components": {
@@ -13273,12 +13288,6 @@
                         "items": {
                             "$ref": "#/components/schemas/FundingCreate"
                         }
-                    },
-                    "license": {
-                        "type": "integer",
-                        "description": "License id for this article.",
-                        "example": 1,
-                        "default": 0
                     },
                     "doi": {
                         "type": "string",
@@ -16845,6 +16854,29 @@
                         "items": {
                             "type": "integer"
                         }
+                    }
+                }
+            },
+            "Licence": {
+                "required": [
+                    "name",
+                    "url",
+                    "value"
+                ],
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "type": "integer",
+                        "description": "Licence value"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Licence name"
+                    },
+                    "url": {
+                        "type": "string",
+                        "description": "Licence url",
+                        "format": "url"
                     }
                 }
             },
