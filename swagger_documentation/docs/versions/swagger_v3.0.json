@@ -3290,9 +3290,9 @@
                         }
                     },
                     {
-                        "name": "article_id",
+                        "name": "item_id",
                         "in": "query",
-                        "description": "Retrieve the reviews for this article",
+                        "description": "Retrieve the reviews for this item",
                         "schema": {
                             "minimum": 0,
                             "type": "integer"
@@ -3940,86 +3940,6 @@
                     }
                 },
                 "security": []
-            }
-        },
-        "/licenses": {
-            "get": {
-                "tags": [
-                    "other"
-                ],
-                "summary": "Public Licenses",
-                "description": "Returns a list of public licenses",
-                "operationId": "licenses_list",
-                "responses": {
-                    "200": {
-                        "description": "OK. An array of licenses",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/License"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "content": {}
-                    }
-                },
-                "security": []
-            }
-        },
-        "/account/licenses": {
-            "get": {
-                "tags": [
-                    "other"
-                ],
-                "summary": "Private Account Licenses",
-                "description": "This is a private endpoint that requires OAuth. It will return a list with figshare public licenses AND licenses defined for account's institution.",
-                "operationId": "private_licenses_list",
-                "responses": {
-                    "200": {
-                        "description": "OK. An array of personal licenses",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "$ref": "#/components/schemas/License"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "content": {}
-                    },
-                    "403": {
-                        "description": "Forbidden",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "$ref": "#/components/schemas/ErrorMessage"
-                                }
-                            }
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "content": {}
-                    }
-                },
-                "security": [
-                    {
-                        "OAuth2": [
-                            "all"
-                        ]
-                    }
-                ]
             }
         },
         "/file/download/{file_id}": {
@@ -6121,7 +6041,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/ArticleWithProject"
+                                        "$ref": "#/components/schemas/ItemWithProject"
                                     }
                                 }
                             }
@@ -6172,7 +6092,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/ArticleWithProject"
+                                        "$ref": "#/components/schemas/ItemWithProject"
                                     }
                                 }
                             }
@@ -6288,7 +6208,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/ArticleWithProject"
+                                        "$ref": "#/components/schemas/ItemWithProject"
                                     }
                                 }
                             }
@@ -6408,7 +6328,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/ArticleWithProject"
+                                        "$ref": "#/components/schemas/ItemWithProject"
                                     }
                                 }
                             }
@@ -7158,7 +7078,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/ArticleVersions"
+                                        "$ref": "#/components/schemas/ItemVersions"
                                     }
                                 }
                             }
@@ -7843,6 +7763,92 @@
                     }
                 ],
                 "x-subcategory": "Private Item Files"
+            },
+            "post": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "Initiate Upload",
+                "description": "Initiate a new file upload within the item. Either use the link property to point to an existing file that resides elsewhere and will not be uploaded to Figshare or use the other 3 parameters (md5, name, size).",
+                "operationId": "private_item_upload_initiate",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "description": "Item unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/FileCreator"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "headers": {
+                            "Location": {
+                                "description": "Location of new file",
+                                "schema": {
+                                    "type": "string",
+                                    "format": "url"
+                                }
+                            }
+                        },
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/Location"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden. Item-type based metadata is not enabled for the institution.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "422": {
+                        "description": "Unprocessable Entity. Parameters missing or incorrect",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Item Files",
+                "x-codegen-request-body-name": "File"
             }
         },
         "/account/items/{item_id}/files/{file_id}": {
@@ -7885,6 +7891,147 @@
                                 }
                             }
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden. Item-type based metadata is not enabled for the institution.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Item Files"
+            },
+            "post": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "Complete Upload",
+                "description": "Complete file upload",
+                "operationId": "private_item_upload_complete",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "description": "Item unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "file_id",
+                        "in": "path",
+                        "description": "File unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "202": {
+                        "description": "Accepted",
+                        "headers": {
+                            "Location": {
+                                "description": "Location of the file",
+                                "schema": {
+                                    "type": "string",
+                                    "format": "url"
+                                }
+                            }
+                        },
+                        "content": {}
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden. Item-type based metadata is not enabled for the institution.",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ],
+                "x-subcategory": "Private Item Files"
+            },
+            "delete": {
+                "tags": [
+                    "items"
+                ],
+                "summary": "File Delete",
+                "description": "Delete a file from the item",
+                "operationId": "private_item_file_delete",
+                "parameters": [
+                    {
+                        "name": "item_id",
+                        "in": "path",
+                        "description": "Item unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "file_id",
+                        "in": "path",
+                        "description": "File unique identifier",
+                        "required": true,
+                        "schema": {
+                            "minimum": 1,
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content",
+                        "content": {}
                     },
                     "400": {
                         "description": "Bad Request",
@@ -8370,7 +8517,22 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/ArticleProjectCreate"
+                                "allOf": [
+                                    {
+                                        "$ref": "#/components/schemas/ArticleProjectCreate"
+                                    },
+                                    {
+                                        "type": "object",
+                                        "properties": {
+                                            "licence": {
+                                                "type": "integer",
+                                                "description": "Licence id for this item.",
+                                                "example": 1,
+                                                "default": 0
+                                            }
+                                        }
+                                    }
+                                ]
                             }
                         }
                     },
@@ -8476,7 +8638,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/Article"
+                                        "$ref": "#/components/schemas/Item"
                                     }
                                 }
                             }
@@ -8807,7 +8969,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/Article"
+                                        "$ref": "#/components/schemas/Item"
                                     }
                                 }
                             }
@@ -8869,7 +9031,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/ArticlesCreator"
+                                "$ref": "#/components/schemas/ItemsCreator"
                             }
                         }
                     },
@@ -8959,7 +9121,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ArticleEmbargo"
+                                    "$ref": "#/components/schemas/ItemEmbargo"
                                 }
                             }
                         }
@@ -9016,7 +9178,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ArticleConfidentiality"
+                                    "$ref": "#/components/schemas/ItemConfidentiality"
                                 }
                             }
                         }
@@ -9242,7 +9404,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ArticleEmbargo"
+                                    "$ref": "#/components/schemas/ItemEmbargo"
                                 }
                             }
                         }
@@ -9519,7 +9681,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ArticleDOI"
+                                    "$ref": "#/components/schemas/ItemDOI"
                                 }
                             }
                         }
@@ -9582,7 +9744,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ArticleHandle"
+                                    "$ref": "#/components/schemas/ItemHandle"
                                 }
                             }
                         }
@@ -9910,7 +10072,7 @@
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "$ref": "#/components/schemas/ArticleConfidentiality"
+                                    "$ref": "#/components/schemas/ItemConfidentiality"
                                 }
                             }
                         }
@@ -10585,7 +10747,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/Article"
+                                        "$ref": "#/components/schemas/Item"
                                     }
                                 }
                             }
@@ -10765,7 +10927,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/ArticleWithProject"
+                                        "$ref": "#/components/schemas/ItemWithProject"
                                     }
                                 }
                             }
@@ -10841,7 +11003,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/Article"
+                                        "$ref": "#/components/schemas/Item"
                                     }
                                 }
                             }
@@ -10933,7 +11095,7 @@
                                 "schema": {
                                     "type": "array",
                                     "items": {
-                                        "$ref": "#/components/schemas/ArticleWithProject"
+                                        "$ref": "#/components/schemas/ItemWithProject"
                                     }
                                 }
                             }
@@ -11340,6 +11502,86 @@
                     "409": {
                         "description": "Conflict",
                         "content": {}
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": [
+                            "all"
+                        ]
+                    }
+                ]
+            }
+        },
+        "/licences": {
+            "get": {
+                "tags": [
+                    "other"
+                ],
+                "summary": "Public Licences",
+                "description": "Returns a list of public licences",
+                "operationId": "licences_list",
+                "responses": {
+                    "200": {
+                        "description": "OK. An array of licences",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Licence"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "content": {}
+                    }
+                },
+                "security": []
+            }
+        },
+        "/account/licences": {
+            "get": {
+                "tags": [
+                    "other"
+                ],
+                "summary": "Private Account Licences",
+                "description": "This is a private endpoint that requires OAuth. It will return a list with figshare public licences AND licences defined for account's institution.",
+                "operationId": "private_licences_list",
+                "responses": {
+                    "200": {
+                        "description": "OK. An array of personal licences",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/components/schemas/Licence"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {}
+                    },
+                    "403": {
+                        "description": "Forbidden",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/ErrorMessage"
+                                }
+                            }
+                        }
                     },
                     "500": {
                         "description": "Internal Server Error",
@@ -13047,12 +13289,6 @@
                             "$ref": "#/components/schemas/FundingCreate"
                         }
                     },
-                    "license": {
-                        "type": "integer",
-                        "description": "License id for this article.",
-                        "example": 1,
-                        "default": 0
-                    },
                     "doi": {
                         "type": "string",
                         "description": "Not applicable for regular users. In an institutional case, make sure your group supports setting DOIs. This setting is applied by figshare via opening a ticket through our support/helpdesk system.",
@@ -13778,9 +14014,9 @@
                         "description": "Collection institution",
                         "example": 1
                     },
-                    "articles_count": {
+                    "items_count": {
                         "type": "integer",
-                        "description": "Number of articles in collection",
+                        "description": "Number of items in collection",
                         "example": 1
                     },
                     "public": {
@@ -13812,7 +14048,7 @@
                     }
                 },
                 "required": [
-                    "articles_count",
+                    "items_count",
                     "created_date",
                     "doi",
                     "group_id",
@@ -13899,9 +14135,9 @@
                         "description": "Collection institution",
                         "example": 1
                     },
-                    "articles_count": {
+                    "items_count": {
                         "type": "integer",
-                        "description": "Number of articles in collection",
+                        "description": "Number of items in collection",
                         "example": 1
                     },
                     "public": {
@@ -13939,7 +14175,7 @@
                 },
                 "required": [
                     "account_id",
-                    "articles_count",
+                    "items_count",
                     "created_date",
                     "doi",
                     "group_id",
@@ -14256,7 +14492,7 @@
             "Curation": {
                 "required": [
                     "account_id",
-                    "article_id",
+                    "item_id",
                     "assigned_to",
                     "comments_count",
                     "created_date",
@@ -14276,23 +14512,23 @@
                     },
                     "group_id": {
                         "type": "integer",
-                        "description": "The group in which the article is present."
+                        "description": "The group in which the item is present."
                     },
                     "account_id": {
                         "type": "integer",
-                        "description": "The ID of the account of the owner of the article of this review."
+                        "description": "The ID of the account of the owner of the item of this review."
                     },
                     "assigned_to": {
                         "type": "integer",
                         "description": "The ID of the account to which this review is assigned."
                     },
-                    "article_id": {
+                    "item_id": {
                         "type": "integer",
-                        "description": "The ID of the article of this review."
+                        "description": "The ID of the item of this review."
                     },
                     "version": {
                         "type": "integer",
-                        "description": "The Version number of the article in review."
+                        "description": "The Version number of the item in review."
                     },
                     "comments_count": {
                         "type": "integer",
@@ -14397,7 +14633,7 @@
                 ],
                 "properties": {
                     "item": {
-                        "$ref": "#/components/schemas/ArticleComplete"
+                        "$ref": "#/components/schemas/ItemComplete"
                     }
                 },
                 "allOf": [
@@ -16631,6 +16867,297 @@
                         }
                     }
                 }
+            },
+            "Licence": {
+                "required": [
+                    "name",
+                    "url",
+                    "value"
+                ],
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "type": "integer",
+                        "description": "Licence value"
+                    },
+                    "name": {
+                        "type": "string",
+                        "description": "Licence name"
+                    },
+                    "url": {
+                        "type": "string",
+                        "description": "Licence url",
+                        "format": "url"
+                    }
+                }
+            },
+            "Item": {
+                "required": [
+                    "created_date",
+                    "doi",
+                    "handle",
+                    "id",
+                    "resource_doi",
+                    "resource_title",
+                    "thumb",
+                    "title",
+                    "url",
+                    "url_private_api",
+                    "url_private_html",
+                    "url_public_api",
+                    "url_public_html"
+                ],
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "description": "Unique identifier for item",
+                        "example": 1434614
+                    },
+                    "title": {
+                        "type": "string",
+                        "description": "Title of item",
+                        "example": "Test item title"
+                    },
+                    "doi": {
+                        "type": "string",
+                        "description": "DOI",
+                        "example": "10.6084/m9.figshare.1434614"
+                    },
+                    "handle": {
+                        "type": "string",
+                        "description": "Handle",
+                        "example": "111184/figshare.1234"
+                    },
+                    "url": {
+                        "type": "string",
+                        "description": "Api endpoint for item",
+                        "format": "url",
+                        "example": "http://api.figshare.com/v3/items/1434614"
+                    },
+                    "url_public_html": {
+                        "type": "string",
+                        "description": "Public site endpoint for item",
+                        "format": "url"
+                    },
+                    "url_public_api": {
+                        "type": "string",
+                        "description": "Public Api endpoint for item",
+                        "format": "url"
+                    },
+                    "url_private_html": {
+                        "type": "string",
+                        "description": "Private site endpoint for item",
+                        "format": "url"
+                    },
+                    "url_private_api": {
+                        "type": "string",
+                        "description": "Private Api endpoint for item",
+                        "format": "url"
+                    },
+                    "thumb": {
+                        "type": "string",
+                        "description": "Thumbnail image",
+                        "format": "url"
+                    },
+                    "item_type_id": {
+                        "type": "integer",
+                        "nullable": true,
+                        "description": "Item type id",
+                        "example": 3
+                    },
+                    "item_type_name": {
+                        "type": "string",
+                        "nullable": true,
+                        "description": "Item type name",
+                        "example": "dataset"
+                    },
+                    "resource_doi": {
+                        "type": "string",
+                        "description": "Deprecated by related materials. Not applicable to regular users. In a publisher case, this is the publisher item DOI.",
+                        "default": ""
+                    },
+                    "resource_title": {
+                        "type": "string",
+                        "description": "Deprecated by related materials. Not applicable to regular users. In a publisher case, this is the publisher item title.",
+                        "default": ""
+                    },
+                    "created_date": {
+                        "type": "string",
+                        "description": "Date when item was created",
+                        "example": "2017-05-18T11:49:03Z"
+                    },
+                    "modified_date": {
+                        "type": "string",
+                        "description": "Date when item was last modified",
+                        "example": "2017-05-18T11:49:03Z"
+                    },
+                    "published_date": {
+                        "type": "string",
+                        "description": "Date when item was first published, null if not published",
+                        "example": "2017-05-18T11:49:03Z"
+                    },
+                    "group_id": {
+                        "type": "integer",
+                        "description": "Group ID of the item",
+                        "example": 1
+                    }
+                },
+                "x-tag": "items"
+            },
+            "ItemWithProject": {
+                "required": [
+                    "project_id"
+                ],
+                "properties": {
+                    "project_id": {
+                        "type": "integer",
+                        "description": "Project id for this item.",
+                        "example": 1,
+                        "default": 0
+                    }
+                },
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/Item"
+                    }
+                ],
+                "x-tag": "items"
+            },
+            "ItemConfidentiality": {
+                "required": [
+                    "is_confidential",
+                    "reason"
+                ],
+                "type": "object",
+                "properties": {
+                    "is_confidential": {
+                        "type": "boolean",
+                        "description": "True if item is confidential",
+                        "example": true
+                    },
+                    "reason": {
+                        "type": "string",
+                        "description": "Reason for confidentiality",
+                        "example": "need to"
+                    }
+                },
+                "x-tag": "items"
+            },
+            "ItemEmbargo": {
+                "required": [
+                    "embargo_options",
+                    "embargo_reason",
+                    "embargo_title",
+                    "is_embargoed"
+                ],
+                "type": "object",
+                "properties": {
+                    "is_embargoed": {
+                        "type": "boolean",
+                        "description": "True if embargoed",
+                        "example": true
+                    },
+                    "embargo_date": {
+                        "type": "string",
+                        "description": "Date when the embargo expires and the item gets published, null if not embargoed",
+                        "example": "2018-05-22T04:04:04"
+                    },
+                    "embargo_type": {
+                        "type": "string",
+                        "description": "Embargo level. Possible values: article, file",
+                        "example": "file",
+                        "enum": [
+                            "article",
+                            "file"
+                        ]
+                    },
+                    "embargo_title": {
+                        "type": "string",
+                        "description": "Title for embargo",
+                        "example": "File(s) under embargo"
+                    },
+                    "embargo_reason": {
+                        "type": "string",
+                        "description": "Reason for embargo",
+                        "example": ""
+                    },
+                    "embargo_options": {
+                        "type": "array",
+                        "description": "List of embargo permissions that are associated with the item. If the type is logged_in and the group_ids list is empty, then the whole institution can see the item; if there are multiple group_ids, then only users that are under those groups can see the item.",
+                        "example": [
+                            {
+                                "id": 13,
+                                "type": "ip_range",
+                                "group_ids": [],
+                                "ip_name": "bacau"
+                            },
+                            {
+                                "id": 12,
+                                "type": "logged_in",
+                                "ip_name": "",
+                                "group_ids": [
+                                    550,
+                                    9448
+                                ]
+                            }
+                        ],
+                        "items": {
+                            "type": "object",
+                            "properties": {}
+                        }
+                    }
+                },
+                "x-tag": "items"
+            },
+            "ItemDOI": {
+                "required": [
+                    "doi"
+                ],
+                "type": "object",
+                "properties": {
+                    "doi": {
+                        "type": "string",
+                        "description": "Reserved DOI",
+                        "example": "10.5072/FK2.FIGSHARE.20345"
+                    }
+                },
+                "x-tag": "items"
+            },
+            "ItemHandle": {
+                "required": [
+                    "handle"
+                ],
+                "type": "object",
+                "properties": {
+                    "handle": {
+                        "type": "string",
+                        "description": "Reserved Handle",
+                        "example": "11172/FK2.FIGSHARE.20345"
+                    }
+                },
+                "x-tag": "items"
+            },
+            "ItemVersions": {
+                "required": [
+                    "url",
+                    "version"
+                ],
+                "type": "object",
+                "properties": {
+                    "version": {
+                        "type": "integer",
+                        "description": "Version number",
+                        "example": 1
+                    },
+                    "url": {
+                        "type": "string",
+                        "description": "Api endpoint for the item version",
+                        "format": "url",
+                        "example": "https://api.figshare.com/v3/items/2000005/versions/1"
+                    }
+                },
+                "x-tag": "items"
             },
             "CollectionsSearch": {
                 "description": "v3 collection search payload. `order` accepts the collection's current date keys; legacy stats keys (`views`, `shares`, `cites`) are rejected for institutions with item-type based metadata enabled.",

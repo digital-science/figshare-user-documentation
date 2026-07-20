@@ -1399,30 +1399,31 @@
 
         /**
          * Show or hide the hardcoded guide documentation based on the active API version.
-         * The guide pages (Figshare Documentation, Upload, Search, Stats, OAI PMH, HR Feed,
-         * Custom Fields) describe the v2 API; other versions (v3+) expose only their own API
-         * endpoints + schemas, so the v2 guides are hidden there. Future versions are expected
-         * to ship their own guides, so anything that is not v2 hides these.
+         * Each version owns its guide pages: v2 has Figshare Documentation, Upload, Search, Stats,
+         * OAI PMH, HR Feed and Custom Fields; v3 has the item-type based subset (Figshare
+         * Documentation, Upload, Search, HR Feed, Custom Fields). Guide containers and sidebar
+         * <li>s are tagged with the version they belong to and shown only on that version.
          */
         function applyVersionDocVisibility(version) {
             var major = String(version || '').split('.')[0];
-            var hide = major !== '2';
-            var displayValue = hide ? 'none' : '';
 
-            // Main-content guide containers (rendered before/after the API operations).
-            ['documentation-sections-before', 'documentation-sections-after'].forEach(function(id) {
-                var el = document.getElementById(id);
-                if (el) el.style.display = displayValue;
+            // Main-content guide containers, keyed by the version they belong to.
+            var containersByVersion = {
+                '2': ['documentation-sections-before', 'documentation-sections-after'],
+                '3': ['documentation-sections-v3', 'documentation-sections-v3-after']
+            };
+            Object.keys(containersByVersion).forEach(function(ver) {
+                var show = ver === major;
+                containersByVersion[ver].forEach(function(id) {
+                    var el = document.getElementById(id);
+                    if (el) el.style.display = show ? '' : 'none';
+                });
             });
 
-            // v3 intro — the inverse: shown only on v3, hidden elsewhere.
-            var v3Intro = document.getElementById('documentation-sections-v3');
-            if (v3Intro) v3Intro.style.display = major === '3' ? '' : 'none';
-
-            // Sidebar: toggle the static guide <li>s, leaving the dynamically generated API and
-            // Presenters entries (and their insertion-point markers) untouched. The
-            // data-version-hidden marker lets the search filter keep these hidden (see
-            // filterSidebarMenu).
+            // Sidebar: toggle the static guide <li>s by their data-guide-version (defaulting to
+            // "2" for legacy entries), leaving the dynamically generated API and Presenters entries
+            // (and their insertion-point markers) untouched. The data-version-hidden marker lets the
+            // search filter keep these hidden (see filterSidebarMenu).
             var topLevelItems = document.querySelectorAll('.api-sidebar > ul > li');
             topLevelItems.forEach(function(li) {
                 if (li.getAttribute('data-dynamic-api') === 'true' ||
@@ -1431,7 +1432,9 @@
                     li.id === 'presenters-menu-insertion-point') {
                     return;
                 }
-                li.style.display = displayValue;
+                var guideVersion = li.getAttribute('data-guide-version') || '2';
+                var hide = guideVersion !== major;
+                li.style.display = hide ? 'none' : '';
                 if (hide) {
                     li.setAttribute('data-version-hidden', 'true');
                 } else {
@@ -2357,6 +2360,52 @@
 
         // Build documentation sections
         const v3IntroDiv = document.getElementById('description_v3_intro');
+
+        // v3 guide content divs (item-type based metadata API)
+        const v3OauthIntroDiv = document.getElementById('description_v3_oauth_intro');
+        const v3OauthQuickDiv = document.getElementById('description_v3_oauth_quick');
+        const v3OauthScopeDiv = document.getElementById('description_v3_oauth_scope');
+        const v3OauthGrantDiv = document.getElementById('description_v3_oauth_grant');
+        const v3ApiFeaturesDiv = document.getElementById('description_v3_api_features');
+        const v3ApiParametersDiv = document.getElementById('description_v3_api_parameters');
+        const v3ApiResourceDiv = document.getElementById('description_v3_api_resourcerepresentation');
+        const v3ApiAuthDiv = document.getElementById('description_v3_api_auth');
+        const v3ApiErrorsDiv = document.getElementById('description_v3_api_errors');
+        const v3ApiSearchDiv = document.getElementById('description_v3_api_search');
+        const v3ApiRateLimitDiv = document.getElementById('description_v3_api_ratelimit');
+        const v3ApiRequestsDiv = document.getElementById('description_v3_api_requests');
+        const v3ApiCorsDiv = document.getElementById('description_v3_api_cors');
+        const v3ApiImpersonationDiv = document.getElementById('description_v3_api_impersonation');
+        const v3UploadStepsDiv = document.getElementById('description_v3_upload_steps');
+        const v3UploadApiDiv = document.getElementById('description_v3_upload_api');
+        const v3UploadPartsDiv = document.getElementById('description_v3_upload_parts_api');
+        const v3UploadExampleDiv = document.getElementById('description_v3_upload_example');
+        const v3UploadOutputDiv = document.getElementById('description_v3_upload_output');
+        const v3UploadBashDiv = document.getElementById('description_v3_upload_bash');
+        const v3UploadS3Div = document.getElementById('description_v3_upload_from_s3');
+        const v3SearchIntroDiv = document.getElementById('description_v3_search_intro');
+        const v3SearchOperatorsDiv = document.getElementById('description_v3_search_operators');
+        const v3SearchAttributesDiv = document.getElementById('description_v3_search_attributes');
+        const v3SearchQuickDiv = document.getElementById('description_v3_search_quick');
+        const v3SearchAdvancedDiv = document.getElementById('description_v3_search_advanced');
+        const v3SearchCombinedDiv = document.getElementById('description_v3_search_combined');
+        const v3SearchComplexDiv = document.getElementById('description_v3_search_complex');
+        const v3HrfeedEndpointDiv = document.getElementById('description_v3_hrfeed_endpoint');
+        const v3HrfeedExamplesPythonDiv = document.getElementById('description_v3_hrfeed_examples_python');
+        const v3HrfeedExamplesJavaDiv = document.getElementById('description_v3_hrfeed_examples_java');
+        const v3HrfeedExamplesCsharpDiv = document.getElementById('description_v3_hrfeed_examples_csharp');
+        const v3HrfeedExamplesCurlDiv = document.getElementById('description_v3_hrfeed_examples_curl');
+        const v3HrfeedResponseDiv = document.getElementById('description_v3_hrfeed_response');
+        const v3HrfeedErrorsDiv = document.getElementById('description_v3_hrfeed_errors');
+        const v3HrfeedNotesDiv = document.getElementById('description_v3_hrfeed_notes');
+        const v3CustomFieldsEndpointDiv = document.getElementById('description_v3_custom_fields_endpoint');
+        const v3CustomFieldsExamplesPythonDiv = document.getElementById('description_v3_custom_fields_examples_python');
+        const v3CustomFieldsExamplesJavaDiv = document.getElementById('description_v3_custom_fields_examples_java');
+        const v3CustomFieldsExamplesCsharpDiv = document.getElementById('description_v3_custom_fields_examples_csharp');
+        const v3CustomFieldsExamplesCurlDiv = document.getElementById('description_v3_custom_fields_examples_curl');
+        const v3CustomFieldsResponseDiv = document.getElementById('description_v3_custom_fields_response');
+        const v3CustomFieldsErrorsDiv = document.getElementById('description_v3_custom_fields_errors');
+        const v3CustomFieldsNotesDiv = document.getElementById('description_v3_custom_fields_notes');
         const introDiv = document.getElementById('description_intro');
         const oauthIntroDiv = document.getElementById('description_oauth_intro');
         const oauthQuickDiv = document.getElementById('description_oauth_quick');
@@ -2980,14 +3029,327 @@
         // This ensures API endpoint documentation (Articles, Authors, Collections, etc.) appears in between
         swaggerWrapper.insertAdjacentHTML('beforeend', docContentAfter);
 
-        // v3 intro — shown only on the v3 version (see applyVersionDocVisibility). Starts
-        // hidden and is inserted at the very top so it precedes the API operations when shown.
+        // v3 guides mirror the v2 before/after split so the API operations sit between them.
+        // Both containers start hidden and are shown only on v3 (see applyVersionDocVisibility);
+        // v3 sections use distinct doc-section-v3-* ids to avoid colliding with the v2 sections
+        // that also live in the DOM.
+
+        // Part 1: Before API endpoints (intro, oauth, api-features)
         let docContentV3 = '<div id="documentation-sections-v3" style="max-width: 100%; display: none;">';
+
+        // Introduction
         docContentV3 += '<div id="doc-section-v3-intro" class="guide-section" style="margin-bottom: 40px;">';
         docContentV3 += '<h2 class="guide-section-header" style="font-size: 24px; border-bottom: 2px solid #434f59; padding-bottom: 10px; margin-bottom: 20px;">Figshare Documentation</h2>';
         docContentV3 += '<div class="markdown-content">' + (v3IntroDiv ? v3IntroDiv.innerHTML : '') + '</div>';
+        docContentV3 += '</div>';
+
+        // OAuth section
+        docContentV3 += '<div id="doc-section-v3-oauth" class="guide-section" style="margin-bottom: 40px;">';
+        docContentV3 += '<h2 class="guide-section-header" style="font-size: 24px; border-bottom: 2px solid #434f59; padding-bottom: 10px; margin-bottom: 20px;">OAuth</h2>';
+        docContentV3 += '<div class="markdown-content">';
+        if (v3OauthIntroDiv) {
+            docContentV3 += '<div id="doc-section-v3-oauth-intro" style="margin-bottom: 30px;">';
+            docContentV3 += '<h3 style="font-size: 18px; margin-bottom: 15px;">Introduction</h3>';
+            docContentV3 += v3OauthIntroDiv.innerHTML;
+            docContentV3 += '</div>';
+        }
+        if (v3OauthQuickDiv) {
+            docContentV3 += '<div id="doc-section-v3-oauth-quick" style="margin-bottom: 30px;">';
+            docContentV3 += v3OauthQuickDiv.innerHTML;
+            docContentV3 += '</div>';
+        }
+        if (v3OauthScopeDiv) {
+            docContentV3 += '<div id="doc-section-v3-oauth-scope" style="margin-bottom: 30px;">';
+            docContentV3 += v3OauthScopeDiv.innerHTML;
+            docContentV3 += '</div>';
+        }
+        if (v3OauthGrantDiv) {
+            docContentV3 += '<div id="doc-section-v3-oauth-grant" style="margin-bottom: 30px;">';
+            docContentV3 += v3OauthGrantDiv.innerHTML;
+            docContentV3 += '</div>';
+        }
         docContentV3 += '</div></div>';
+
+        // API Features section
+        docContentV3 += '<div id="doc-section-v3-api-features" class="guide-section" style="margin-bottom: 40px;">';
+        docContentV3 += '<h2 class="guide-section-header" style="font-size: 24px; border-bottom: 2px solid #434f59; padding-bottom: 10px; margin-bottom: 20px;">API Features</h2>';
+        docContentV3 += '<div class="markdown-content">';
+        if (v3ApiFeaturesDiv) {
+            docContentV3 += '<div style="margin-bottom: 30px;">' + v3ApiFeaturesDiv.innerHTML + '</div>';
+        }
+        if (v3ApiParametersDiv) {
+            docContentV3 += '<div id="doc-section-v3-api-parameters" style="margin-bottom: 30px;">';
+            docContentV3 += v3ApiParametersDiv.innerHTML;
+            docContentV3 += '</div>';
+        }
+        if (v3ApiResourceDiv) {
+            docContentV3 += '<div id="doc-section-v3-api-resource" style="margin-bottom: 30px;">';
+            docContentV3 += v3ApiResourceDiv.innerHTML;
+            docContentV3 += '</div>';
+        }
+        if (v3ApiAuthDiv) {
+            docContentV3 += '<div id="doc-section-v3-api-auth" style="margin-bottom: 30px;">';
+            docContentV3 += v3ApiAuthDiv.innerHTML;
+            docContentV3 += '</div>';
+        }
+        if (v3ApiErrorsDiv) {
+            docContentV3 += '<div id="doc-section-v3-api-errors" style="margin-bottom: 30px;">';
+            docContentV3 += v3ApiErrorsDiv.innerHTML;
+            docContentV3 += '</div>';
+        }
+        if (v3ApiSearchDiv) {
+            docContentV3 += '<div id="doc-section-v3-api-search" style="margin-bottom: 30px;">';
+            docContentV3 += v3ApiSearchDiv.innerHTML;
+            docContentV3 += '</div>';
+        }
+        if (v3ApiRateLimitDiv) {
+            docContentV3 += '<div id="doc-section-v3-api-ratelimit" style="margin-bottom: 30px;">';
+            docContentV3 += v3ApiRateLimitDiv.innerHTML;
+            docContentV3 += '</div>';
+        }
+        if (v3ApiRequestsDiv) {
+            docContentV3 += '<div id="doc-section-v3-api-requests" style="margin-bottom: 30px;">';
+            docContentV3 += v3ApiRequestsDiv.innerHTML;
+            docContentV3 += '</div>';
+        }
+        if (v3ApiCorsDiv) {
+            docContentV3 += '<div id="doc-section-v3-api-cors" style="margin-bottom: 30px;">';
+            docContentV3 += v3ApiCorsDiv.innerHTML;
+            docContentV3 += '</div>';
+        }
+        if (v3ApiImpersonationDiv) {
+            docContentV3 += '<div id="doc-section-v3-api-impersonation" style="margin-bottom: 30px;">';
+            docContentV3 += v3ApiImpersonationDiv.innerHTML;
+            docContentV3 += '</div>';
+        }
+        docContentV3 += '</div></div>';
+        docContentV3 += '</div>'; // Close documentation-sections-v3
+
+        // Part 2: After API endpoints (upload, search, hrfeed, custom-fields)
+        let docContentV3After = '<div id="documentation-sections-v3-after" style="padding: 20px; max-width: 100%; display: none;">';
+
+        // Upload Files section
+        docContentV3After += '<div id="doc-section-v3-upload" class="guide-section" style="margin-bottom: 40px;">';
+        docContentV3After += '<h2 class="guide-section-header" style="font-size: 24px; border-bottom: 2px solid #434f59; padding-bottom: 10px; margin-bottom: 20px;">Upload Files</h2>';
+        docContentV3After += '<div class="markdown-content">';
+        if (v3UploadStepsDiv) {
+            docContentV3After += '<div id="doc-section-v3-upload-steps" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">Steps to upload file</h3>';
+            docContentV3After += v3UploadStepsDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        if (v3UploadApiDiv) {
+            docContentV3After += '<div id="doc-section-v3-upload-api" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">Uploads API</h3>';
+            docContentV3After += v3UploadApiDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        if (v3UploadPartsDiv) {
+            docContentV3After += '<div id="doc-section-v3-upload-parts" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">Parts API</h3>';
+            docContentV3After += v3UploadPartsDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        if (v3UploadExampleDiv) {
+            docContentV3After += '<div id="doc-section-v3-upload-example" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">Example Upload on figshare</h3>';
+            docContentV3After += v3UploadExampleDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        if (v3UploadOutputDiv) {
+            docContentV3After += '<div id="doc-section-v3-upload-output" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">Output of Script</h3>';
+            docContentV3After += v3UploadOutputDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        if (v3UploadBashDiv) {
+            docContentV3After += '<div id="doc-section-v3-upload-bash" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">Upload Bash Script</h3>';
+            docContentV3After += v3UploadBashDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        if (v3UploadS3Div) {
+            docContentV3After += '<div id="doc-section-v3-upload-s3" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">Upload S3 File to Figshare</h3>';
+            docContentV3After += v3UploadS3Div.innerHTML;
+            docContentV3After += '</div>';
+        }
+        docContentV3After += '</div></div>';
+
+        // Search section
+        docContentV3After += '<div id="doc-section-v3-search" class="guide-section" style="margin-bottom: 40px;">';
+        docContentV3After += '<h2 class="guide-section-header" style="font-size: 24px; border-bottom: 2px solid #434f59; padding-bottom: 10px; margin-bottom: 20px;">Search</h2>';
+        docContentV3After += '<div class="markdown-content">';
+        if (v3SearchIntroDiv) {
+            docContentV3After += '<div id="doc-section-v3-search-intro" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">How to find data on figshare</h3>';
+            docContentV3After += v3SearchIntroDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        if (v3SearchOperatorsDiv) {
+            docContentV3After += '<div id="doc-section-v3-search-operators" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">Search operators</h3>';
+            docContentV3After += v3SearchOperatorsDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        if (v3SearchAttributesDiv) {
+            docContentV3After += '<div id="doc-section-v3-search-attributes" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">Searchable attributes</h3>';
+            docContentV3After += v3SearchAttributesDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        if (v3SearchQuickDiv) {
+            docContentV3After += '<div id="doc-section-v3-search-quick" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">Quick search</h3>';
+            docContentV3After += v3SearchQuickDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        if (v3SearchAdvancedDiv) {
+            docContentV3After += '<div id="doc-section-v3-search-advanced" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">Advanced search</h3>';
+            docContentV3After += v3SearchAdvancedDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        if (v3SearchCombinedDiv) {
+            docContentV3After += '<div id="doc-section-v3-search-combined" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">Combined field search</h3>';
+            docContentV3After += v3SearchCombinedDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        if (v3SearchComplexDiv) {
+            docContentV3After += '<div id="doc-section-v3-search-complex" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">Complex searches</h3>';
+            docContentV3After += v3SearchComplexDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        docContentV3After += '</div></div>';
+
+        // HR Feed section
+        docContentV3After += '<div id="doc-section-v3-hrfeed" class="guide-section" style="margin-bottom: 40px;">';
+        docContentV3After += '<h2 class="guide-section-header" style="font-size: 24px; border-bottom: 2px solid #434f59; padding-bottom: 10px; margin-bottom: 20px;">HR Feed</h2>';
+        docContentV3After += '<div class="markdown-content">';
+        if (v3HrfeedEndpointDiv) {
+            docContentV3After += '<div id="doc-section-v3-hrfeed-endpoint" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">HR Feed Private Endpoint</h3>';
+            docContentV3After += v3HrfeedEndpointDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+
+        // HR Feed examples subsection with nested content
+        docContentV3After += '<div id="doc-section-v3-hrfeed-examples" style="margin-bottom: 30px;">';
+        docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">HR Feed examples</h3>';
+        if (v3HrfeedExamplesPythonDiv) {
+            docContentV3After += '<div id="doc-section-v3-hrfeed-python" style="margin-bottom: 25px; margin-left: 20px;">';
+            docContentV3After += '<h4 style="font-size: 16px; margin-bottom: 12px;">Python</h4>';
+            docContentV3After += v3HrfeedExamplesPythonDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        if (v3HrfeedExamplesJavaDiv) {
+            docContentV3After += '<div id="doc-section-v3-hrfeed-java" style="margin-bottom: 25px; margin-left: 20px;">';
+            docContentV3After += '<h4 style="font-size: 16px; margin-bottom: 12px;">Java</h4>';
+            docContentV3After += v3HrfeedExamplesJavaDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        if (v3HrfeedExamplesCsharpDiv) {
+            docContentV3After += '<div id="doc-section-v3-hrfeed-csharp" style="margin-bottom: 25px; margin-left: 20px;">';
+            docContentV3After += '<h4 style="font-size: 16px; margin-bottom: 12px;">C Sharp</h4>';
+            docContentV3After += v3HrfeedExamplesCsharpDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        if (v3HrfeedExamplesCurlDiv) {
+            docContentV3After += '<div id="doc-section-v3-hrfeed-curl" style="margin-bottom: 25px; margin-left: 20px;">';
+            docContentV3After += '<h4 style="font-size: 16px; margin-bottom: 12px;">Curl</h4>';
+            docContentV3After += v3HrfeedExamplesCurlDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        docContentV3After += '</div>';
+
+        if (v3HrfeedResponseDiv) {
+            docContentV3After += '<div id="doc-section-v3-hrfeed-response" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">Response</h3>';
+            docContentV3After += v3HrfeedResponseDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        if (v3HrfeedErrorsDiv) {
+            docContentV3After += '<div id="doc-section-v3-hrfeed-errors" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">Errors</h3>';
+            docContentV3After += v3HrfeedErrorsDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        if (v3HrfeedNotesDiv) {
+            docContentV3After += '<div id="doc-section-v3-hrfeed-notes" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">Notes</h3>';
+            docContentV3After += v3HrfeedNotesDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        docContentV3After += '</div></div>';
+
+        // Custom Fields section (item-type based metadata fields model)
+        docContentV3After += '<div id="doc-section-v3-custom-fields" class="guide-section" style="margin-bottom: 40px;">';
+        docContentV3After += '<h2 class="guide-section-header" style="font-size: 24px; border-bottom: 2px solid #434f59; padding-bottom: 10px; margin-bottom: 20px;">Custom Fields</h2>';
+        docContentV3After += '<div class="markdown-content">';
+        if (v3CustomFieldsEndpointDiv) {
+            docContentV3After += '<div id="doc-section-v3-custom-fields-endpoint" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">Fields &amp; item types</h3>';
+            docContentV3After += v3CustomFieldsEndpointDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+
+        // Field values examples subsection with nested content
+        docContentV3After += '<div id="doc-section-v3-custom-fields-examples" style="margin-bottom: 30px;">';
+        docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">Field values examples</h3>';
+        if (v3CustomFieldsExamplesPythonDiv) {
+            docContentV3After += '<div id="doc-section-v3-custom-fields-python" style="margin-bottom: 25px; margin-left: 20px;">';
+            docContentV3After += '<h4 style="font-size: 16px; margin-bottom: 12px;">Python</h4>';
+            docContentV3After += v3CustomFieldsExamplesPythonDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        if (v3CustomFieldsExamplesJavaDiv) {
+            docContentV3After += '<div id="doc-section-v3-custom-fields-java" style="margin-bottom: 25px; margin-left: 20px;">';
+            docContentV3After += '<h4 style="font-size: 16px; margin-bottom: 12px;">Java</h4>';
+            docContentV3After += v3CustomFieldsExamplesJavaDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        if (v3CustomFieldsExamplesCsharpDiv) {
+            docContentV3After += '<div id="doc-section-v3-custom-fields-csharp" style="margin-bottom: 25px; margin-left: 20px;">';
+            docContentV3After += '<h4 style="font-size: 16px; margin-bottom: 12px;">C Sharp</h4>';
+            docContentV3After += v3CustomFieldsExamplesCsharpDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        if (v3CustomFieldsExamplesCurlDiv) {
+            docContentV3After += '<div id="doc-section-v3-custom-fields-curl" style="margin-bottom: 25px; margin-left: 20px;">';
+            docContentV3After += '<h4 style="font-size: 16px; margin-bottom: 12px;">Curl</h4>';
+            docContentV3After += v3CustomFieldsExamplesCurlDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        docContentV3After += '</div>';
+
+        if (v3CustomFieldsResponseDiv) {
+            docContentV3After += '<div id="doc-section-v3-custom-fields-response" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">Response</h3>';
+            docContentV3After += v3CustomFieldsResponseDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        if (v3CustomFieldsErrorsDiv) {
+            docContentV3After += '<div id="doc-section-v3-custom-fields-errors" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">Errors</h3>';
+            docContentV3After += v3CustomFieldsErrorsDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        if (v3CustomFieldsNotesDiv) {
+            docContentV3After += '<div id="doc-section-v3-custom-fields-notes" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">Notes</h3>';
+            docContentV3After += v3CustomFieldsNotesDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        docContentV3After += '</div></div>';
+
+        docContentV3After += '</div>'; // Close documentation-sections-v3-after
+
+        // Insert the v3 "before" container at the very top (precedes API operations when shown)
+        // and the v3 "after" container at the end (follows API operations when shown).
         swaggerWrapper.insertAdjacentHTML('afterbegin', docContentV3);
+        swaggerWrapper.insertAdjacentHTML('beforeend', docContentV3After);
     }
 
     // Function to move Schemas/Models section after Custom Fields documentation

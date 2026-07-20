@@ -53,3 +53,6 @@ exclude_paths:
 - /account/institution/custom_fields
 - /account/groups/{group_id}/metadata/item
 - /account/institution/custom_fields/{custom_field_id}/items/upload
+# v3 renames the licence catalogue paths to British spelling (re-added in inclusions.yaml).
+- /licenses
+- /account/licenses

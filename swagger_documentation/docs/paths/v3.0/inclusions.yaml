@@ -266,7 +266,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ArticleWithProject'
+                  $ref: '#/components/schemas/ItemWithProject'
         '403':
           description: Forbidden. Item-type based metadata is not enabled for the requested institution.
           content:
@@ -299,7 +299,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ArticleWithProject'
+                  $ref: '#/components/schemas/ItemWithProject'
         '403':
           description: Forbidden. Item-type based metadata is not enabled for the requested institution.
           content:
@@ -379,7 +379,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ArticleWithProject'
+                  $ref: '#/components/schemas/ItemWithProject'
         '403':
           description: Forbidden. Item-type based metadata is not enabled for the caller's institution.
           content:
@@ -464,7 +464,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ArticleWithProject'
+                  $ref: '#/components/schemas/ItemWithProject'
         '403':
           description: Forbidden. Item-type based metadata is not enabled for the caller's institution.
           content:
@@ -1570,7 +1570,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ArticleVersions'
+                  $ref: '#/components/schemas/ItemVersions'
         '400':
           description: Bad Request. Item ID must be an integer and bigger than 0.
           content: {}
@@ -2033,6 +2033,63 @@ paths:
       - OAuth2:
         - all
       x-subcategory: Private Item Files
+    post:
+      tags:
+      - items
+      summary: Initiate Upload
+      description: Initiate a new file upload within the item. Either use the link property to point to an existing file
+        that resides elsewhere and will not be uploaded to Figshare or use the other 3 parameters (md5, name, size).
+      operationId: private_item_upload_initiate
+      parameters:
+      - name: item_id
+        in: path
+        description: Item unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FileCreator'
+        required: true
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              description: Location of new file
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '422':
+          description: Unprocessable Entity. Parameters missing or incorrect
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Item Files
+      x-codegen-request-body-name: File
   /account/items/{item_id}/files/{file_id}:
     get:
       tags:
@@ -2062,6 +2119,100 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PrivateFile'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Item Files
+    post:
+      tags:
+      - items
+      summary: Complete Upload
+      description: Complete file upload
+      operationId: private_item_upload_complete
+      parameters:
+      - name: item_id
+        in: path
+        description: Item unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+      - name: file_id
+        in: path
+        description: File unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+      responses:
+        '202':
+          description: Accepted
+          headers:
+            Location:
+              description: Location of the file
+              schema:
+                type: string
+                format: url
+          content: {}
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden. Item-type based metadata is not enabled for the institution.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Item Files
+    delete:
+      tags:
+      - items
+      summary: File Delete
+      description: Delete a file from the item
+      operationId: private_item_file_delete
+      parameters:
+      - name: item_id
+        in: path
+        description: Item unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+      - name: file_id
+        in: path
+        description: File unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+      responses:
+        '204':
+          description: No Content
+          content: {}
         '400':
           description: Bad Request
           content: {}
@@ -2386,7 +2537,17 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ArticleProjectCreate'
+              # v3 uses British `licence`; the base schema's `license` property is dropped for v3
+              # via components/v3.0/exclusions.yaml (exclude_schema_properties) and re-added here.
+              allOf:
+              - $ref: '#/components/schemas/ArticleProjectCreate'
+              - type: object
+                properties:
+                  licence:
+                    type: integer
+                    description: Licence id for this item.
+                    example: 1
+                    default: 0
         required: true
       responses:
         '201':
@@ -2458,7 +2619,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Article'
+                  $ref: '#/components/schemas/Item'
         '400':
           description: Bad Request
           content: {}
@@ -2680,7 +2841,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Article'
+                  $ref: '#/components/schemas/Item'
         '400':
           description: Bad Request
           content: {}
@@ -2720,7 +2881,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ArticlesCreator'
+              $ref: '#/components/schemas/ItemsCreator'
         required: true
       responses:
         '205':
@@ -3294,7 +3455,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ArticleEmbargo'
+                $ref: '#/components/schemas/ItemEmbargo'
         '400':
           description: Bad Request
           content: {}
@@ -3336,7 +3497,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ArticleConfidentiality'
+                $ref: '#/components/schemas/ItemConfidentiality'
         '400':
           description: Bad Request
           content: {}
@@ -3486,7 +3647,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ArticleEmbargo'
+                $ref: '#/components/schemas/ItemEmbargo'
         '400':
           description: Bad Request
           content: {}
@@ -3667,7 +3828,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ArticleDOI'
+                $ref: '#/components/schemas/ItemDOI'
         '400':
           description: Bad Request
           content: {}
@@ -3707,7 +3868,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ArticleHandle'
+                $ref: '#/components/schemas/ItemHandle'
         '400':
           description: Bad Request
           content: {}
@@ -3925,7 +4086,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ArticleConfidentiality'
+                $ref: '#/components/schemas/ItemConfidentiality'
         '400':
           description: Bad Request
           content: {}
@@ -4376,7 +4537,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Article'
+                  $ref: '#/components/schemas/Item'
         '400':
           description: Bad Request
           content: {}
@@ -4500,7 +4661,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ArticleWithProject'
+                  $ref: '#/components/schemas/ItemWithProject'
         '400':
           description: Bad Request
           content: {}
@@ -4548,7 +4709,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Article'
+                  $ref: '#/components/schemas/Item'
         '500':
           description: Internal Server Error
           content: {}
@@ -4611,7 +4772,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ArticleWithProject'
+                  $ref: '#/components/schemas/ItemWithProject'
         '400':
           description: Bad Request
           content: {}
@@ -5505,6 +5666,129 @@ paths:
         '409':
           description: Conflict
           content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+  # v3 override: the review-list filter is exposed as item_id (item nomenclature); v2 keeps article_id.
+  /account/institution/reviews:
+    get:
+      tags:
+      - institutions
+      summary: Institution Curation Reviews
+      description: Retrieve a list of curation reviews for this institution
+      operationId: account_institution_curations
+      parameters:
+      - name: group_id
+        in: query
+        description: Filter by the group ID
+        schema:
+          minimum: 0
+          type: integer
+      - name: item_id
+        in: query
+        description: Retrieve the reviews for this item
+        schema:
+          minimum: 0
+          type: integer
+      - name: status
+        in: query
+        description: Filter by the status of the review
+        schema:
+          type: string
+          enum:
+          - pending
+          - approved
+          - rejected
+          - closed
+      - name: limit
+        in: query
+        description: Number of results included on a page. Used for pagination with query
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+      - name: offset
+        in: query
+        description: Where to start the listing (the offset of the first result). Used for pagination with limit
+        schema:
+          maximum: 5000
+          minimum: 0
+          type: integer
+      responses:
+        '200':
+          description: OK. A list of curation reviews.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Curation'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+  # v3 licence catalogue: British-spelled paths (v2 /licenses + /account/licenses are excluded for v3).
+  /licences:
+    get:
+      tags:
+      - other
+      summary: Public Licences
+      description: Returns a list of public licences
+      operationId: licences_list
+      responses:
+        '200':
+          description: OK. An array of licences
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Licence'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security: []
+  /account/licences:
+    get:
+      tags:
+      - other
+      summary: Private Account Licences
+      description: This is a private endpoint that requires OAuth. It will return a list with figshare public licences AND
+        licences defined for account's institution.
+      operationId: private_licences_list
+      responses:
+        '200':
+          description: OK. An array of personal licences
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Licence'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
         '500':
           description: Internal Server Error
           content: {}
