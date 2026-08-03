@@ -1577,9 +1577,13 @@ if __name__ == '__main__':
             </tr>
             </tbody>
         </table>
-        <p><strong>Note:</strong> for institutions with item-type based metadata enabled, the legacy statistics sort
-            keys (<code>views</code>, <code>shares</code>, <code>cites</code>) are rejected. Order items by metadata
-            fields such as <code>created_date</code>, <code>modified_date</code> or <code>published_date</code>.</p>
+        <p><strong>Note:</strong> for institutions with item-type based metadata enabled, the statistics sort keys are
+            available on the <em>public</em> list &amp; search endpoints only &mdash; items accept
+            <code>views</code>, <code>shares</code>, <code>downloads</code> and <code>cites</code>; collections accept
+            <code>views</code>, <code>shares</code> and <code>cites</code>; projects accept <code>views</code>. The
+            private <code>/account/*</code> endpoints reject these keys (statistics are not indexed on private ITBM
+            data); order there by metadata date fields such as <code>created_date</code>, <code>modified_date</code>,
+            <code>posted_date</code> or <code>published_date</code>.</p>
         <h4 id="v3-searching-params">Searching params</h4>
         <table>
             <thead>

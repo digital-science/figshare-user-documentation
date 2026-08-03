@@ -241,14 +241,17 @@
                     {
                         "name": "order",
                         "in": "query",
-                        "description": "Collection date keys.",
+                        "description": "Collection date keys plus the v2-parity statistics keys `views`/`shares`/`cites` (public endpoint only).",
                         "schema": {
                             "type": "string",
                             "default": "created_date",
                             "enum": [
                                 "created_date",
                                 "modified_date",
-                                "published_date"
+                                "published_date",
+                                "views",
+                                "shares",
+                                "cites"
                             ]
                         }
                     },
@@ -338,7 +341,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/CollectionsSearch"
+                                "$ref": "#/components/schemas/CollectionsSearchPublic"
                             }
                         }
                     },
@@ -4195,7 +4198,7 @@
                     {
                         "name": "order",
                         "in": "query",
-                        "description": "Date keys. Legacy keys (`published_date`, `modified_date`, `views`) are rejected for institutions with item-type based metadata enabled.",
+                        "description": "Date keys plus the v2-parity statistics key `views` (public endpoint only). Legacy keys `published_date`/`modified_date` are rejected for institutions with item-type based metadata enabled.",
                         "schema": {
                             "type": "string",
                             "default": "created_date",
@@ -4207,7 +4210,8 @@
                                 "publisher_published",
                                 "publisher_accepted",
                                 "start_date",
-                                "finish_date"
+                                "finish_date",
+                                "views"
                             ]
                         }
                     },
@@ -4289,7 +4293,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/ProjectsSearch"
+                                "$ref": "#/components/schemas/ProjectsSearchPublic"
                             }
                         }
                     },
@@ -5992,7 +5996,11 @@
                                 "posted_date",
                                 "first_online",
                                 "publisher_published",
-                                "publisher_accepted"
+                                "publisher_accepted",
+                                "views",
+                                "shares",
+                                "downloads",
+                                "cites"
                             ]
                         }
                     },
@@ -6078,7 +6086,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/ArticleSearch"
+                                "$ref": "#/components/schemas/ItemsSearchPublic"
                             }
                         }
                     },
@@ -6314,7 +6322,7 @@
                     "content": {
                         "application/json": {
                             "schema": {
-                                "$ref": "#/components/schemas/ArticleSearch"
+                                "$ref": "#/components/schemas/ItemsSearch"
                             }
                         }
                     },
@@ -16208,7 +16216,7 @@
                 "x-tag": "projects"
             },
             "ProjectsSearch": {
-                "description": "v3 project search payload. `order` accepts the current date keys; legacy keys (`published_date`, `modified_date`, `views`) are rejected for institutions with item-type based metadata enabled.",
+                "description": "v3 project search payload for the private `/account/projects/search` endpoint. `order` accepts the current date keys; legacy keys (`published_date`, `modified_date`, `views`) are rejected for institutions with item-type based metadata enabled.",
                 "properties": {
                     "order": {
                         "type": "string",
@@ -17159,8 +17167,140 @@
                 },
                 "x-tag": "items"
             },
+            "ItemsSearch": {
+                "description": "v3 item search payload for the private `/account/items/search` endpoint. `order` accepts the ITBM date keys only; the v2 statistics keys (`views`/`shares`/`downloads`/`cites`) are rejected because private ITBM indices carry no statistics.",
+                "properties": {
+                    "resource_doi": {
+                        "type": "string",
+                        "description": "Only return items with this resource_doi.",
+                        "example": "10.6084/m9.figshare.1407024"
+                    },
+                    "item_type_id": {
+                        "type": "integer",
+                        "description": "Only return items with this item type id. Resolved against the caller's institution/group; an unknown id is rejected with 422.",
+                        "example": 3
+                    },
+                    "doi": {
+                        "type": "string",
+                        "description": "Only return items with this doi.",
+                        "example": "10.6084/m9.figshare.1407024"
+                    },
+                    "handle": {
+                        "type": "string",
+                        "description": "Only return items with this handle.",
+                        "example": "111084/m9.figshare.14074"
+                    },
+                    "project_id": {
+                        "type": "integer",
+                        "description": "Only return items in this project.",
+                        "example": 1
+                    },
+                    "order": {
+                        "type": "string",
+                        "description": "The field by which to order (ITBM date keys).",
+                        "example": "created_date",
+                        "default": "created_date",
+                        "enum": [
+                            "created_date",
+                            "modified_date",
+                            "posted_date",
+                            "first_online",
+                            "publisher_published",
+                            "publisher_accepted"
+                        ]
+                    }
+                },
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/CommonSearch"
+                    }
+                ],
+                "x-tag": "items"
+            },
+            "ItemsSearchPublic": {
+                "description": "v3 item search payload for the public `/items/search` endpoint. Same as ItemsSearch plus the v2-parity statistics sort keys (`views`/`shares`/`downloads`/`cites`), which the public ITBM item index supports.",
+                "properties": {
+                    "resource_doi": {
+                        "type": "string",
+                        "description": "Only return items with this resource_doi.",
+                        "example": "10.6084/m9.figshare.1407024"
+                    },
+                    "item_type_id": {
+                        "type": "integer",
+                        "description": "Only return items with this item type id. Resolved against the caller's institution/group; an unknown id is rejected with 422.",
+                        "example": 3
+                    },
+                    "doi": {
+                        "type": "string",
+                        "description": "Only return items with this doi.",
+                        "example": "10.6084/m9.figshare.1407024"
+                    },
+                    "handle": {
+                        "type": "string",
+                        "description": "Only return items with this handle.",
+                        "example": "111084/m9.figshare.14074"
+                    },
+                    "project_id": {
+                        "type": "integer",
+                        "description": "Only return items in this project.",
+                        "example": 1
+                    },
+                    "order": {
+                        "type": "string",
+                        "description": "The field by which to order (ITBM date keys plus v2-parity statistics keys).",
+                        "example": "created_date",
+                        "default": "created_date",
+                        "enum": [
+                            "created_date",
+                            "modified_date",
+                            "posted_date",
+                            "first_online",
+                            "publisher_published",
+                            "publisher_accepted",
+                            "views",
+                            "shares",
+                            "downloads",
+                            "cites"
+                        ]
+                    }
+                },
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/CommonSearch"
+                    }
+                ],
+                "x-tag": "items"
+            },
+            "ProjectsSearchPublic": {
+                "description": "v3 project search payload for the public `/projects/search` endpoint. Same as ProjectsSearch plus the v2-parity statistics sort key `views` (public ITBM project index supports it; v2 exposes only `views` for projects).",
+                "properties": {
+                    "order": {
+                        "type": "string",
+                        "description": "The field by which to order (date keys plus the statistics key `views`).",
+                        "example": "created_date",
+                        "default": "created_date",
+                        "enum": [
+                            "created_date",
+                            "modified_date",
+                            "posted_date",
+                            "first_online",
+                            "publisher_published",
+                            "publisher_accepted",
+                            "start_date",
+                            "finish_date",
+                            "views"
+                        ]
+                    }
+                },
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/CommonSearch"
+                    }
+                ],
+                "x-tag": "projects"
+            },
             "CollectionsSearch": {
-                "description": "v3 collection search payload. `order` accepts the collection's current date keys; legacy stats keys (`views`, `shares`, `cites`) are rejected for institutions with item-type based metadata enabled.",
+                "description": "v3 collection search payload for the private `/account/collections/search` endpoint. `order` accepts the collection's current date keys; legacy stats keys (`views`, `shares`, `cites`) are rejected for institutions with item-type based metadata enabled.",
                 "properties": {
                     "order": {
                         "type": "string",
@@ -17175,7 +17315,37 @@
                     },
                     "item_type_id": {
                         "type": "integer",
-                        "description": "Only return collections with items of this item type.",
+                        "description": "Only return collections with items of this item type. Resolved against the caller's institution/group; an unknown id is rejected with 422.",
+                        "example": 3
+                    }
+                },
+                "allOf": [
+                    {
+                        "$ref": "#/components/schemas/CommonSearch"
+                    }
+                ],
+                "x-tag": "collections"
+            },
+            "CollectionsSearchPublic": {
+                "description": "v3 collection search payload for the public `/collections/search` endpoint. Same as CollectionsSearch plus the v2-parity statistics sort keys (`views`/`shares`/`cites`); v2 omits `downloads` for collections.",
+                "properties": {
+                    "order": {
+                        "type": "string",
+                        "description": "The field by which to order (collection date keys plus statistics keys).",
+                        "example": "created_date",
+                        "default": "created_date",
+                        "enum": [
+                            "created_date",
+                            "modified_date",
+                            "published_date",
+                            "views",
+                            "shares",
+                            "cites"
+                        ]
+                    },
+                    "item_type_id": {
+                        "type": "integer",
+                        "description": "Only return collections with items of this item type. Resolved against the caller's institution/group; an unknown id is rejected with 422.",
                         "example": 3
                     }
                 },

@@ -235,6 +235,10 @@ paths:
           - first_online
           - publisher_published
           - publisher_accepted
+          - views
+          - shares
+          - downloads
+          - cites
       - name: order_direction
         in: query
         schema:
@@ -289,7 +293,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ArticleSearch'
+              $ref: '#/components/schemas/ItemsSearchPublic'
         required: false
       responses:
         '200':
@@ -454,7 +458,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ArticleSearch'
+              $ref: '#/components/schemas/ItemsSearch'
         required: false
       responses:
         '200':
@@ -987,7 +991,7 @@ paths:
           type: integer
       - name: order
         in: query
-        description: Date keys. Legacy keys (`published_date`, `modified_date`, `views`) are rejected for institutions with item-type based metadata enabled.
+        description: Date keys plus the v2-parity statistics key `views` (public endpoint only). Legacy keys `published_date`/`modified_date` are rejected for institutions with item-type based metadata enabled.
         schema:
           type: string
           default: created_date
@@ -1000,6 +1004,7 @@ paths:
           - publisher_accepted
           - start_date
           - finish_date
+          - views
       - name: order_direction
         in: query
         schema:
@@ -1052,7 +1057,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/ProjectsSearch'
+              $ref: '#/components/schemas/ProjectsSearchPublic'
         required: false
       responses:
         '200':
@@ -1292,7 +1297,7 @@ paths:
           type: integer
       - name: order
         in: query
-        description: Collection date keys.
+        description: Collection date keys plus the v2-parity statistics keys `views`/`shares`/`cites` (public endpoint only).
         schema:
           type: string
           default: created_date
@@ -1300,6 +1305,9 @@ paths:
           - created_date
           - modified_date
           - published_date
+          - views
+          - shares
+          - cites
       - name: order_direction
         in: query
         schema:
@@ -1357,7 +1365,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CollectionsSearch'
+              $ref: '#/components/schemas/CollectionsSearchPublic'
         required: false
       responses:
         '200':
