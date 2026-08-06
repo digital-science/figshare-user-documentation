@@ -6,9 +6,9 @@
 (function() {
     'use strict';
 
-    // Configuration
-    var VERSIONS_MANIFEST_URL = 'docs/versions_manifest.json';
-    var DEFAULT_SWAGGER_URL = 'swagger.json';
+    // Configuration. Absolute so it resolves the same way whether this script is loaded from
+    // /, /v2/, or /v3/ (served bundles) or from the generator's dev-preview server.
+    var VERSIONS_MANIFEST_URL = '/docs/versions_manifest.json';
     var versionsData = null;
     var currentVersion = null;
 
@@ -62,17 +62,24 @@
             return;
         }
 
-        // Clear existing options
-        select.innerHTML = '';
+        // The active version is fixed per served bundle (window.FIGSHARE_DOC_VERSION, baked in at
+        // build time), or comes from ?version= while previewing on the generator's dev server;
+        // fall back to the manifest default only if neither is present.
+        var selectedVersion = window.FIGSHARE_DOC_VERSION || getVersionFromUrl() || versionsData.default_version;
 
-        // Get saved version preference or use default
-        var savedVersion = localStorage.getItem('figshare_api_version');
-        var selectedVersion = savedVersion || versionsData.default_version;
-        
         // Ensure we have a valid selected version
         if (!selectedVersion) {
             selectedVersion = versionsData.default_version;
         }
+
+        // Build every option into a detached fragment first, then attach them to the select in
+        // one atomic swap. Clearing the select and appendChild-ing options one at a time (the
+        // previous approach) leaves a brief window where only the first-appended option exists
+        // and nothing has been marked selected yet -- the browser implicitly treats that option
+        // as selected, which is visible as the dropdown flashing the wrong version (manifest is
+        // sorted newest-first, so that's always the highest version) before settling on the
+        // correct one a moment later.
+        var fragment = document.createDocumentFragment();
 
         // Add options for each version
         versionsData.versions.forEach(function(versionInfo) {
@@ -110,8 +117,13 @@
                 updateDocumentTitle(currentVersion);
             }
             
-            select.appendChild(option);
+            fragment.appendChild(option);
         });
+
+        // Single atomic swap: the select goes straight from its old contents to the fully built,
+        // correctly-selected option set, with no intermediate partially-populated state.
+        select.innerHTML = '';
+        select.appendChild(fragment);
 
         // Add change event listener
         select.addEventListener('change', handleVersionChange);
@@ -126,43 +138,12 @@
     }
 
     /**
-     * Handle version selection change
+     * Handle version selection change: navigate to the versioned bundle rather than hot-swapping
+     * the spec in place (that was the source of the refresh/bookmark desync this replaces).
      */
     function handleVersionChange(event) {
         var newVersion = event.target.value;
-        var selectedOption = event.target.options[event.target.selectedIndex];
-        
-        // Save preference
-        localStorage.setItem('figshare_api_version', newVersion);
-        
-        // Update deprecation warning
-        updateDeprecationWarning(newVersion);
-        
-        // Get the swagger file for this version
-        var swaggerUrl = getSwaggerUrlForVersion(newVersion);
-        
-        // Reload Swagger UI with new version
-        loadSwaggerUI(swaggerUrl, newVersion);
-    }
-
-    /**
-     * Get the swagger.json URL for a specific version
-     */
-    function getSwaggerUrlForVersion(version) {
-        if (!versionsData || !versionsData.versions) {
-            return DEFAULT_SWAGGER_URL;
-        }
-        
-        var versionInfo = versionsData.versions.find(function(v) {
-            return v.version === version;
-        });
-        
-        if (versionInfo && versionInfo.file) {
-            return versionInfo.file;
-        }
-        
-        // Fallback to versioned filename pattern
-        return 'swagger_v' + version + '.json';
+        window.location.href = '/v' + newVersion.split('.')[0] + '/';
     }
 
     /**
@@ -206,67 +187,6 @@
         } else {
             warningEl.style.display = 'none';
             warningEl.textContent = '';
-        }
-    }
-
-    /**
-     * Load or reload Swagger UI with a specific swagger file
-     */
-    function loadSwaggerUI(swaggerUrl, version) {
-        console.log('Loading Swagger UI with version:', version, 'from', swaggerUrl);
-        
-        // If window.ui exists, we can update the spec
-        if (window.ui && typeof window.ui.specActions !== 'undefined') {
-            // Update the spec dynamically
-            fetch(swaggerUrl)
-                .then(function(response) { return response.json(); })
-                .then(function(spec) {
-                    // Reset internal operations cache so it rebuilds for new spec
-                    if (window.internalOperationsCache !== undefined) {
-                        window.internalOperationsCache = null;
-                    }
-                    window.ui.specActions.updateSpec(JSON.stringify(spec));
-                    currentVersion = version;
-                    updateDocumentTitle(version);
-                    console.log('Updated to version:', version);
-
-                    // Switching versions re-renders the operations and changes the page height.
-                    // If the user was partially scrolled, the shorter content would leave the
-                    // scroll position inside the static documentation band (whose last section is
-                    // Impersonation), causing the sidebar to auto-expand/highlight it. Reset to the
-                    // top so the version change starts cleanly (matches scrollY < 200 collapse).
-                    window.scrollTo(0, 0);
-
-                    // Wait for Swagger UI to re-render, then rebuild the sidebar
-                    setTimeout(function() {
-                        // Filter internal operations for new spec
-                        if (typeof filterInternalOperations === 'function') {
-                            filterInternalOperations();
-                        }
-
-                        // Rebuild the dynamic sidebar menu from the new spec
-                        if (window.buildDynamicSidebarMenu && typeof window.buildDynamicSidebarMenu === 'function') {
-                            window.buildDynamicSidebarMenu();
-                        }
-
-                        // Re-initialize sidebar navigation to bind events to new elements
-                        if (window.initializeSidebarNavigation && typeof window.initializeSidebarNavigation === 'function') {
-                            window.initializeSidebarNavigation();
-                        }
-
-                        // Hide the v2 guide documentation when the new version is not v2.
-                        if (window.applyVersionDocVisibility && typeof window.applyVersionDocVisibility === 'function') {
-                            window.applyVersionDocVisibility(version);
-                        }
-                    }, 800);
-                })
-                .catch(function(error) {
-                    console.error('Error loading swagger spec:', error);
-                    showVersionError(version, error);
-                });
-        } else {
-            // UI not initialized yet - reload the page with version parameter
-            window.location.href = window.location.pathname + '?version=' + version;
         }
     }
 
@@ -361,18 +281,6 @@
     }
     
     /**
-     * Show error when version fails to load
-     */
-    function showVersionError(version, error) {
-        var warningEl = document.getElementById('versionDeprecationWarning');
-        if (warningEl) {
-            warningEl.textContent = '❌ Failed to load version ' + version + ': ' + error.message;
-            warningEl.style.display = 'inline';
-            warningEl.style.color = '#d9534f';
-        }
-    }
-
-    /**
      * Get version from URL parameter if present
      */
     function getVersionFromUrl() {
@@ -384,12 +292,6 @@
      * Initialize version management system
      */
     function initializeVersionManagement() {
-        // Check if there's a version in the URL
-        var urlVersion = getVersionFromUrl();
-        if (urlVersion) {
-            localStorage.setItem('figshare_api_version', urlVersion);
-        }
-
         // Load versions manifest and populate selector
         loadVersionsManifest().then(function(data) {
             if (data) {
@@ -406,30 +308,11 @@
         });
     }
 
-    /**
-     * Get the initial swagger URL based on saved/default version
-     */
-    function getInitialSwaggerUrl() {
-        var savedVersion = localStorage.getItem('figshare_api_version');
-        var urlVersion = getVersionFromUrl();
-        
-        if (urlVersion) {
-            return 'swagger_v' + urlVersion + '.json';
-        } else if (savedVersion && versionsData) {
-            return getSwaggerUrlForVersion(savedVersion);
-        }
-        
-        return DEFAULT_SWAGGER_URL;
-    }
-
     // Public API
     window.FigshareVersionManager = {
         initialize: initializeVersionManagement,
         getCurrentVersion: function() { return currentVersion; },
         getVersionsData: function() { return versionsData; },
-        loadVersion: loadSwaggerUI,
-        getInitialSwaggerUrl: getInitialSwaggerUrl,
-        toggleSubmenu: toggleSubmenu,
         filterMenuBySearch: filterMenuBySearch,
         regenerateMenu: regenerateMenu
     };

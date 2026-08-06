@@ -6,3 +6,6 @@ lxml==6.1.0
 
 # API docs generation
 pyyaml==6.0.3
+
+# Headless-browser snapshotting for per-version static bundles
+playwright==1.49.1

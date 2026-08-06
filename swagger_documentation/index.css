@@ -324,7 +324,7 @@ body {
 
 /* Custom theme adjustments */
 /* Hide the default Swagger UI info section that appears in the API content */
-.swagger-ui-wrapper > .information-container {
+#swagger-ui-content > .information-container {
     display: none;
 }
 

@@ -339,19 +339,20 @@
         var specUrl;
 
         if (url && url.length > 1) {
+            // Debug/build-time escape hatch: load an arbitrary spec URL directly.
             specUrl = decodeURIComponent(url[1]);
         } else {
-            // Honor the version selected in the dropdown (?version= param or the saved preference
-            // written by version-manager.js) so the initially loaded spec matches the selector.
-            // Without this the page always loaded the default swagger.json (2.0) even when the
-            // selector reflected 3.0. Falls back to the default merged spec when none is set.
+            // ?version= is a build-time override used by the version-bundle generator (and handy
+            // for manual debugging) to force which spec loads. Served bundles (/v2/, /v3/) never
+            // carry this param, so they fall through to the version baked in at build time.
             var versionParam = (window.location.search.match(/[?&]version=([^&]+)/) || [])[1];
-            var savedVersion = versionParam || localStorage.getItem('figshare_api_version');
-            // Only accept simple version tokens (e.g. "2.0", "3.0"); anything else (malformed,
-            // stale, or unknown) falls back to the default merged spec rather than 404ing.
-            specUrl = (savedVersion && /^\d+(\.\d+)*$/.test(savedVersion))
-                ? 'docs/versions/swagger_v' + savedVersion + '.json'
-                : 'swagger.json';
+            // Only accept simple version tokens (e.g. "2.0", "3.0"); anything else (malformed or
+            // unknown) falls back to the baked/default spec rather than 404ing.
+            if (versionParam && /^\d+(\.\d+)*$/.test(versionParam)) {
+                specUrl = 'docs/versions/swagger_v' + versionParam + '.json';
+            } else {
+                specUrl = window.FIGSHARE_SPEC_URL || 'swagger.json';
+            }
         }
 
         // Custom plugin to add client downloads to responses
@@ -414,7 +415,7 @@
                                             'a',
                                             {
                                                 key: client.file,
-                                                href: 'clients/' + client.file,
+                                                href: '/clients/' + client.file,
                                                 download: true,
                                                 style: {
                                                     display: 'block',
@@ -520,8 +521,10 @@
                 languages: null // all available languages
             },
 
-            // OAuth configuration
-            oauth2RedirectUrl: window.location.origin + window.location.pathname,
+            // OAuth configuration. Pinned to a fixed root-level path (rather than the current
+            // pathname) so the redirect URI stays the same across /v2/ and /v3/ and continues to
+            // match whatever redirect URI is whitelisted on the OAuth app registration.
+            oauth2RedirectUrl: window.location.origin + '/',
 
 
             // Request interceptor for adding custom headers and access_token parameter
@@ -540,7 +543,7 @@
                 var versionSelectEl = document.getElementById('apiVersionSelect');
                 var apiVersion = (versionSelectEl && versionSelectEl.value)
                     || (window.FigshareVersionManager && window.FigshareVersionManager.getCurrentVersion())
-                    || localStorage.getItem('figshare_api_version')
+                    || window.FIGSHARE_DOC_VERSION
                     || '2';
 
                 if (apiVersion) {
@@ -690,12 +693,13 @@
                 initializeSidebarNavigation();
 
                 // Hide the v2 guide documentation when the active version is not v2. Resolve the
-                // version the same way the initial spec load does (?version= / saved preference).
+                // version the same way the initial spec load does (?version= override, else the
+                // version baked into this bundle at build time, else default to 2.0).
                 var initialVersionParam = (window.location.search.match(/[?&]version=([^&]+)/) || [])[1];
-                var initialVersion = initialVersionParam || localStorage.getItem('figshare_api_version');
-                applyVersionDocVisibility(
-                    (initialVersion && /^\d+(\.\d+)*$/.test(initialVersion)) ? initialVersion : '2.0'
-                );
+                var initialVersion = (initialVersionParam && /^\d+(\.\d+)*$/.test(initialVersionParam))
+                    ? initialVersionParam
+                    : (window.FIGSHARE_DOC_VERSION || '2.0');
+                applyVersionDocVisibility(initialVersion);
 
                 // Move schemas/models section after custom fields documentation
                 moveSchemasToEnd();
@@ -2352,6 +2356,12 @@
     function injectDocumentationContent() {
         const swaggerWrapper = document.getElementById('swagger-ui-content');
         if (!swaggerWrapper) return;
+        // Guide content is inserted into these siblings, not into swagger-ui-content itself,
+        // so it survives Swagger UI's React mount (which replaces swagger-ui-content's children
+        // on every load).
+        const guideBefore = document.getElementById('docs-guide-before');
+        const guideAfter = document.getElementById('docs-guide-after');
+        if (!guideBefore || !guideAfter) return;
 
         // onComplete re-fires when the spec is swapped (version switch); the static guide content
         // is version-independent, so skip re-injection to avoid duplicate sections — duplicates
@@ -3020,14 +3030,14 @@
 
         docContentAfter += '</div>'; // Close documentation-sections-after
 
-        // Insert docContentBefore at the beginning of swagger-ui-content
+        // Insert docContentBefore into the docs-guide-before sibling (not swagger-ui-content itself)
         // This will contain: Figshare Documentation, OAuth, API Features
-        swaggerWrapper.insertAdjacentHTML('afterbegin', docContentBefore);
+        guideBefore.insertAdjacentHTML('beforeend', docContentBefore);
 
-        // Insert docContentAfter at the end of swagger-ui-content
+        // Insert docContentAfter into the docs-guide-after sibling (not swagger-ui-content itself)
         // This will contain: Upload Files, Search, Stats, OAI PMH, HR Feed, Custom Fields
         // This ensures API endpoint documentation (Articles, Authors, Collections, etc.) appears in between
-        swaggerWrapper.insertAdjacentHTML('beforeend', docContentAfter);
+        guideAfter.insertAdjacentHTML('beforeend', docContentAfter);
 
         // v3 guides mirror the v2 before/after split so the API operations sit between them.
         // Both containers start hidden and are shown only on v3 (see applyVersionDocVisibility);
@@ -3348,14 +3358,18 @@
 
         // Insert the v3 "before" container at the very top (precedes API operations when shown)
         // and the v3 "after" container at the end (follows API operations when shown).
-        swaggerWrapper.insertAdjacentHTML('afterbegin', docContentV3);
-        swaggerWrapper.insertAdjacentHTML('beforeend', docContentV3After);
+        guideBefore.insertAdjacentHTML('beforeend', docContentV3);
+        guideAfter.insertAdjacentHTML('beforeend', docContentV3After);
     }
 
     // Function to move Schemas/Models section after Custom Fields documentation
     function moveSchemasToEnd() {
         // Wait a bit for Swagger UI to fully render
         setTimeout(function() {
+            // Set unconditionally, before any early return below, so the build-time generator's
+            // wait for this signal can never hang even if swagger-ui-content is unexpectedly absent.
+            window.__figshareDocsReady = true;
+
             var swaggerWrapper = document.getElementById('swagger-ui-content');
             if (!swaggerWrapper) return;
 
@@ -3393,8 +3407,11 @@
                 // Move the models section into the new wrapper
                 schemasWrapper.appendChild(modelsSection);
 
-                // Append the wrapped schemas to the main content area
-                swaggerWrapper.appendChild(schemasWrapper);
+                // Append the wrapped schemas after docs-guide-after (not swagger-ui-content itself),
+                // so Models still lands at the very end of the page instead of before the "after"
+                // guide content now that guide content lives in a sibling of swagger-ui-content.
+                var guideAfter = document.getElementById('docs-guide-after');
+                (guideAfter || swaggerWrapper).appendChild(schemasWrapper);
             }
         }, 500); // Wait 500ms for Swagger UI to render
     }
