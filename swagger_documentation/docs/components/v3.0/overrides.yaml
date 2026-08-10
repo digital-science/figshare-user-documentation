@@ -1109,11 +1109,6 @@ schemas:
         - created_date
         - modified_date
         - published_date
-      item_type_id:
-        type: integer
-        description: Only return collections with items of this item type. Resolved against the
-          caller's institution/group; an unknown id is rejected with 422.
-        example: 3
     allOf:
     - $ref: '#/components/schemas/CommonSearch'
     x-tag: collections
@@ -1134,11 +1129,6 @@ schemas:
         - views
         - shares
         - cites
-      item_type_id:
-        type: integer
-        description: Only return collections with items of this item type. Resolved against the
-          caller's institution/group; an unknown id is rejected with 422.
-        example: 3
     allOf:
     - $ref: '#/components/schemas/CommonSearch'
     x-tag: collections

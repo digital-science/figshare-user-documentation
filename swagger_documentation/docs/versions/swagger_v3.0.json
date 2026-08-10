@@ -282,14 +282,6 @@
                         "schema": {
                             "type": "integer"
                         }
-                    },
-                    {
-                        "name": "item_type_id",
-                        "in": "query",
-                        "description": "Only return collections with items of this item type",
-                        "schema": {
-                            "type": "integer"
-                        }
                     }
                 ],
                 "responses": {
@@ -621,14 +613,6 @@
                                 "asc",
                                 "desc"
                             ]
-                        }
-                    },
-                    {
-                        "name": "item_type_id",
-                        "in": "query",
-                        "description": "Only return collections with items of this item type",
-                        "schema": {
-                            "type": "integer"
                         }
                     }
                 ],
@@ -17312,11 +17296,6 @@
                             "modified_date",
                             "published_date"
                         ]
-                    },
-                    "item_type_id": {
-                        "type": "integer",
-                        "description": "Only return collections with items of this item type. Resolved against the caller's institution/group; an unknown id is rejected with 422.",
-                        "example": 3
                     }
                 },
                 "allOf": [
@@ -17342,11 +17321,6 @@
                             "shares",
                             "cites"
                         ]
-                    },
-                    "item_type_id": {
-                        "type": "integer",
-                        "description": "Only return collections with items of this item type. Resolved against the caller's institution/group; an unknown id is rejected with 422.",
-                        "example": 3
                     }
                 },
                 "allOf": [

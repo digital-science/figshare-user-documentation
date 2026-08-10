@@ -1326,11 +1326,6 @@ paths:
         description: Only return collections from this group
         schema:
           type: integer
-      - name: item_type_id
-        in: query
-        description: Only return collections with items of this item type
-        schema:
-          type: integer
       responses:
         '200':
           description: OK. An array of collections
@@ -1443,11 +1438,6 @@ paths:
           enum:
           - asc
           - desc
-      - name: item_type_id
-        in: query
-        description: Only return collections with items of this item type
-        schema:
-          type: integer
       responses:
         '200':
           description: OK. An array of collections
