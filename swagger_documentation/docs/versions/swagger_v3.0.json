@@ -202,6 +202,14 @@
                 "operationId": "collections_public_list",
                 "parameters": [
                     {
+                        "name": "X-Cursor",
+                        "in": "header",
+                        "description": "Unique hash used for bypassing the item retrieval limit of 9,000 entities. When using this parameter, please note that the offset parameter will not be available, but the limit parameter will still work as expected.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
                         "name": "page",
                         "in": "query",
                         "schema": {
@@ -287,6 +295,14 @@
                 "responses": {
                     "200": {
                         "description": "OK. An array of collections",
+                        "headers": {
+                            "X-Cursor": {
+                                "description": "Unique hash used for bypassing the item retrieval limit of 9,000 entities.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -328,6 +344,16 @@
                 "summary": "Public Collections Search",
                 "description": "Search public collections. Same light list shape as `/v3/collections`.",
                 "operationId": "collections_public_search",
+                "parameters": [
+                    {
+                        "name": "X-Cursor",
+                        "in": "header",
+                        "description": "Unique hash used for bypassing the item retrieval limit of 9,000 entities. When using this parameter, please note that the offset parameter will not be available, but the limit parameter will still work as expected.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "description": "Search Parameters",
                     "content": {
@@ -342,6 +368,14 @@
                 "responses": {
                     "200": {
                         "description": "OK. An array of collections",
+                        "headers": {
+                            "X-Cursor": {
+                                "description": "Unique hash used for bypassing the item retrieval limit of 9,000 entities.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -4143,6 +4177,14 @@
                 "operationId": "projects_public_list",
                 "parameters": [
                     {
+                        "name": "X-Cursor",
+                        "in": "header",
+                        "description": "Unique hash used for bypassing the item retrieval limit of 9,000 entities. When using this parameter, please note that the offset parameter will not be available, but the limit parameter will still work as expected.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
                         "name": "page",
                         "in": "query",
                         "schema": {
@@ -4231,6 +4273,14 @@
                 "responses": {
                     "200": {
                         "description": "OK. An array of projects",
+                        "headers": {
+                            "X-Cursor": {
+                                "description": "Unique hash used for bypassing the item retrieval limit of 9,000 entities.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -4272,6 +4322,16 @@
                 "summary": "Public Projects Search",
                 "description": "Search public projects. Same light list shape as `/v3/projects`.",
                 "operationId": "projects_public_search",
+                "parameters": [
+                    {
+                        "name": "X-Cursor",
+                        "in": "header",
+                        "description": "Unique hash used for bypassing the item retrieval limit of 9,000 entities. When using this parameter, please note that the offset parameter will not be available, but the limit parameter will still work as expected.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "description": "Search Parameters",
                     "content": {
@@ -4286,6 +4346,14 @@
                 "responses": {
                     "200": {
                         "description": "OK. An array of projects",
+                        "headers": {
+                            "X-Cursor": {
+                                "description": "Unique hash used for bypassing the item retrieval limit of 9,000 entities.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -5931,6 +5999,14 @@
                 "operationId": "items_public_list",
                 "parameters": [
                     {
+                        "name": "X-Cursor",
+                        "in": "header",
+                        "description": "Unique hash used for bypassing the item retrieval limit of 9,000 entities. When using this parameter, please note that the offset parameter will not be available, but the limit parameter will still work as expected.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
                         "name": "page",
                         "in": "query",
                         "schema": {
@@ -6028,6 +6104,14 @@
                 "responses": {
                     "200": {
                         "description": "OK. An array of items",
+                        "headers": {
+                            "X-Cursor": {
+                                "description": "Unique hash used for bypassing the item retrieval limit of 9,000 entities.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {
@@ -6065,6 +6149,16 @@
                 "summary": "Public Items Search",
                 "description": "Search public items. Same light list shape as `/v2/items`.",
                 "operationId": "items_public_search",
+                "parameters": [
+                    {
+                        "name": "X-Cursor",
+                        "in": "header",
+                        "description": "Unique hash used for bypassing the item retrieval limit of 9,000 entities. When using this parameter, please note that the offset parameter will not be available, but the limit parameter will still work as expected.",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "requestBody": {
                     "description": "Search Parameters",
                     "content": {
@@ -6079,6 +6173,14 @@
                 "responses": {
                     "200": {
                         "description": "OK. An array of items",
+                        "headers": {
+                            "X-Cursor": {
+                                "description": "Unique hash used for bypassing the item retrieval limit of 9,000 entities.",
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        },
                         "content": {
                             "application/json": {
                                 "schema": {
