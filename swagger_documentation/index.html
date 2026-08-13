@@ -418,8 +418,12 @@
         </aside>
         <div class="swagger-ui-wrapper">
             <div id="docs-guide-before"></div>
-            <div id="swagger-ui-content"></div>
+            <!-- docs-guide-after renders before swagger-ui-content (not after, despite its id) so
+                 the Models/Schemas section — which lives inside swagger-ui-content and must stay
+                 there to keep Swagger UI's expand/collapse working (see signalDocsReady() in
+                 index.js) — ends up as the last thing on the page instead of the guide content. -->
             <div id="docs-guide-after"></div>
+            <div id="swagger-ui-content"></div>
         </div>
     </div>
 </section>

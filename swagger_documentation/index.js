@@ -719,8 +719,9 @@
                     : (window.FIGSHARE_DOC_VERSION || '2.0');
                 applyVersionDocVisibility(initialVersion);
 
-                // Move schemas/models section after custom fields documentation
-                moveSchemasToEnd();
+                // Signal the build-time static-bundle generator that rendering is done. Models
+                // now render in their natural Swagger UI position (see signalDocsReady()).
+                signalDocsReady();
 
                 // Initialize custom search input to work with Swagger UI filter
                 initializeSearchDocFilter();
@@ -3490,114 +3491,22 @@
         guideAfter.insertAdjacentHTML('beforeend', docContentV3After);
     }
 
-    // MutationObserver watching swagger-ui-content for Swagger UI recreating a Models/Schemas
-    // section back in its original position (see relocateSchemasSection() for why that happens).
-    // Created once by moveSchemasToEnd() and reused across any later onComplete re-fires, so a
-    // second call doesn't stack a second observer.
-    var schemasRelocationObserver = null;
-
     /**
-     * Find the live Models/Schemas section Swagger UI rendered inside its own React-managed root
-     * (swaggerUIDiv). Only ever searches within swaggerUIDiv, so it can't pick up the previously
-     * relocated copy, which lives outside it (in the separate docs-guide-after container).
+     * Signal to the build-time static-bundle generator (generate_version_bundles.py, which waits
+     * on window.__figshareDocsReady) that Swagger UI has finished rendering and it's safe to
+     * capture the page. The Models/Schemas section used to be physically relocated to the end of
+     * the page here (moveSchemasToEnd()) — removed because Swagger UI (React 18, createRoot)
+     * delegates click events at the #swagger-ui-content root container rather than document, so
+     * moving that section outside the root's DOM subtree broke expand/collapse on every model
+     * (its property table is conditionally rendered by React, not just CSS-hidden, so there's no
+     * way to restore that interactivity without keeping the node inside the React root). Models
+     * now render wherever Swagger UI naturally puts them (after the operations list, before the
+     * guide-after content) instead of after it.
      */
-    function findModelsSection(swaggerUIDiv) {
-        // Usually has class "models"
-        var modelsSection = swaggerUIDiv.querySelector('.models');
-        if (modelsSection) return modelsSection;
-
-        // Also try to find it by looking for sections with "Models" or "Schemas" header
-        var allSections = swaggerUIDiv.querySelectorAll('section, .scheme-container');
-        for (var i = 0; i < allSections.length; i++) {
-            var section = allSections[i];
-            var header = section.querySelector('h4, h3, h2, .model-title');
-            if (header && (header.textContent.includes('Models') || header.textContent.includes('Schemas'))) {
-                return section;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Move the Models/Schemas section Swagger UI just rendered inside swaggerWrapper into a
-     * persistent wrapper at the end of the page (after docs-guide-after). Swagger UI can recreate
-     * a fresh Models section back in its original position on a later re-render, since the
-     * relocated copy sits outside its React-tracked subtree — so this is safe to call repeatedly:
-     * it reuses the same wrapper and swaps in whichever Models section is currently live, instead
-     * of leaving a stale copy behind alongside the new one. Re-resolves the Swagger UI root
-     * (swaggerUIDiv) fresh on every call rather than taking it as a cached argument, so this stays
-     * correct even if that root node is ever replaced between calls.
-     */
-    function relocateSchemasSection(swaggerWrapper) {
-        // Find the main swagger-ui wrapper that Swagger UI creates; if there's no .swagger-ui
-        // wrapper, Swagger UI might render directly into swaggerWrapper.
-        var swaggerUIDiv = swaggerWrapper.querySelector('.swagger-ui') || swaggerWrapper;
-
-        var modelsSection = findModelsSection(swaggerUIDiv);
-        if (!modelsSection) return;
-
-        var schemasWrapper = document.getElementById('schemas-relocated-wrapper');
-        if (!schemasWrapper) {
-            // Create a wrapper div with swagger-ui class to maintain styling context
-            schemasWrapper = document.createElement('div');
-            schemasWrapper.id = 'schemas-relocated-wrapper';
-            schemasWrapper.className = 'swagger-ui';
-            schemasWrapper.style.padding = '20px';
-            schemasWrapper.style.maxWidth = '100%';
-
-            // Append the wrapped schemas after docs-guide-after (not swagger-ui-content itself),
-            // so Models still lands at the very end of the page instead of before the "after"
-            // guide content now that guide content lives in a sibling of swagger-ui-content.
-            var guideAfter = document.getElementById('docs-guide-after');
-            (guideAfter || swaggerWrapper).appendChild(schemasWrapper);
-        }
-
-        // Clear out whatever's currently in the wrapper (build-time-baked static content on first
-        // load, or a previous live relocation) before adding the freshly-found section — otherwise
-        // reusing the wrapper just appends alongside that stale content instead of replacing it.
-        while (schemasWrapper.firstChild) {
-            schemasWrapper.removeChild(schemasWrapper.firstChild);
-        }
-
-        // Moving modelsSection here both relocates it and, since it's the same live node, removes
-        // it from swaggerUIDiv — that removal is itself a mutation, so callers observing
-        // swaggerWrapper must disconnect first (see moveSchemasToEnd()) to avoid re-triggering.
-        schemasWrapper.appendChild(modelsSection);
-    }
-
-    // Function to move Schemas/Models section after Custom Fields documentation
-    function moveSchemasToEnd() {
-        // Wait a bit for Swagger UI to fully render
+    function signalDocsReady() {
         setTimeout(function() {
-            // Set unconditionally, before any early return below, so the build-time generator's
-            // wait for this signal can never hang even if swagger-ui-content is unexpectedly absent.
             window.__figshareDocsReady = true;
-
-            var swaggerWrapper = document.getElementById('swagger-ui-content');
-            if (!swaggerWrapper) return;
-
-            relocateSchemasSection(swaggerWrapper);
-
-            // Swagger UI can later recreate a fresh Models/Schemas section back inside its own
-            // root on some re-render (expanding an operation, the search filter, an auth change,
-            // ...) since the relocated copy sits outside its React-tracked subtree. Watch for that
-            // and re-relocate instead of leaving two copies visible. Only do this when
-            // docs-guide-after exists (the normal case) — when it's missing, relocateSchemasSection
-            // falls back to relocating inside swaggerWrapper itself, which has no stable "guide
-            // content" container to land in, so skip self-healing in that degraded case.
-            if (!schemasRelocationObserver && document.getElementById('docs-guide-after')) {
-                schemasRelocationObserver = new MutationObserver(function() {
-                    // Disconnect before mutating: relocateSchemasSection() removes the Models
-                    // section from Swagger UI's root, which is itself a childList mutation inside
-                    // the observed subtree — without this, that removal would immediately
-                    // re-trigger this same callback.
-                    schemasRelocationObserver.disconnect();
-                    relocateSchemasSection(swaggerWrapper);
-                    schemasRelocationObserver.observe(swaggerWrapper, { childList: true, subtree: true });
-                });
-                schemasRelocationObserver.observe(swaggerWrapper, { childList: true, subtree: true });
-            }
-        }, 500); // Wait 500ms for Swagger UI to render
+        }, 500);
     }
 
 
