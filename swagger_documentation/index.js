@@ -158,9 +158,27 @@
 
         // Track manually collapsed menus to prevent auto-expansion - GLOBAL SCOPE
     var manuallyCollapsedMenus = {};
-    
+
     // Cache for internal operations to avoid repeated spec lookups
     var internalOperationsCache = null;
+
+    // Cache of sidebar link -> resolved target content element, keyed by a stable string derived
+    // from the link (its href or onclick, which don't change between scroll ticks). Populated by
+    // resolveSidebarLinkTarget()/scrollToSchema() and consulted by updateActiveSidebarLink() so a
+    // transient lookup miss on one tick doesn't drop the link from scroll tracking. Cleared
+    // whenever the sidebar is rebuilt (buildDynamicSidebarMenu) so stale entries can't survive a
+    // menu regeneration.
+    var sidebarTargetCache = {};
+
+    // The link that the sidebar was last auto-scrolled to bring into view; used to only re-run
+    // the auto-scroll-into-view logic when the active link actually changes, instead of on every
+    // scroll tick.
+    var lastAutoScrolledLink = null;
+
+    // requestAnimationFrame coalescing state + the registered scroll handler reference for
+    // initializeSidebarNavigation()'s scroll listener (see there for why both are needed).
+    var sidebarScrollRafPending = false;
+    var sidebarScrollHandler = null;
     
     /**
      * Check if an operation block is marked as internal
@@ -731,13 +749,11 @@
 
                 window.scrollTo({
                     top: targetY,
-                    behavior: 'smooth'
+                    behavior: 'auto'
                 });
 
-                // After scrolling completes, update the sidebar to sync with the new scroll position
-                setTimeout(function() {
-                    updateActiveSidebarLink();
-                }, 500); // Wait for smooth scroll to complete
+                // The jump above is instant, so sync the sidebar right away instead of waiting.
+                updateActiveSidebarLink();
             }
         }
 
@@ -1214,6 +1230,11 @@
                 return;
             }
 
+            // The menu is about to be torn down and rebuilt, so any cached link->target
+            // resolutions from the old links are no longer valid.
+            sidebarTargetCache = {};
+            lastAutoScrolledLink = null;
+
             // --- Build API Tag Menu Items ---
 
             // Extract tags and their operations from the spec
@@ -1478,7 +1499,7 @@
                         var operationElement = document.getElementById(operationId);
                         if (operationElement) {
                             setTimeout(function() {
-                                operationElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                                operationElement.scrollIntoView({ behavior: 'auto', block: 'start' });
                             }, 100); // Small delay to allow expansion animation
                         }
 
@@ -1551,7 +1572,7 @@
 
                     if (tagElement) {
                         // Scroll to the tag
-                        tagElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        tagElement.scrollIntoView({ behavior: 'auto', block: 'start' });
 
                         // Also try to expand the tag if it's collapsed
                         var toggleButton = tagElement.querySelector('.expand-operation');
@@ -1563,76 +1584,170 @@
                 });
             });
 
-            // Highlight active section on scroll
-            window.addEventListener('scroll', function() {
-                updateActiveSidebarLink();
-            });
+            // Highlight active section on scroll. initializeSidebarNavigation() can in principle
+            // run more than once (e.g. after a future menu regeneration), so guard against
+            // stacking duplicate listeners by removing any previously-registered handler first.
+            if (sidebarScrollHandler) {
+                window.removeEventListener('scroll', sidebarScrollHandler);
+            }
+            sidebarScrollHandler = function() {
+                // Coalesce rapid scroll events into at most one recalculation per animation
+                // frame — updateActiveSidebarLink() does non-trivial DOM querying per call.
+                if (sidebarScrollRafPending) return;
+                sidebarScrollRafPending = true;
+                requestAnimationFrame(function() {
+                    sidebarScrollRafPending = false;
+                    updateActiveSidebarLink();
+                });
+            };
+            window.addEventListener('scroll', sidebarScrollHandler);
         }
 
-        // Function to update active sidebar link based on scroll position
-        function updateActiveSidebarLink() {
-            var sidebarLinks = document.querySelectorAll('.sidebar-link');
-            var scrollPosition = window.scrollY + 55;
+        /**
+         * Extract the schema name from a schema link's onclick="scrollToSchema('Name')" attribute,
+         * unescaping the `\'` escaping buildDynamicSidebarMenu() applies for names containing a
+         * quote. Returns null if onclickAttr isn't a scrollToSchema(...) call. Shared by
+         * getSidebarLinkCacheKey() and resolveSidebarLinkTarget() so both derive the exact same
+         * schema name (and therefore the same cache key) from a given link.
+         */
+        function parseScrollToSchemaName(onclickAttr) {
+            var schemaMatch = onclickAttr && onclickAttr.match(/scrollToSchema\('([^']*(?:\\.[^']*)*)'\)/);
+            return schemaMatch ? schemaMatch[1].replace(/\\'/g, "'") : null;
+        }
 
-            var activeLink = null;
-            var bestMatch = null; // { link, elementTop }
-            var inPresentersSection = false;
+        /**
+         * Build a stable string key identifying a sidebar link's target across scroll ticks
+         * (its href/onclick/data-tag don't change between ticks), for indexing sidebarTargetCache.
+         * Returns null for links with none of the expected attributes.
+         */
+        function getSidebarLinkCacheKey(link) {
+            var onclickAttr = link.getAttribute('onclick');
+            if (onclickAttr) {
+                // Schema links get their own key derived from the schema name (not the raw
+                // onclick text) so this matches the key scrollToSchema() uses directly.
+                var schemaName = parseScrollToSchemaName(onclickAttr);
+                if (schemaName !== null) {
+                    return 'schema:' + schemaName;
+                }
+                return 'onclick:' + onclickAttr;
+            }
 
-            sidebarLinks.forEach(function(link) {
-                var targetElement = null;
+            var href = link.getAttribute('href');
+            if (href && href !== 'javascript:void(0)') {
+                return 'href:' + href;
+            }
 
-                // Check if this is an operations link (Articles subitems use href="#operations-articles-*")
-                var href = link.getAttribute('href');
-                if (href && href.startsWith('#operations-')) {
-                    // Extract operation ID from href="#operations-articles-operation_name"
-                    var operationId = href.substring(1); // Remove the # prefix
-                    targetElement = document.getElementById(operationId);
+            var tag = link.getAttribute('data-tag');
+            if (tag) {
+                return 'tag:' + tag;
+            }
 
-                    // If the element doesn't exist by ID, try to find it by matching the link text
-                    if (!targetElement) {
-                        var linkText = link.textContent.trim().toLowerCase();
-                        var allHeadings = document.querySelectorAll('h3, h4, h2, h5');
-                        for (var i = 0; i < allHeadings.length; i++) {
-                            var headingText = allHeadings[i].textContent.trim().toLowerCase();
-                            // Check if heading text matches or contains the link text
-                            if (headingText.includes(linkText) || linkText.includes(headingText.split('(')[0].trim())) {
-                                targetElement = allHeadings[i].closest('.opblock') || allHeadings[i].parentElement;
-                                break;
-                            }
+            return null;
+        }
+
+        /**
+         * Resolve a sidebar link to its target content element, trying strategies appropriate to
+         * the link's kind (operation, doc-section, presenters, schema, or API tag). Returns null
+         * if no target could be found. Callers should consult/populate sidebarTargetCache around
+         * this — it does a fair amount of DOM querying and its result is stable per link.
+         */
+        function resolveSidebarLinkTarget(link) {
+            var targetElement = null;
+
+            // Check if this is an operations link (Articles subitems use href="#operations-articles-*")
+            var href = link.getAttribute('href');
+            if (href && href.startsWith('#operations-')) {
+                // Extract operation ID from href="#operations-articles-operation_name"
+                var operationId = href.substring(1); // Remove the # prefix
+                targetElement = document.getElementById(operationId);
+
+                // If the element doesn't exist by ID, try to find it by matching the link text
+                if (!targetElement) {
+                    var linkText = link.textContent.trim().toLowerCase();
+                    var allHeadings = document.querySelectorAll('h3, h4, h2, h5');
+                    for (var i = 0; i < allHeadings.length; i++) {
+                        var headingText = allHeadings[i].textContent.trim().toLowerCase();
+                        // Check if heading text matches or contains the link text
+                        if (headingText.includes(linkText) || linkText.includes(headingText.split('(')[0].trim())) {
+                            targetElement = allHeadings[i].closest('.opblock') || allHeadings[i].parentElement;
+                            break;
                         }
                     }
                 }
+            }
 
-                // Check if this is a documentation/upload section link (has onclick with scrollToDocSection)
-                var onclickAttr = link.getAttribute('onclick');
-                if (!targetElement && onclickAttr && onclickAttr.includes('scrollToDocSection')) {
-                    // Extract section ID from onclick="scrollToDocSection('section-id')"
-                    var match = onclickAttr.match(/scrollToDocSection\('([^']+)'\)/);
-                    if (match && match[1]) {
-                        var sectionId = 'doc-section-' + match[1];
-                        targetElement = document.getElementById(sectionId);
+            // Check if this is a documentation/upload section link (has onclick with scrollToDocSection)
+            var onclickAttr = link.getAttribute('onclick');
+            if (!targetElement && onclickAttr && onclickAttr.includes('scrollToDocSection')) {
+                // Extract section ID from onclick="scrollToDocSection('section-id')"
+                var match = onclickAttr.match(/scrollToDocSection\('([^']+)'\)/);
+                if (match && match[1]) {
+                    var sectionId = 'doc-section-' + match[1];
+                    targetElement = document.getElementById(sectionId);
+                }
+            } else if (!targetElement && onclickAttr && onclickAttr.includes('toggleSubmenuAndScroll')) {
+                // Extract section ID from onclick="toggleSubmenuAndScroll(event, 'menu-id', 'section-id')"
+                var match = onclickAttr.match(/toggleSubmenuAndScroll\([^,]+,\s*'[^']+',\s*'([^']+)'\)/);
+                if (match && match[1]) {
+                    var sectionId = 'doc-section-' + match[1];
+                    targetElement = document.getElementById(sectionId);
+                }
+            } else if (!targetElement && onclickAttr && onclickAttr.includes('presenters-menu')) {
+                // This is the Presenters parent link - find models/schemas section
+                var modelsControl = document.querySelector('.models-control');
+                if (modelsControl) {
+                    targetElement = modelsControl.closest('section') || modelsControl.closest('div') || modelsControl.parentElement;
+                }
+
+                if (!targetElement) {
+                    targetElement = document.querySelector('.models-wrapper') ||
+                                document.querySelector('.models') ||
+                                document.querySelector('#models') ||
+                                document.querySelector('section.models') ||
+                                document.querySelector('[id*="schema"]');
+                }
+
+                if (!targetElement) {
+                    var headings = document.querySelectorAll('h2, h3, h4, h5');
+                    for (var i = 0; i < headings.length; i++) {
+                        var text = headings[i].textContent.toLowerCase();
+                        if (text.includes('model') || text.includes('schema')) {
+                            targetElement = headings[i].closest('section') || headings[i].parentElement;
+                            break;
+                        }
                     }
-                } else if (!targetElement && onclickAttr && onclickAttr.includes('toggleSubmenuAndScroll')) {
-                    // Extract section ID from onclick="toggleSubmenuAndScroll(event, 'menu-id', 'section-id')"
-                    var match = onclickAttr.match(/toggleSubmenuAndScroll\([^,]+,\s*'[^']+',\s*'([^']+)'\)/);
-                    if (match && match[1]) {
-                        var sectionId = 'doc-section-' + match[1];
-                        targetElement = document.getElementById(sectionId);
-                    }
-                } else if (!targetElement && onclickAttr && onclickAttr.includes('presenters-menu')) {
-                    // This is the Presenters parent link - find models/schemas section
-                    var modelsControl = document.querySelector('.models-control');
-                    if (modelsControl) {
-                        targetElement = modelsControl.closest('section') || modelsControl.closest('div') || modelsControl.parentElement;
+                }
+            } else if (!targetElement && onclickAttr && onclickAttr.includes('scrollToSchema')) {
+                // This is an individual schema child link
+                var schemaName = parseScrollToSchemaName(onclickAttr);
+                if (schemaName !== null) {
+                    // Try to find the schema model box
+                    var modelBoxes = document.querySelectorAll('.model-box');
+                    for (var i = 0; i < modelBoxes.length; i++) {
+                        var box = modelBoxes[i];
+                        var titleElement = box.querySelector('.model-title span, .model-title__text, .model-title');
+                        if (titleElement && titleElement.textContent.trim() === schemaName) {
+                            targetElement = box;
+                            break;
+                        }
                     }
 
+                    // If not found, try by ID
                     if (!targetElement) {
-                        targetElement = document.querySelector('.models-wrapper') ||
-                                    document.querySelector('.models') ||
-                                    document.querySelector('#models') ||
-                                    document.querySelector('section.models') ||
-                                    document.querySelector('[id*="schema"]');
+                        targetElement = document.getElementById('model-' + schemaName);
                     }
+                }
+            } else if (!targetElement) {
+                // This is an API section link (has data-tag)
+                var tag = link.getAttribute('data-tag');
+
+                if (tag === 'schemas') {
+                    // Legacy handling for schemas with data-tag (shouldn't exist anymore but keep for safety)
+                    targetElement = document.querySelector('.models-wrapper') ||
+                                document.querySelector('.models') ||
+                                document.querySelector('#models') ||
+                                document.querySelector('section.models') ||
+                                document.querySelector('[id*="schema"]');
 
                     if (!targetElement) {
                         var headings = document.querySelectorAll('h2, h3, h4, h5');
@@ -1644,86 +1759,73 @@
                             }
                         }
                     }
-                } else if (!targetElement && onclickAttr && onclickAttr.includes('scrollToSchema')) {
-                    // This is an individual schema child link
-                    var schemaMatch = onclickAttr.match(/scrollToSchema\('([^']+)'\)/);
-                    if (schemaMatch && schemaMatch[1]) {
-                        var schemaName = schemaMatch[1];
+                } else if (tag) {
+                    // Try to find by operations-tag ID
+                    targetElement = document.querySelector('#operations-tag-' + tag);
 
-                        // Try to find the schema model box
-                        var modelBoxes = document.querySelectorAll('.model-box');
-                        for (var i = 0; i < modelBoxes.length; i++) {
-                            var box = modelBoxes[i];
-                            var titleElement = box.querySelector('.model-title span, .model-title__text, .model-title');
-                            if (titleElement && titleElement.textContent.trim() === schemaName) {
-                                targetElement = box;
+                    if (!targetElement) {
+                        // Try to find by data-tag attribute
+                        targetElement = document.querySelector('[data-tag="' + tag + '"]');
+                    }
+
+                    if (!targetElement) {
+                        // Try to find by opblock-tag-section
+                        var tagSections = document.querySelectorAll('.opblock-tag-section');
+                        for (var i = 0; i < tagSections.length; i++) {
+                            var heading = tagSections[i].querySelector('h3, h4');
+                            if (heading && heading.textContent.toLowerCase().includes(tag.toLowerCase())) {
+                                targetElement = tagSections[i];
                                 break;
                             }
                         }
+                    }
 
-                        // If not found, try by ID
-                        if (!targetElement) {
-                            targetElement = document.getElementById('model-' + schemaName);
+                    // Final fallback: search by parent link text
+                    if (!targetElement) {
+                        var parentLink = link.closest('.parent-item-wrapper');
+                        if (parentLink) {
+                            var parentLinkText = parentLink.textContent.trim().toLowerCase();
+                            var allHeadings = document.querySelectorAll('h2, h3, h4');
+                            for (var i = 0; i < allHeadings.length; i++) {
+                                var headingText = allHeadings[i].textContent.trim().toLowerCase();
+                                if (headingText.includes(parentLinkText) || parentLinkText.includes(headingText.split('(')[0].trim())) {
+                                    targetElement = allHeadings[i].closest('.opblock-tag-section') || allHeadings[i].closest('section') || allHeadings[i].parentElement;
+                                    break;
+                                }
+                            }
                         }
                     }
-                } else if (!targetElement) {
-                    // This is an API section link (has data-tag)
-                    var tag = link.getAttribute('data-tag');
+                }
+            }
 
-                    if (tag === 'schemas') {
-                        // Legacy handling for schemas with data-tag (shouldn't exist anymore but keep for safety)
-                        targetElement = document.querySelector('.models-wrapper') ||
-                                    document.querySelector('.models') ||
-                                    document.querySelector('#models') ||
-                                    document.querySelector('section.models') ||
-                                    document.querySelector('[id*="schema"]');
+            return targetElement;
+        }
 
-                        if (!targetElement) {
-                            var headings = document.querySelectorAll('h2, h3, h4, h5');
-                            for (var i = 0; i < headings.length; i++) {
-                                var text = headings[i].textContent.toLowerCase();
-                                if (text.includes('model') || text.includes('schema')) {
-                                    targetElement = headings[i].closest('section') || headings[i].parentElement;
-                                    break;
-                                }
-                            }
-                        }
-                    } else if (tag) {
-                        // Try to find by operations-tag ID
-                        targetElement = document.querySelector('#operations-tag-' + tag);
+        /**
+         * Sync the sidebar's active-link highlight and menu expansion to the current scroll
+         * position. Resolves each sidebar link's target via resolveSidebarLinkTarget(), backed by
+         * sidebarTargetCache so a transient resolution miss on one tick reuses the last known
+         * target instead of dropping that link from scroll tracking for that tick.
+         */
+        function updateActiveSidebarLink() {
+            var sidebarLinks = document.querySelectorAll('.sidebar-link');
+            var scrollPosition = window.scrollY + 55;
 
-                        if (!targetElement) {
-                            // Try to find by data-tag attribute
-                            targetElement = document.querySelector('[data-tag="' + tag + '"]');
-                        }
+            var activeLink = null;
+            var bestMatch = null; // { link, elementTop }
+            var inPresentersSection = false;
 
-                        if (!targetElement) {
-                            // Try to find by opblock-tag-section
-                            var tagSections = document.querySelectorAll('.opblock-tag-section');
-                            for (var i = 0; i < tagSections.length; i++) {
-                                var heading = tagSections[i].querySelector('h3, h4');
-                                if (heading && heading.textContent.toLowerCase().includes(tag.toLowerCase())) {
-                                    targetElement = tagSections[i];
-                                    break;
-                                }
-                            }
-                        }
+            sidebarLinks.forEach(function(link) {
+                var cacheKey = getSidebarLinkCacheKey(link);
+                var targetElement = cacheKey ? sidebarTargetCache[cacheKey] : null;
+                if (targetElement && !targetElement.isConnected) {
+                    targetElement = null;
+                }
 
-                        // Final fallback: search by parent link text
-                        if (!targetElement) {
-                            var parentLink = link.closest('.parent-item-wrapper');
-                            if (parentLink) {
-                                var parentLinkText = parentLink.textContent.trim().toLowerCase();
-                                var allHeadings = document.querySelectorAll('h2, h3, h4');
-                                for (var i = 0; i < allHeadings.length; i++) {
-                                    var headingText = allHeadings[i].textContent.trim().toLowerCase();
-                                    if (headingText.includes(parentLinkText) || parentLinkText.includes(headingText.split('(')[0].trim())) {
-                                        targetElement = allHeadings[i].closest('.opblock-tag-section') || allHeadings[i].closest('section') || allHeadings[i].parentElement;
-                                        break;
-                                    }
-                                }
-                            }
-                        }
+                if (!targetElement) {
+                    targetElement = resolveSidebarLinkTarget(link);
+                    if (targetElement && cacheKey) {
+                        sidebarTargetCache[cacheKey] = targetElement;
                     }
                 }
 
@@ -1783,6 +1885,10 @@
                         menu.classList.add('collapsed');
                     }
                 });
+
+                // No active link while at the top — forget it so scrolling back down to the same
+                // link later re-triggers the sidebar auto-scroll-into-view.
+                lastAutoScrolledLink = null;
             } else if (activeLink) {
                 sidebarLinks.forEach(function(l) {
                     l.classList.remove('active');
@@ -1890,8 +1996,13 @@
                     }
                 }
 
-                // Auto-scroll the sidebar to keep the active link visible
-                if (activeLink) {
+                // Auto-scroll the sidebar to keep the active link visible. Only do this when the
+                // active link actually changed since the last tick — otherwise this re-evaluates
+                // (and can re-issue sidebar.scrollTop writes) on every scroll tick, fighting the
+                // user's own manual scrolling of the sidebar panel.
+                if (activeLink && activeLink !== lastAutoScrolledLink) {
+                    lastAutoScrolledLink = activeLink;
+
                     var sidebar = document.querySelector('.api-sidebar');
                     if (sidebar) {
                         var linkRect = activeLink.getBoundingClientRect();
@@ -1907,17 +2018,23 @@
                             var sidebarHeight = sidebar.clientHeight;
                             var linkHeight = activeLink.offsetHeight;
 
-                            // Center the active link in the sidebar
+                            // Center the active link in the sidebar, clamped to the panel's valid
+                            // scroll range — unclamped this can go negative (or past the max) for
+                            // links near the top/bottom of the list, which scrollTo()/scrollTop
+                            // silently clamp to 0/max, i.e. snapping the whole panel to an edge.
                             var scrollTo = linkOffsetTop - (sidebarHeight / 2) + (linkHeight / 2);
+                            var maxScroll = sidebar.scrollHeight - sidebar.clientHeight;
+                            scrollTo = Math.max(0, Math.min(scrollTo, maxScroll));
 
-                            sidebar.scrollTo({
-                                top: scrollTo,
-                                behavior: 'smooth'
-                            });
-
+                            // Instant, not smooth: a smooth animation kicked off from inside a
+                            // scroll handler can itself generate scroll events that feed back into
+                            // this same logic.
+                            sidebar.scrollTop = scrollTo;
                         }
                     }
                 }
+            } else {
+                lastAutoScrolledLink = null;
             }
         }
     };
@@ -1975,7 +2092,7 @@
                     setTimeout(function() {
                         var targetElement = document.getElementById('doc-section-' + sectionId);
                         if (targetElement) {
-                            targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                            targetElement.scrollIntoView({ behavior: 'auto', block: 'start' });
                         }
                     }, 100);
                 }
@@ -2119,10 +2236,10 @@
         }
 
         if (targetElement) {
-            targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            targetElement.scrollIntoView({ behavior: 'auto', block: 'start' });
         } else {
             // If still not found, scroll to bottom where presenters usually are
-            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'auto' });
         }
     }
 
@@ -2149,18 +2266,28 @@
         var targetElement = null;
         var expandButton = null;
 
+        // Reuse a previous resolution for this schema (shared with updateActiveSidebarLink's
+        // scroll-tracking) if it's still attached to the DOM, instead of re-scanning every time.
+        var schemaCacheKey = 'schema:' + schemaName;
+        var cachedTarget = sidebarTargetCache[schemaCacheKey];
+        if (cachedTarget && cachedTarget.isConnected) {
+            targetElement = cachedTarget;
+        }
+
         // Strategy 1: Look for model-box with matching schema name (Swagger UI 5.x)
-        var modelBoxes = document.querySelectorAll('.model-box');
-        for (var i = 0; i < modelBoxes.length; i++) {
-            var box = modelBoxes[i];
-            // Check the model title
-            var titleElement = box.querySelector('.model-title span, .model-title__text, .model-title');
-            if (titleElement) {
-                var titleText = titleElement.textContent.trim();
-                if (titleText === schemaName) {
-                    targetElement = box;
-                    expandButton = box.querySelector('.model-box-control button, .model-toggle');
-                    break;
+        if (!targetElement) {
+            var modelBoxes = document.querySelectorAll('.model-box');
+            for (var i = 0; i < modelBoxes.length; i++) {
+                var box = modelBoxes[i];
+                // Check the model title
+                var titleElement = box.querySelector('.model-title span, .model-title__text, .model-title');
+                if (titleElement) {
+                    var titleText = titleElement.textContent.trim();
+                    if (titleText === schemaName) {
+                        targetElement = box;
+                        expandButton = box.querySelector('.model-box-control button, .model-toggle');
+                        break;
+                    }
                 }
             }
         }
@@ -2201,6 +2328,7 @@
             }
 
             if (targetElement) {
+                sidebarTargetCache[schemaCacheKey] = targetElement;
                 // Try to expand the model if there's a toggle button
                 // Look for expand button in multiple ways
                 if (!expandButton) {
@@ -2220,7 +2348,7 @@
                     }
                 }
 
-                targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                targetElement.scrollIntoView({ behavior: 'auto', block: 'start' });
 
                 // Highlight the target element briefly
                 var highlightElement = targetElement.querySelector('.model-box') || targetElement;
@@ -2251,7 +2379,7 @@
     function scrollToDocSection(sectionId) {
         var targetElement = document.getElementById('doc-section-' + sectionId);
         if (targetElement) {
-            targetElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            targetElement.scrollIntoView({ behavior: 'auto', block: 'start' });
 
             // Track which menus should be expanded
             var menusToExpand = [];
@@ -3362,6 +3490,81 @@
         guideAfter.insertAdjacentHTML('beforeend', docContentV3After);
     }
 
+    // MutationObserver watching swagger-ui-content for Swagger UI recreating a Models/Schemas
+    // section back in its original position (see relocateSchemasSection() for why that happens).
+    // Created once by moveSchemasToEnd() and reused across any later onComplete re-fires, so a
+    // second call doesn't stack a second observer.
+    var schemasRelocationObserver = null;
+
+    /**
+     * Find the live Models/Schemas section Swagger UI rendered inside its own React-managed root
+     * (swaggerUIDiv). Only ever searches within swaggerUIDiv, so it can't pick up the previously
+     * relocated copy, which lives outside it (in the separate docs-guide-after container).
+     */
+    function findModelsSection(swaggerUIDiv) {
+        // Usually has class "models"
+        var modelsSection = swaggerUIDiv.querySelector('.models');
+        if (modelsSection) return modelsSection;
+
+        // Also try to find it by looking for sections with "Models" or "Schemas" header
+        var allSections = swaggerUIDiv.querySelectorAll('section, .scheme-container');
+        for (var i = 0; i < allSections.length; i++) {
+            var section = allSections[i];
+            var header = section.querySelector('h4, h3, h2, .model-title');
+            if (header && (header.textContent.includes('Models') || header.textContent.includes('Schemas'))) {
+                return section;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Move the Models/Schemas section Swagger UI just rendered inside swaggerWrapper into a
+     * persistent wrapper at the end of the page (after docs-guide-after). Swagger UI can recreate
+     * a fresh Models section back in its original position on a later re-render, since the
+     * relocated copy sits outside its React-tracked subtree — so this is safe to call repeatedly:
+     * it reuses the same wrapper and swaps in whichever Models section is currently live, instead
+     * of leaving a stale copy behind alongside the new one. Re-resolves the Swagger UI root
+     * (swaggerUIDiv) fresh on every call rather than taking it as a cached argument, so this stays
+     * correct even if that root node is ever replaced between calls.
+     */
+    function relocateSchemasSection(swaggerWrapper) {
+        // Find the main swagger-ui wrapper that Swagger UI creates; if there's no .swagger-ui
+        // wrapper, Swagger UI might render directly into swaggerWrapper.
+        var swaggerUIDiv = swaggerWrapper.querySelector('.swagger-ui') || swaggerWrapper;
+
+        var modelsSection = findModelsSection(swaggerUIDiv);
+        if (!modelsSection) return;
+
+        var schemasWrapper = document.getElementById('schemas-relocated-wrapper');
+        if (!schemasWrapper) {
+            // Create a wrapper div with swagger-ui class to maintain styling context
+            schemasWrapper = document.createElement('div');
+            schemasWrapper.id = 'schemas-relocated-wrapper';
+            schemasWrapper.className = 'swagger-ui';
+            schemasWrapper.style.padding = '20px';
+            schemasWrapper.style.maxWidth = '100%';
+
+            // Append the wrapped schemas after docs-guide-after (not swagger-ui-content itself),
+            // so Models still lands at the very end of the page instead of before the "after"
+            // guide content now that guide content lives in a sibling of swagger-ui-content.
+            var guideAfter = document.getElementById('docs-guide-after');
+            (guideAfter || swaggerWrapper).appendChild(schemasWrapper);
+        }
+
+        // Clear out whatever's currently in the wrapper (build-time-baked static content on first
+        // load, or a previous live relocation) before adding the freshly-found section — otherwise
+        // reusing the wrapper just appends alongside that stale content instead of replacing it.
+        while (schemasWrapper.firstChild) {
+            schemasWrapper.removeChild(schemasWrapper.firstChild);
+        }
+
+        // Moving modelsSection here both relocates it and, since it's the same live node, removes
+        // it from swaggerUIDiv — that removal is itself a mutation, so callers observing
+        // swaggerWrapper must disconnect first (see moveSchemasToEnd()) to avoid re-triggering.
+        schemasWrapper.appendChild(modelsSection);
+    }
+
     // Function to move Schemas/Models section after Custom Fields documentation
     function moveSchemasToEnd() {
         // Wait a bit for Swagger UI to fully render
@@ -3373,45 +3576,26 @@
             var swaggerWrapper = document.getElementById('swagger-ui-content');
             if (!swaggerWrapper) return;
 
-            // Find the main swagger-ui wrapper that Swagger UI creates
-            var swaggerUIDiv = swaggerWrapper.querySelector('.swagger-ui');
-            if (!swaggerUIDiv) {
-                // If there's no .swagger-ui wrapper, Swagger UI might render directly
-                swaggerUIDiv = swaggerWrapper;
-            }
+            relocateSchemasSection(swaggerWrapper);
 
-            // Find the models/schemas section (usually has class "models")
-            var modelsSection = swaggerUIDiv.querySelector('.models');
-
-            // Also try to find it by looking for sections with "Models" or "Schemas" header
-            if (!modelsSection) {
-                var allSections = swaggerUIDiv.querySelectorAll('section, .scheme-container');
-                for (var i = 0; i < allSections.length; i++) {
-                    var section = allSections[i];
-                    var header = section.querySelector('h4, h3, h2, .model-title');
-                    if (header && (header.textContent.includes('Models') || header.textContent.includes('Schemas'))) {
-                        modelsSection = section;
-                        break;
-                    }
-                }
-            }
-
-            // If we found the models section, create a new swagger-ui wrapper for it
-            if (modelsSection) {
-                // Create a wrapper div with swagger-ui class to maintain styling context
-                var schemasWrapper = document.createElement('div');
-                schemasWrapper.className = 'swagger-ui';
-                schemasWrapper.style.padding = '20px';
-                schemasWrapper.style.maxWidth = '100%';
-
-                // Move the models section into the new wrapper
-                schemasWrapper.appendChild(modelsSection);
-
-                // Append the wrapped schemas after docs-guide-after (not swagger-ui-content itself),
-                // so Models still lands at the very end of the page instead of before the "after"
-                // guide content now that guide content lives in a sibling of swagger-ui-content.
-                var guideAfter = document.getElementById('docs-guide-after');
-                (guideAfter || swaggerWrapper).appendChild(schemasWrapper);
+            // Swagger UI can later recreate a fresh Models/Schemas section back inside its own
+            // root on some re-render (expanding an operation, the search filter, an auth change,
+            // ...) since the relocated copy sits outside its React-tracked subtree. Watch for that
+            // and re-relocate instead of leaving two copies visible. Only do this when
+            // docs-guide-after exists (the normal case) — when it's missing, relocateSchemasSection
+            // falls back to relocating inside swaggerWrapper itself, which has no stable "guide
+            // content" container to land in, so skip self-healing in that degraded case.
+            if (!schemasRelocationObserver && document.getElementById('docs-guide-after')) {
+                schemasRelocationObserver = new MutationObserver(function() {
+                    // Disconnect before mutating: relocateSchemasSection() removes the Models
+                    // section from Swagger UI's root, which is itself a childList mutation inside
+                    // the observed subtree — without this, that removal would immediately
+                    // re-trigger this same callback.
+                    schemasRelocationObserver.disconnect();
+                    relocateSchemasSection(swaggerWrapper);
+                    schemasRelocationObserver.observe(swaggerWrapper, { childList: true, subtree: true });
+                });
+                schemasRelocationObserver.observe(swaggerWrapper, { childList: true, subtree: true });
             }
         }, 500); // Wait 500ms for Swagger UI to render
     }
