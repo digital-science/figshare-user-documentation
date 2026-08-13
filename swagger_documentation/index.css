@@ -33,6 +33,11 @@ body {
     top: 0;
     height: 100vh;
     overflow-y: auto;
+    /* Stop scroll chaining: without this, once the sidebar hits its own scroll boundary, further
+       wheel/touch input falls through and scrolls the main content instead — which then triggers
+       the scroll-sync highlight update and snaps the sidebar to the newly active link, fighting
+       the scroll the user just did. */
+    overscroll-behavior-y: contain;
 }
 
 #custom-auth-ui {
