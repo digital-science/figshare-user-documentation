@@ -710,6 +710,10 @@
                 // Initialize sidebar navigation
                 initializeSidebarNavigation();
 
+                // If the page loaded with a deep-link hash (e.g. a shared/refreshed operation
+                // URL), scroll to it now -- initializeSidebarNavigation() only does this on click.
+                scrollToInitialHashTarget();
+
                 // Hide the v2 guide documentation when the active version is not v2. Resolve the
                 // version the same way the initial spec load does (?version= override, else the
                 // version baked into this bundle at build time, else default to 2.0).
@@ -1605,6 +1609,44 @@
         }
 
         /**
+         * On initial page load (or refresh) with a deep-link hash already in the URL, scroll to
+         * the matching operation the same way clicking its sidebar link would --
+         * initializeSidebarNavigation() only handles this on click, not on load. Normalizes both
+         * hash formats seen in the wild: the sidebar's own `#operations-{tag}-{operationId}` (no
+         * leading slash) and Swagger UI's native per-operation permalink, which prefixes the id
+         * with an extra `/`. Scoped to operation targets only, matching what the click handler
+         * above already supports.
+         */
+        function scrollToInitialHashTarget() {
+            var rawHash = window.location.hash.replace(/^#\/?/, '');
+            var normalizedId = rawHash;
+
+            if (normalizedId.indexOf('operations-') !== 0) {
+                // Swagger UI's native deep-linking permalink form: #/{tag}/{operationId}.
+                // Reconstruct the same id the sidebar builds for its own operation links
+                // (see buildDynamicSidebarMenu() above) so both conventions resolve alike.
+                var pathMatch = rawHash.match(/^([^/]+)\/([^/]+)$/);
+                if (!pathMatch) {
+                    return;
+                }
+                normalizedId = 'operations-' + pathMatch[1] + '-' + pathMatch[2];
+            }
+
+            var targetElement = document.getElementById(normalizedId);
+            if (!targetElement) {
+                return;
+            }
+
+            // Small delay, mirroring the sidebar click handler's own operation-scroll timing
+            // above, to let still-settling onComplete work finish laying out.
+            setTimeout(function() {
+                targetElement.scrollIntoView({ behavior: 'auto', block: 'start' });
+                // The jump above is instant, so sync the sidebar right away instead of waiting.
+                updateActiveSidebarLink();
+            }, 100);
+        }
+
+        /**
          * Extract the schema name from a schema link's onclick="scrollToSchema('Name')" attribute,
          * unescaping the `\'` escaping buildDynamicSidebarMenu() applies for names containing a
          * quote. Returns null if onclickAttr isn't a scrollToSchema(...) call. Shared by
@@ -1612,7 +1654,7 @@
          * schema name (and therefore the same cache key) from a given link.
          */
         function parseScrollToSchemaName(onclickAttr) {
-            var schemaMatch = onclickAttr && onclickAttr.match(/scrollToSchema\('([^']*(?:\\.[^']*)*)'\)/);
+            var schemaMatch = onclickAttr && onclickAttr.match(/scrollToSchema\('((?:[^'\\]|\\.)*)'\)/);
             return schemaMatch ? schemaMatch[1].replace(/\\'/g, "'") : null;
         }
 
