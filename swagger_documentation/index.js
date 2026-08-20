@@ -719,6 +719,9 @@
                     : (window.FIGSHARE_DOC_VERSION || '2.0');
                 applyVersionDocVisibility(initialVersion);
 
+                // Scroll to a deep-linked operation ourselves -- see scrollToDeepLinkedOperation().
+                scrollToDeepLinkedOperation();
+
                 // Signal the build-time static-bundle generator that rendering is done. Models
                 // now render in their natural Swagger UI position (see signalDocsReady()).
                 signalDocsReady();
@@ -1471,6 +1474,51 @@
 
         // Expose so version-manager.js can re-apply visibility on version change.
         window.applyVersionDocVisibility = applyVersionDocVisibility;
+
+        /**
+         * On a fresh load/refresh with a deep-linked operation hash, scroll to it ourselves.
+         *
+         * Swagger UI's own deepLinking scroll (see the SwaggerUIBundle config) fires once during
+         * its initial mount -- before injectDocumentationContent() above inserts a large
+         * guide-text block ahead of #swagger-ui-content in the DOM, shifting everything inside it
+         * (including whatever operation deep-linking just scrolled to) further down the page.
+         * Swagger UI doesn't re-scroll after that shift, nor on later hashchange events, so this
+         * has to happen again here.
+         */
+        function scrollToDeepLinkedOperation() {
+            // Read the hash captured before swagger-ui-bundle.js loaded (see the inline script at
+            // the top of index.html's <head>), not the live window.location.hash: Swagger UI's
+            // deepLinking rewrites any hash it doesn't recognize (e.g. adds a leading "/" to our
+            // own custom format below), so by now the original value may already be gone.
+            var hash = window.__figshareInitialHash || window.location.hash;
+
+            // The custom sidebar's own operation links use "#operations-{tag}-{operationId}" (see
+            // buildDynamicSidebarMenu() / the click handler in initializeSidebarNavigation()) -- a
+            // different format from Swagger UI's native "#/{tag}/{operationId}" deepLinking hash,
+            // and one deepLinking doesn't recognize at all. Handle it the same direct way the
+            // click handler does before falling back to Swagger UI's own result below.
+            if (hash.indexOf('#operations-') === 0) {
+                var linkedElement = document.getElementById(hash.substring(1));
+                if (linkedElement) {
+                    setTimeout(function() {
+                        linkedElement.scrollIntoView({ behavior: 'auto', block: 'start' });
+                    }, 100);
+                    return;
+                }
+            }
+
+            // Otherwise, rely on Swagger UI having already resolved its own native deep-link
+            // hash: with docExpansion: "list", every operation starts collapsed except whichever
+            // one deepLinking just expanded -- so this is a reliable, hash-format-agnostic
+            // signal, without needing to reimplement Swagger UI's own tag/operationId slugging
+            // here.
+            var openOperation = document.querySelector('#swagger-ui-content .opblock.is-open');
+            if (openOperation) {
+                setTimeout(function() {
+                    openOperation.scrollIntoView({ behavior: 'auto', block: 'start' });
+                }, 100);
+            }
+        }
 
 
         // Function to initialize sidebar navigation

@@ -2,6 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <script>
+        // Captured as early as possible, before swagger-ui-bundle.js loads -- its deepLinking
+        // feature rewrites any hash it doesn't recognize (e.g. adds a leading "/" to our own
+        // custom "#operations-{tag}-{operationId}" sidebar-link format), so by the time our own
+        // code runs later the original value is already gone unless it's saved here first. See
+        // scrollToDeepLinkedOperation() in index.js.
+        window.__figshareInitialHash = window.location.hash;
+    </script>
     <title>Figshare API v2</title>
     <meta name="description" content="Figshare API 3.0.1 - OpenAPI Specification 3.0 Documentation">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
