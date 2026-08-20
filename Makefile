@@ -7,7 +7,6 @@ CIMAGE_LATEST_TAG:=figshare/user_documentation:latest
 
 install:
 	cd swagger_documentation && pip install -r requirements.txt
-	python3 -m playwright install --with-deps chromium
 .PHONY: install
 
 ci-tests:
