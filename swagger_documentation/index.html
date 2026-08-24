@@ -381,6 +381,36 @@
                 </li>
                 <li data-guide-version="3">
                     <div class="parent-item-wrapper">
+                        <a href="javascript:void(0)" onclick="toggleSubmenuAndScroll(event, 'v3-oai-menu', 'v3-oai')"
+                           class="sidebar-link parent-link">OAI PMH</a>
+                    </div>
+                    <ul id="v3-oai-menu" class="collapsed">
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-oai-pmh')"
+                               class="sidebar-link child-link">OAI-PMH</a></li>
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-oai-baseurl')"
+                               class="sidebar-link child-link">Base URL</a></li>
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-oai-itemarticle')"
+                               class="sidebar-link child-link">Item equals Article</a></li>
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-oai-metadata')"
+                               class="sidebar-link child-link">Metadata formats</a></li>
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-oai-datestamp')"
+                               class="sidebar-link child-link">Datestamps</a></li>
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-oai-sets')"
+                               class="sidebar-link child-link">Sets</a></li>
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-oai-update')"
+                               class="sidebar-link child-link">Update schedule</a></li>
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-oai-pagination')"
+                               class="sidebar-link child-link">Pagination and Resumption Token Expiration</a></li>
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-oai-ratelimit')"
+                               class="sidebar-link child-link">Rate limit</a></li>
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-oai-futuredev')"
+                               class="sidebar-link child-link">Future development</a></li>
+                        <li><a href="javascript:void(0)" onclick="scrollToDocSection('v3-oai-examples')"
+                               class="sidebar-link child-link">Some examples</a></li>
+                    </ul>
+                </li>
+                <li data-guide-version="3">
+                    <div class="parent-item-wrapper">
                         <a href="javascript:void(0)" onclick="toggleSubmenuAndScroll(event, 'v3-hrfeed-menu', 'v3-hrfeed')"
                            class="sidebar-link parent-link">HR Feed</a>
                     </div>
@@ -2512,6 +2542,288 @@ if __name__ == "__main__":
         <h4>Search string: :title: law OR :tag: democrat AND :search term: respect</h4>
         <p>This search will return all items that contain law in title or the tag democrat but also contain the word
             respect in any of the metadata fields.</p>
+    </div>
+
+    <div id="description_v3_oai_baseurl">
+        <p>fig<strong>share</strong>'s OAI-PMH v2.0 protocol implementation has the following <strong>baseURL</strong>:
+            <a href="https://api.figshare.com/v3/oai">https://api.figshare.com/v3/oai</a></p>
+    </div>
+    <div id="description_v3_oai_datestamp">
+        <p>Every record has a datestamp which is the published datetime of that article.
+            The earliest datestamp is given in the <code>&lt;earliestDatestamp&gt;</code> element of the
+            <a href="https://api.figshare.com/v3/oai?verb=Identify">Identify</a> response.</p>
+    </div>
+    <div id="description_v3_oai_futuredev">
+        <p>Please <a href="https://figshare.com/contact">let us know</a> that you are harvesting us.
+            Your input will drive the future development of the OAI-PMH protocol at figshare.</p>
+    </div>
+    <div id="description_v3_oai_itemarticle">
+        <p>An Item in the OAI-PMH interface is the most recent version of an article.</p>
+    </div>
+    <div id="description_v3_oai_metadata">
+        <p>Currently, the supported formats are:
+            <strong>Dublin Core</strong> (<em>oai_dc</em>),
+            <strong>Datacite</strong> (<em>oai_datacite</em>),
+            <strong>RDF</strong> (<em>rdf</em>),
+            <strong>CERIF XML</strong> (<em>cerif</em>),
+            <strong>Qualified Dublin Core</strong> (<em>qdc</em>) (hasPart support),
+            <strong>Metadata Encoding and Transmission Standard</strong> (<em>mets</em>) and <strong>UKETD_DC</strong> (<em>uketd_dc</em>).
+        </p>
+    </div>
+    <div id="description_v3_oai_pagination">
+        <p>Results for <strong>ListSets</strong>, <strong>ListIdentifiers</strong>, <strong>ListRecords</strong> are
+            paginated.
+            To request the next page, use the resumptionToken value provided for the
+            current page. You can read more
+            <a href="https://www.openarchives.org/OAI/openarchivesprotocol.html#FlowControl">here</a>,
+            but your harvesting software system should be able to use resumption tokens with
+            no problem.</p>
+        <p>One particularity on fig<strong>share</strong> OAI-PMH is the expiration datetime (UTC) for
+            resumption tokens. Thus, a token expires after 60 minutes.</p>
+    </div>
+    <div id="description_v3_oai_pmh">
+        <p>fig<strong>share</strong> supports the Open Archives Initiative (OAI) and implements the
+            <strong>OAI-PMH</strong> service to provide access to public articles metadata.
+            For more detailed information, please refer to the
+            <a href="https://www.openarchives.org/OAI/openarchivesprotocol.html">protocol specification</a>.</p>
+    </div>
+    <div id="description_v3_oai_ratelimit">
+        <p>We do not have automatic rate limiting in place for API requests. However, we do carry out monitoring to
+            detect and mitigate abuse and prevent the platform's resources from being overused. We recommend that
+            clients use the API responsibly and do not make more than one request per second. We reserve the right to
+            throttle or block requests if we detect abuse.</p>
+    </div>
+    <div id="description_v3_oai_sets">
+        <p>You can get a list of all the sets supported with the
+            <a href="https://api.figshare.com/v3/oai?verb=ListSets">ListSets</a> verb.</p>
+        <p>At this moment selectieve harvesting can be performed using sets representing:</p>
+        <ul>
+            <li>an <a
+                    href="https://api.figshare.com/v3/oai?verb=ListIdentifiers&amp;metadataPrefix=oai_dc&amp;set=item_type_7">item
+                type</a></li>
+        </ul>
+        <pre><code>    ...
+    &lt;header&gt;
+      &lt;identifier&gt;oai:figshare.com:article/2001969&lt;/identifier&gt;
+      &lt;datestamp&gt;2015-08-17T14:09:33Z&lt;/datestamp&gt;
+      &lt;setSpec&gt;category_184&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_185&lt;/setSpec&gt;
+      &lt;setSpec&gt;portal_15&lt;/setSpec&gt;
+      &lt;setSpec&gt;item_type_7&lt;/setSpec&gt;
+    &lt;/header&gt;
+    ...
+</code></pre>
+
+        <ul>
+            <li>a <a
+                    href="https://api.figshare.com/v3/oai?verb=ListIdentifiers&amp;metadataPrefix=oai_dc&amp;set=portal_63">portal/institution</a>
+            </li>
+        </ul>
+        <pre><code>    ...
+    &lt;header&gt;
+      &lt;identifier&gt;oai:figshare.com:article/2009490&lt;/identifier&gt;
+      &lt;datestamp&gt;2015-12-16T14:30:27Z&lt;/datestamp&gt;
+      &lt;setSpec&gt;category_1&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_4&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_12&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_14&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_19&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_21&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_128&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_133&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_272&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_873&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_931&lt;/setSpec&gt;
+      &lt;setSpec&gt;portal_63&lt;/setSpec&gt;
+      &lt;setSpec&gt;item_type_6&lt;/setSpec&gt;
+    &lt;/header&gt;
+    ...
+</code></pre>
+
+        <ul>
+            <li>a <a
+                    href="https://api.figshare.com/v3/oai?verb=ListIdentifiers&amp;metadataPrefix=oai_dc&amp;set=category_150">category</a>:
+            </li>
+        </ul>
+        <pre><code>    ...
+    &lt;header&gt;
+      &lt;identifier&gt;oai:figshare.com:article/2058654&lt;/identifier&gt;
+      &lt;datestamp&gt;2015-12-27T23:40:01Z&lt;/datestamp&gt;
+      &lt;setSpec&gt;category_54&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_55&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_56&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_57&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_58&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_59&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_145&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_146&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_147&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_148&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_149&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_150&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_492&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_493&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_494&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_496&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_497&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_498&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_499&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_500&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_501&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_502&lt;/setSpec&gt;
+      &lt;setSpec&gt;item_type_6&lt;/setSpec&gt;
+    &lt;/header&gt;
+    ...
+</code></pre>
+
+        <ul>
+            <li>or a <a
+                    href="https://api.figshare.com/v3/oai?verb=ListIdentifiers&amp;metadataPrefix=oai_dc&amp;set=month_year_10_2016">month_year</a>:
+            </li>
+        </ul>
+        <pre><code>    ...
+    &lt;header&gt;
+      &lt;identifier&gt;oai:figshare.com:article/2004335&lt;/identifier&gt;
+      &lt;datestamp&gt;2016-10-31T11:14:47Z&lt;/datestamp&gt;
+      &lt;setSpec&gt;category_215&lt;/setSpec&gt;
+      &lt;setSpec&gt;category_239&lt;/setSpec&gt;
+      &lt;setSpec&gt;portal_15&lt;/setSpec&gt;
+      &lt;setSpec&gt;item_type_11&lt;/setSpec&gt;
+    &lt;/header&gt;
+    ...
+</code></pre>
+
+    </div>
+    <div id="description_v3_oai_someexamples">
+        <p><strong>Identify</strong></p>
+        <pre><code>curl https://api.figshare.com/v3/oai?verb=Identify
+
+&lt;?xml version='1.0' encoding='utf-8'?&gt;
+&lt;?xml-stylesheet type="text/xsl" href="/v3/static/oai2.xsl"?&gt;
+&lt;OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd"&gt;
+    &lt;responseDate&gt;2016-04-29T11:58:28Z&lt;/responseDate&gt;
+    &lt;request verb="Identify"&gt;https://api.figshare.com/v3/oai&lt;/request&gt;
+    &lt;Identify&gt;
+        &lt;repositoryName&gt;figshare&lt;/repositoryName&gt;
+        &lt;baseURL&gt;https://api.figshare.com/v3/oai&lt;/baseURL&gt;
+        &lt;protocolVersion&gt;2.0&lt;/protocolVersion&gt;
+        &lt;adminEmail&gt;info@figshare.com&lt;/adminEmail&gt;
+        &lt;earliestDatestamp&gt;2010-01-08T01:24:54Z&lt;/earliestDatestamp&gt;
+        &lt;deletedRecord&gt;transient&lt;/deletedRecord&gt;
+        &lt;granularity&gt;YYYY-MM-DDThh:mm:ssZ&lt;/granularity&gt;
+    &lt;/Identify&gt;
+&lt;/OAI-PMH&gt;
+</code></pre>
+        <hr/>
+        <p><strong>ListSets</strong></p>
+        <pre><code>curl https://api.figshare.com/v3/oai?verb=ListSets
+
+&lt;?xml version='1.0' encoding='utf-8'?&gt;
+&lt;?xml-stylesheet type="text/xsl" href="/v3/static/oai2.xsl"?&gt;
+&lt;OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd"&gt;
+     &lt;responseDate&gt;2016-04-29T12:00:46Z&lt;/responseDate&gt;
+     &lt;request verb="ListSets"&gt;https://api.figshare.com/v3/oai&lt;/request&gt;
+     &lt;ListSets&gt;
+         &lt;set&gt;
+             &lt;setSpec&gt;portal_147&lt;/setSpec&gt;
+             &lt;setName&gt;Karger Publishers&lt;/setName&gt;
+         &lt;/set&gt;
+         &lt;set&gt;
+             &lt;setSpec&gt;portal_144&lt;/setSpec&gt;
+             &lt;setName&gt;Digital Science&lt;/setName&gt;
+         &lt;/set&gt;
+         &lt;!-- ... --&gt;
+         &lt;set&gt;
+             &lt;setSpec&gt;portal_102&lt;/setSpec&gt;
+             &lt;setName&gt;Wiley&lt;/setName&gt;
+         &lt;/set&gt;
+         &lt;resumptionToken expirationDate="2016-04-29T13:00:46Z"&gt;dmVyYj1MaXN0U2V0cyZwYWdlPTI=&lt;/resumptionToken&gt;
+    &lt;/ListSets&gt;
+&lt;/OAI-PMH&gt;
+</code></pre>
+        <hr/>
+        <p><strong>ListIdentifiers</strong></p>
+        <p>Selective harvesting: using set <code>category_539</code> (Chemical Engineering Design).</p>
+        <pre><code>curl "https://api.figshare.com/v3/oai?verb=ListIdentifiers&amp;metadataPrefix=oai_dc&amp;set=category_539"
+
+&lt;?xml version='1.0' encoding='utf-8'?&gt;
+&lt;?xml-stylesheet type="text/xsl" href="/v3/static/oai2.xsl"?&gt;
+&lt;OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd"&gt;
+&lt;responseDate&gt;2016-04-29T12:11:18Z&lt;/responseDate&gt;
+&lt;request metadataPrefix="oai_dc" set="category_539" verb="ListIdentifiers"&gt;https://api.figshare.com/v3/oai&lt;/request&gt;
+    &lt;ListIdentifiers&gt;
+        &lt;header&gt;
+            &lt;identifier&gt;oai:figshare.com:article/2060079&lt;/identifier&gt;
+            &lt;datestamp&gt;2016-01-04T08:32:32Z&lt;/datestamp&gt;
+            &lt;setSpec&gt;category_539&lt;/setSpec&gt;
+            &lt;setSpec&gt;category_614&lt;/setSpec&gt;
+            &lt;setSpec&gt;category_1094&lt;/setSpec&gt;
+            &lt;setSpec&gt;category_1100&lt;/setSpec&gt;
+            &lt;setSpec&gt;item_type_6&lt;/setSpec&gt;
+        &lt;/header&gt;
+    &lt;/ListIdentifiers&gt;
+&lt;/OAI-PMH&gt;
+</code></pre>
+        <hr/>
+        <p><strong>ListRecords</strong></p>
+        <p>Selective harvesting: only articles published <code>until</code> 2010-08-18T08:33:01Z.</p>
+        <pre><code>curl "https://api.figshare.com/v3/oai?verb=ListRecords&amp;metadataPrefix=oai_dc&amp;until=2010-08-18T08:33:01Z"
+
+&lt;?xml version='1.0' encoding='utf-8'?&gt;
+&lt;?xml-stylesheet type="text/xsl" href="/v3/static/oai2.xsl"?&gt;
+&lt;OAI-PMH xmlns="http://www.openarchives.org/OAI/2.0/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/ http://www.openarchives.org/OAI/2.0/OAI-PMH.xsd"&gt;
+  &lt;responseDate&gt;2016-09-29T08:03:12Z&lt;/responseDate&gt;
+  &lt;request metadataPrefix="oai_dc" until="2010-08-18T08:33:01Z" verb="ListRecords"&gt;https://api.figshare.com/v3/oai&lt;/request&gt;
+  &lt;ListRecords&gt;
+    &lt;record&gt;
+      &lt;header&gt;
+        &lt;identifier&gt;oai:figshare.com:article/145088&lt;/identifier&gt;
+        &lt;datestamp&gt;2010-01-08T01:24:54Z&lt;/datestamp&gt;
+        &lt;setSpec&gt;category_4&lt;/setSpec&gt;
+        &lt;setSpec&gt;category_12&lt;/setSpec&gt;
+        &lt;setSpec&gt;portal_5&lt;/setSpec&gt;
+        &lt;setSpec&gt;item_type_3&lt;/setSpec&gt;
+      &lt;/header&gt;
+      &lt;metadata&gt;
+        &lt;oai_dc:dc xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"  xmlns:dc="http://purl.org/dc/terms/" xmlns:oai_dc="http://www.openarchives.org/OAI/2.0/oai_dc/" xsi:schemaLocation="http://www.openarchives.org/OAI/2.0/oai_dc/ http://www.openarchives.org/OAI/2.0/oai_dc.xsd"&gt;
+            &lt;dc:title&gt;A Modular BAM Complex in the Outer Membrane of the α-Proteobacterium &amp;lt;em&amp;gt;Caulobacter crescentus&amp;lt;/em&amp;gt;&lt;/dc:title&gt;
+            &lt;dc:creator&gt;Anthony W. Purcell (105036)&lt;/dc:creator&gt;
+            &lt;dc:creator&gt;Trevor Lithgow (105055)&lt;/dc:creator&gt;
+            &lt;dc:creator&gt;Kipros Gabriel (189246)&lt;/dc:creator&gt;
+            &lt;dc:creator&gt;Nicholas Noinaj (216256)&lt;/dc:creator&gt;
+            &lt;dc:creator&gt;Sebastian Poggio (251019)&lt;/dc:creator&gt;
+            &lt;dc:creator&gt;Khatira Anwari (254980)&lt;/dc:creator&gt;
+            &lt;dc:creator&gt;Andrew Perry (254989)&lt;/dc:creator&gt;
+            &lt;dc:creator&gt;Xenia Gatsos (254994)&lt;/dc:creator&gt;
+            &lt;dc:creator&gt;Sri Harsha Ramarathinam (255001)&lt;/dc:creator&gt;
+            &lt;dc:creator&gt;Nicholas A. Williamson (255006)&lt;/dc:creator&gt;
+            &lt;dc:creator&gt;Susan Buchanan (255012)&lt;/dc:creator&gt;
+            &lt;dc:creator&gt;Christine Jacobs-Wagner (255016)&lt;/dc:creator&gt;
+            &lt;dc:subject&gt;Biochemistry&lt;/dc:subject&gt;
+            &lt;dc:subject&gt;Cell Biology&lt;/dc:subject&gt;
+            &lt;dc:subject&gt;modular&lt;/dc:subject&gt;
+            &lt;dc:subject&gt;bam&lt;/dc:subject&gt;
+            &lt;dc:subject&gt;membrane&lt;/dc:subject&gt;
+            &lt;dc:description&gt;&amp;lt;div&amp;gt;&amp;lt;p&amp;gt;Mitochondria are organelles derived from an intracellular α-proteobacterium. The biogenesis of mitochondria relies on the assembly of β-barrel proteins into the mitochondrial outer membrane, a process inherited from the bacterial ancestor. &amp;lt;em&amp;gt;Caulobacter crescentus&amp;lt;/em&amp;gt; is an α-proteobacterium, and the BAM (β-barrel assembly machinery) complex was purified and characterized from this model organism. Like the mitochondrial sorting and assembly machinery complex, we find the BAM complex to be modular in nature. A ∼150 kDa core BAM complex containing BamA, BamB, BamD, and BamE associates with additional modules in the outer membrane. One of these modules, Pal, is a lipoprotein that provides a means for anchorage to the peptidoglycan layer of the cell wall. We suggest the modular design of the BAM complex facilitates access to substrates from the protein translocase in the inner membrane.&amp;lt;/p&amp;gt;&amp;lt;/div&amp;gt;&lt;/dc:description&gt;
+            &lt;dc:date&gt;2010-01-08T01:24:48Z&lt;/dc:date&gt;
+            &lt;dc:type&gt;Dataset&lt;/dc:type&gt;
+            &lt;dc:identifier&gt;10.1371/journal.pone.0008619&lt;/dc:identifier&gt;
+            &lt;dc:relation&gt;https://figshare.com/articles/A_Modular_BAM_Complex_in_the_Outer_Membrane_of_the_Proteobacterium_em_Caulobacter_crescentus_em_/145088&lt;/dc:relation&gt;
+            &lt;dc:rights&gt;CC BY&lt;/dc:rights&gt;
+       &lt;/oai_dc:dc&gt;
+      &lt;/metadata&gt;
+     &lt;/record&gt;
+  &lt;/ListRecords&gt;
+&lt;/OAI-PMH&gt;
+</code></pre>
+    </div>
+    <div id="description_v3_oai_update_schedule">
+        <p>Usually, metadata for a published article becomes available in a few moments
+            after its publication on fig<strong>share</strong>.</p>
     </div>
 
     <div id="description_v3_hrfeed_endpoint">
