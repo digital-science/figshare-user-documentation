@@ -1430,8 +1430,8 @@
          * Show or hide the hardcoded guide documentation based on the active API version.
          * Each version owns its guide pages: v2 has Figshare Documentation, Upload, Search, Stats,
          * OAI PMH, HR Feed and Custom Fields; v3 has the item-type based subset (Figshare
-         * Documentation, Upload, Search, HR Feed, Custom Fields). Guide containers and sidebar
-         * <li>s are tagged with the version they belong to and shown only on that version.
+         * Documentation, Upload, Search, OAI PMH, HR Feed, Custom Fields). Guide containers and
+         * sidebar <li>s are tagged with the version they belong to and shown only on that version.
          */
         function applyVersionDocVisibility(version) {
             var major = String(version || '').split('.')[0];
@@ -2577,6 +2577,20 @@
         const v3SearchAdvancedDiv = document.getElementById('description_v3_search_advanced');
         const v3SearchCombinedDiv = document.getElementById('description_v3_search_combined');
         const v3SearchComplexDiv = document.getElementById('description_v3_search_complex');
+
+        // OAI PMH content divs (v3)
+        const v3OaiPmhDiv = document.getElementById('description_v3_oai_pmh');
+        const v3OaiBaseurlDiv = document.getElementById('description_v3_oai_baseurl');
+        const v3OaiItemarticleDiv = document.getElementById('description_v3_oai_itemarticle');
+        const v3OaiMetadataDiv = document.getElementById('description_v3_oai_metadata');
+        const v3OaiDatestampDiv = document.getElementById('description_v3_oai_datestamp');
+        const v3OaiSetsDiv = document.getElementById('description_v3_oai_sets');
+        const v3OaiUpdateScheduleDiv = document.getElementById('description_v3_oai_update_schedule');
+        const v3OaiPaginationDiv = document.getElementById('description_v3_oai_pagination');
+        const v3OaiRatelimitDiv = document.getElementById('description_v3_oai_ratelimit');
+        const v3OaiFuturedevDiv = document.getElementById('description_v3_oai_futuredev');
+        const v3OaiSomeexamplesDiv = document.getElementById('description_v3_oai_someexamples');
+
         const v3HrfeedEndpointDiv = document.getElementById('description_v3_hrfeed_endpoint');
         const v3HrfeedExamplesPythonDiv = document.getElementById('description_v3_hrfeed_examples_python');
         const v3HrfeedExamplesJavaDiv = document.getElementById('description_v3_hrfeed_examples_java');
@@ -3312,7 +3326,7 @@
         docContentV3 += '</div></div>';
         docContentV3 += '</div>'; // Close documentation-sections-v3
 
-        // Part 2: After API endpoints (upload, search, hrfeed, custom-fields)
+        // Part 2: After API endpoints (upload, search, oai, hrfeed, custom-fields)
         let docContentV3After = '<div id="documentation-sections-v3-after" style="padding: 20px; max-width: 100%; display: none;">';
 
         // Upload Files section
@@ -3407,6 +3421,78 @@
             docContentV3After += '<div id="doc-section-v3-search-complex" style="margin-bottom: 30px;">';
             docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">Complex searches</h3>';
             docContentV3After += v3SearchComplexDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        docContentV3After += '</div></div>';
+
+        // OAI PMH section
+        docContentV3After += '<div id="doc-section-v3-oai" class="guide-section" style="margin-bottom: 40px;">';
+        docContentV3After += '<h2 class="guide-section-header" style="font-size: 24px; border-bottom: 2px solid #434f59; padding-bottom: 10px; margin-bottom: 20px;">OAI PMH</h2>';
+        docContentV3After += '<div class="markdown-content">';
+        if (v3OaiPmhDiv) {
+            docContentV3After += '<div id="doc-section-v3-oai-pmh" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">OAI-PMH</h3>';
+            docContentV3After += v3OaiPmhDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        if (v3OaiBaseurlDiv) {
+            docContentV3After += '<div id="doc-section-v3-oai-baseurl" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">Base URL</h3>';
+            docContentV3After += v3OaiBaseurlDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        if (v3OaiItemarticleDiv) {
+            docContentV3After += '<div id="doc-section-v3-oai-itemarticle" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">Item equals Article</h3>';
+            docContentV3After += v3OaiItemarticleDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        if (v3OaiMetadataDiv) {
+            docContentV3After += '<div id="doc-section-v3-oai-metadata" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">Metadata formats</h3>';
+            docContentV3After += v3OaiMetadataDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        if (v3OaiDatestampDiv) {
+            docContentV3After += '<div id="doc-section-v3-oai-datestamp" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">Datestamps</h3>';
+            docContentV3After += v3OaiDatestampDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        if (v3OaiSetsDiv) {
+            docContentV3After += '<div id="doc-section-v3-oai-sets" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">Sets</h3>';
+            docContentV3After += v3OaiSetsDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        if (v3OaiUpdateScheduleDiv) {
+            docContentV3After += '<div id="doc-section-v3-oai-update" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">Update schedule</h3>';
+            docContentV3After += v3OaiUpdateScheduleDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        if (v3OaiPaginationDiv) {
+            docContentV3After += '<div id="doc-section-v3-oai-pagination" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">Pagination and Resumption Token Expiration</h3>';
+            docContentV3After += v3OaiPaginationDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        if (v3OaiRatelimitDiv) {
+            docContentV3After += '<div id="doc-section-v3-oai-ratelimit" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">Rate limit</h3>';
+            docContentV3After += v3OaiRatelimitDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        if (v3OaiFuturedevDiv) {
+            docContentV3After += '<div id="doc-section-v3-oai-futuredev" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">Future development</h3>';
+            docContentV3After += v3OaiFuturedevDiv.innerHTML;
+            docContentV3After += '</div>';
+        }
+        if (v3OaiSomeexamplesDiv) {
+            docContentV3After += '<div id="doc-section-v3-oai-examples" style="margin-bottom: 30px;">';
+            docContentV3After += '<h3 style="font-size: 18px; margin-bottom: 15px;">Some examples</h3>';
+            docContentV3After += v3OaiSomeexamplesDiv.innerHTML;
             docContentV3After += '</div>';
         }
         docContentV3After += '</div></div>';
