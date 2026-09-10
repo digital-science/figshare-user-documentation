@@ -1,8 +1,10 @@
 DOCKER_EXE:=docker
 DOCKER_BUILD_EXTRA_PARAMS:=
 DOCKER_BUILD_PARAMS:=--ssh default ${DOCKER_BUILD_EXTRA_PARAMS}
-CIMAGE_DEPLOYMENT_TAG:=figshare/user_documentation:deployment
-CIMAGE_LATEST_TAG:=figshare/user_documentation:latest
+# Optional suffix for the built image tags, e.g. `make container-images IMAGE_TAG_SUFFIX=-dev`
+IMAGE_TAG_SUFFIX:=
+CIMAGE_DEPLOYMENT_TAG:=figshare/user_documentation:deployment${IMAGE_TAG_SUFFIX}
+CIMAGE_LATEST_TAG:=figshare/user_documentation:latest${IMAGE_TAG_SUFFIX}
 
 
 install:
