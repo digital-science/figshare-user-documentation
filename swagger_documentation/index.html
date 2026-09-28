@@ -3102,6 +3102,10 @@ namespace HRFeedUploadExample
                 configuration</li>
             <li>The equivalent catalogs exist for projects and collections:
                 <code>GET /v3/account/projects/fields</code> and <code>GET /v3/account/collections/fields</code>.</li>
+            <li>A field_type of legacy indicates one of Figshare’s built-in standard fields (e.g. title, description,
+                keywords, licence, categories, funding_list, related_materials) rather than a custom field — infer the
+                expected data format from the field’s name, not from field_type.
+            </li>
         </ul>
         <h3 id="v3-upload-field-values-file">Upload Field Values File</h3>
         <h4 id="v3-fields-request">Request</h4>
