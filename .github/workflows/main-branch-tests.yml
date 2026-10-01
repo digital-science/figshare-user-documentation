@@ -1,0 +1,50 @@
+name: Main Branch Tests - user_documentation
+
+# Replaces the Jenkins "Main Branch Tests - user_documentation" job. Runs
+# periodically against master, not reacting to pushes - this exists to
+# catch changes in external dependencies that could break things even
+# with no code change on this side, so a push trigger wouldn't serve the
+# same purpose.
+on:
+  schedule:
+    - cron: "0 3 * * 1" # Monday 03:00 UTC, matching Jenkins's @weekly cadence
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: "Branch/ref to test"
+        required: false
+        default: "master"
+
+env:
+  AWS_REGION: eu-west-1
+  ECR_REGISTRY: "942286566325.dkr.ecr.eu-west-1.amazonaws.com"
+
+permissions:
+  contents: read
+  id-token: write # needed for AWS OIDC
+
+jobs:
+  main-branch-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout user_documentation
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref || 'master' }}
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ECR_PUSH_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build images (deployment + latest stages)
+        run: |
+          make container-images \
+            DOCKER_BUILD_EXTRA_PARAMS="--build-arg registry=${ECR_REGISTRY} --pull"
+
+      - name: Run tests (make ci-tests)
+        run: make ci-tests
