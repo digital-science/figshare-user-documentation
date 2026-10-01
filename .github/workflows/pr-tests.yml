@@ -1,0 +1,50 @@
+name: PR Tests - user_documentation
+
+# Replaces the Jenkins "PR Tests - user_documentation" job. GitHub Actions'
+# native pull_request trigger replaces Jenkins's Generic Webhook Trigger
+# setup entirely - no webhook config needed, and PR status checks are
+# posted automatically by GHA itself (Jenkins needed an explicit pipeline
+# step for this).
+#
+# No GitHub App token step here - unlike most other figshare repos, this
+# one has no private git+ssh dependencies (requirements.txt is just
+# black/lxml/pyyaml from PyPI). No Sonar step either - this repo was never
+# onboarded to Sonar in Jenkins (no tests, static docs site), and we only
+# run Sonar on repos it's already enabled for, not new projects.
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+env:
+  AWS_REGION: eu-west-1
+  ECR_REGISTRY: "942286566325.dkr.ecr.eu-west-1.amazonaws.com"
+
+permissions:
+  contents: read # declaring any permissions: block drops the implicit
+                 # default (which includes this) - actions/checkout fails
+                 # with a "repository not found"-shaped error without it
+  id-token: write # needed for AWS OIDC
+
+jobs:
+  pr-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout user_documentation
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ECR_PUSH_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build images (deployment + latest stages)
+        run: |
+          make container-images \
+            DOCKER_BUILD_EXTRA_PARAMS="--build-arg registry=${ECR_REGISTRY} --pull"
+
+      - name: Run tests (make ci-tests)
+        run: make ci-tests

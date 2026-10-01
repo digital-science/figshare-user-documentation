@@ -1,0 +1,101 @@
+name: Publish - user_documentation
+
+# Replaces the Jenkins "Publish - user_documentation" job, which triggered
+# on push to master - Jenkins's user_documentation jobs are now disabled,
+# so this is the real trigger going forward. workflow_dispatch kept for
+# manual re-runs.
+#
+# Matching apiv1/website's own migration scope, only the figshare.dev/AWS
+# path is replicated here (API_URL/API_SCHEME pointed at figshare.dev,
+# -dev tagged image) - the primary/.network path is being retired anyway.
+on:
+  push:
+    branches: [master]
+  workflow_dispatch: {}
+
+permissions:
+  contents: write   # needed for the deploy job's push to figshare-infrastructure
+  id-token: write    # needed for AWS OIDC
+
+env:
+  AWS_REGION: eu-west-1
+  ECR_REGISTRY: "942286566325.dkr.ecr.eu-west-1.amazonaws.com"
+  ECR_REPO: figshare/user_documentation
+  # ranjani/update-dev-configs, not master - that's still the active
+  # branch the figshare.dev environment's ArgoCD tracks today.
+  INFRA_REPO: digital-science/figshare-infrastructure
+  INFRA_BRANCH: ranjani/update-dev-configs
+  INFRA_PATCH_FILE: manifests/apps/docs/overlays/development/patch-deployment.yaml
+
+jobs:
+  build-test-push:
+    runs-on: ubuntu-latest
+    outputs:
+      image_tag: ${{ steps.tag.outputs.image_tag }}
+    steps:
+      - name: Checkout user_documentation
+        uses: actions/checkout@v4
+
+      - name: Compute image tag
+        id: tag
+        run: |
+          # Matches the existing Jenkins/Dagger tag format: <unixtime>_<sha>-dev
+          echo "image_tag=${ECR_REGISTRY}/${ECR_REPO}:$(date +%s)_${{ github.sha }}-dev" >> "$GITHUB_OUTPUT"
+
+      - name: Configure AWS credentials (OIDC)
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ECR_PUSH_ROLE_ARN }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Login to ECR
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Build images (figshare.dev variant)
+        run: |
+          make container-images \
+            DOCKER_BUILD_EXTRA_PARAMS="--build-arg API_URL=api.figshare.dev --build-arg API_SCHEME=https --build-arg registry=${ECR_REGISTRY} --pull"
+
+      - name: Run tests (make ci-tests)
+        run: make ci-tests
+
+      - name: Tag and push images to ECR
+        run: |
+          docker tag figshare/user_documentation:latest "${ECR_REGISTRY}/${ECR_REPO}:latest-dev"
+          docker tag figshare/user_documentation:latest "${{ steps.tag.outputs.image_tag }}"
+          docker push "${ECR_REGISTRY}/${ECR_REPO}:latest-dev"
+          docker push "${{ steps.tag.outputs.image_tag }}"
+
+  deploy-development:
+    needs: build-test-push
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get GitHub App installation token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.FIGSHARE_CI_GH_APP_ID }}
+          private-key: ${{ secrets.FIGSHARE_CI_GH_APP_PRIVATE_KEY }}
+          repositories: figshare-infrastructure
+
+      - name: Checkout figshare-infrastructure
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.INFRA_REPO }}
+          ref: ${{ env.INFRA_BRANCH }}
+          token: ${{ steps.app-token.outputs.token }}
+
+      - name: Bump image tag
+        run: |
+          # yq (mikefarah/yq) ships preinstalled on GitHub-hosted ubuntu-latest
+          # runners - same tool the Dagger deploy-development function uses.
+          yq -i '.spec.template.spec.containers[0].image = "${{ needs.build-test-push.outputs.image_tag }}"' "${INFRA_PATCH_FILE}"
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add "${INFRA_PATCH_FILE}"
+          git commit -m "Update service ${{ needs.build-test-push.outputs.image_tag }}"
+          git pull --rebase origin "${INFRA_BRANCH}"
+          git push origin "${INFRA_BRANCH}"
