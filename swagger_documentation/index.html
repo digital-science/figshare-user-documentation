@@ -2406,94 +2406,141 @@ if __name__ == "__main__":
             <tr>
                 <th>Operator</th>
                 <th>Supported characters</th>
+                <th>Precedence</th>
             </tr>
             </thead>
             <tbody>
             <tr>
-                <td>AND</td>
-                <td>AND</td>
-            </tr>
-
-            <tr>
-                <td>OR</td>
-                <td>OR</td>
+                <td>grouping</td>
+                <td>( )</td>
+                <td>0</td>
             </tr>
             <tr>
                 <td>NOT</td>
                 <td>NOT</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td>AND</td>
+                <td>AND</td>
+                <td>2</td>
+            </tr>
+            <tr>
+                <td>OR</td>
+                <td>OR</td>
+                <td>3</td>
             </tr>
             <tr>
                 <td>field delimiter</td>
                 <td>:</td>
+                <td>-</td>
             </tr>
             <tr>
                 <td>phrase search delimiter</td>
-                <td>" "</td>
-            </tr>
-            <tr>
-                <td>grouping</td>
-                <td>( )</td>
+                <td>" " or ' '</td>
+                <td>-</td>
             </tr>
             </tbody>
         </table>
-
+        <p>Operators must be written in upper case; a lower case <code>and</code> is treated as a search word. Without
+            grouping, <code>NOT</code> is applied first, then <code>AND</code>, then <code>OR</code>, so
+            <code>A OR B AND C</code> is read as <code>A OR (B AND C)</code>. Use parentheses to change the order.</p>
+        <p>A query can be at most 1000 characters long and contain at most 10 logic operators.</p>
     </div>
     <div id="description_v3_search_attributes">
-        <p>You can build queries based on the following attributes:</p>
+        <p>You can build queries based on the following attributes. Attribute names are not case sensitive. Each
+            attribute applies to the term that follows it; when combining terms with AND, OR or NOT, repeat the
+            attribute for each term.</p>
+        <p>Unless stated otherwise, an unquoted value matches items containing any of its words (ranked by relevance)
+            and a quoted value matches the phrase.</p>
+        <h4>Text attributes</h4>
         <ul>
-            <li>:title: - string (exact match),</li>
-            <li>:description: - string (exact match),</li>
-            <li>:tag: - string (exact match), the tag is the keyword used to describe an item such as ":tag: artificial
-                intelligence"
+            <li>:search_term: - string, searches all the main metadata fields</li>
+            <li>:title: - string; a quoted value matches the whole title</li>
+            <li>:description: - string</li>
+            <li>:authors: - string, author names (<code>:author:</code> is also accepted)</li>
+            <li>:owner: - string, the name of the item owner</li>
+            <li>:orcid: - string, the ORCID of an author or the owner</li>
+            <li>:keywords: - string, matches the whole keyword, for example ":keywords: artificial intelligence"
+                (<code>:keyword:</code> is also accepted)
             </li>
-            <li>:category: - string (exact match),</li>
-            <li>:author: - string (exact match),</li>
+            <li>:categories: - string, category title; a quoted value matches the whole category title
+                (<code>:category:</code> is also accepted)
+            </li>
+            <li>:funding_list: - string, funding title, grant code, funder name, Dimensions ID or GRID ID; a quoted
+                value matches the whole funding title (<code>:funding:</code> is also accepted)
+            </li>
+            <li>:related_materials: - string, related material identifier; the value must be quoted, for example
+                ":related_materials: '10.6084/m9.figshare.123'"
+            </li>
             <li>:item_type: - string, the selectable item types are configured per institution; retrieve the available
                 values from <code>GET /v3/item_types</code>
             </li>
-            <li>:search_term: - string (will search in all fields and match phrase)</li>
-            <li>:orcid: - string (exact match)</li>
-            <li>:extension: - string (exact match for the file extensions)</li>
-            <li>:references: - string (exact match)</li>
-            <li>:doi: - string (exact match)</li>
-            <li>:institution: - string, this is only for institutions that have figshare and you would use the string id
-                from the URL (for example, Loughborough University has the URL https://lboro.figshare.com/ and you would
-                type ":institutions: lboro" into the search bar)
+            <li>:licence: - string, licence name or URL, for example ":licence: 'CC BY 4.0'"</li>
+            <li>:doi: - string</li>
+            <li>:handle: - string</li>
+            <li>:identifier: - string, matches the DOI or the handle</li>
+            <li>:extension: - string, file extension</li>
+            <li>:file_name: - string</li>
+            <li>:group: - string, group name</li>
+            <li>:institution: - string, this is only for institutions that have figshare and you would use the string
+                id from the URL (for example, Loughborough University has the URL https://lboro.figshare.com/ and you
+                would type ":institution: lboro" into the search bar)
             </li>
-            <li>:project: - string (exact match)</li>
-            <li>:published_before: - string (exact match)</li>
-            <li>:published_after: - string (exact match)</li>
-            <li>:licence: - string (exact match), for example ":licence: CCBY"</li>
-
-            <li>:resource_doi: - string (exact match)</li>
-            <li>:resource_title: - string (exact match)</li>
-            <li>:resource_link: - string (exact match)</li>
-            <li>:article_id: * - string</li>
-            <li>:categories: * - string</li>
-            <li>:commissioning_body: * - string</li>
-            <li>:edition: * - string</li>
-            <li>:finish_date: * - date (YYYY-MM-DD), supports :before and :after operators</li>
-            <li>:first_online: * - date (YYYY-MM-DD), supports :before and :after operators</li>
-            <li>:funding_list: * - string</li>
-            <li>:issue: * - string</li>
-            <li>:journal: * - string</li>
-            <li>:language: * - string</li>
-            <li>:medium: * - string</li>
-            <li>:name_of_conference: * - string</li>
-            <li>:pagination: * - string</li>
-            <li>:place_of_publication: * - string</li>
-            <li>:publisher: * - string</li>
-            <li>:publisher_accepted: * - date (YYYY-MM-DD), supports :before and :after operators</li>
-            <li>:publisher_published: * - date (YYYY-MM-DD), supports :before and :after operators</li>
-            <li>:related_materials: * - string</li>
-            <li>:series: * - string</li>
-            <li>:start_date: * - date (YYYY-MM-DD), supports :before and :after operators</li>
-            <li>:thesis_level: * - string</li>
-            <li>:thesis_name: * - string</li>
-            <li>:volume: * - string</li>
+            <li>:resource_title: - string</li>
+            <li>:resource_doi: - string</li>
+            <li>:resource_link: - string</li>
+            <li>:custom_field: - string, searches the values of all custom metadata fields
+                (<code>POST /v3/items/search</code> only)
+            </li>
         </ul>
-        <p><strong>*</strong> Only available on figshare.com or in institutional portals that have the stock field enabled.</p>
-        <p>In order for the search to filter the attribute the user must use the following syntax: <strong>:tag:
+        <p>The following attributes are only available in <code>POST /v3/account/items/search</code>:</p>
+        <ul>
+            <li>:resource_id: - string</li>
+            <li>:embargo_type: - string</li>
+            <li>:project: - string, project title</li>
+            <li>:collection: - string, collection title</li>
+        </ul>
+        <h4>Metadata fields</h4>
+        <p>The following metadata fields can be searched by their field name. They match the <strong>exact, full
+            value</strong> of the field (not case sensitive); partial values or single words do not match. Quote the
+            value if it contains spaces that must be kept as they are, or parentheses.</p>
+        <ul>
+            <li>:article_id:</li>
+            <li>:commissioning_body:</li>
+            <li>:edition:</li>
+            <li>:issue:</li>
+            <li>:journal:</li>
+            <li>:language:</li>
+            <li>:medium:</li>
+            <li>:name_of_conference:</li>
+            <li>:pagination:</li>
+            <li>:place_of_publication:</li>
+            <li>:publisher:</li>
+            <li>:series:</li>
+            <li>:supervisors:</li>
+            <li>:thesis_level:</li>
+            <li>:thesis_name:</li>
+            <li>:volume:</li>
+        </ul>
+        <h4>Date attributes</h4>
+        <p>Dates use the format YYYY-MM-DD. Each date can be searched for an exact day, before a day (the
+            <code>_before</code> key, not including that day) or from a day onwards (the <code>_after</code> key,
+            including that day), for example ":first_online_before: 2024-01-01".</p>
+        <ul>
+            <li>:first_online:, :first_online_before:, :first_online_after:</li>
+            <li>:publisher_published:, :publisher_published_before:, :publisher_published_after:</li>
+            <li>:publisher_accepted:, :publisher_accepted_before:, :publisher_accepted_after:</li>
+            <li>:start_date:, :start_date_before:, :start_date_after:</li>
+            <li>:finish_date:, :finish_date_before:, :finish_date_after:</li>
+            <li>:posted_date:, :posted_before:, :posted_after: - date the item was made public</li>
+            <li>:modified_date:, :modified_before:, :modified_after:</li>
+            <li>:created_date:, :created_before:, :created_after:</li>
+            <li>:submitted_date:, :submitted_before:, :submitted_after:</li>
+            <li>:revised_date:, :revised_before:, :revised_after:</li>
+            <li>:embargo_date:, :embargo_date_before:, :embargo_date_after: - only items with an active embargo</li>
+        </ul>
+        <p>In order for the search to filter the attribute the user must use the following syntax: <strong>:keywords:
             cell</strong></p>
     </div>
     <div id="description_v3_search_quick">
@@ -2518,54 +2565,62 @@ if __name__ == "__main__":
 
     </div>
     <div id="description_v3_search_advanced">
-        <p>As the tags might contain special characters they will have a special treatment within the figshare search,
-            where we would do an exact match. The examples below will illustrate how field search works in general and
-            how is customised for tags.</p>
-        <h4>Search string: :tag: cancer cell</h4>
-        <p>This search will return all items with the exact tag cancer cell.</p>
-        <h4>Search string: :tag: music and puppets</h4>
-        <p>This search will return all items with the exact tag music and puppets. Only the operator AND will work as
-            search delimiter.</p>
-        <h4>Search string: :tag: "scrf=(cpcm,solvent=benzene)"</h4>
-        <p>This search will return all items with the exact tag.</p>
-        <h4>Search string: :tag: cancer category chemistry</h4>
-        <p>This search will return all items with the exact tag "cancer category chemistry". If the user wants to
-            break the tag and search also for a specific category please see Combined field search below.</p>
+        <p>As keywords might contain special characters they have a special treatment within the figshare search,
+            where the whole keyword is matched. The examples below illustrate how field search works in general and
+            how it is customised for keywords.</p>
+        <h4>Search string: :keywords: cancer cell</h4>
+        <p>This search will return all items with the keyword cancer cell.</p>
+        <h4>Search string: :keywords: music and puppets</h4>
+        <p>This search will return all items with the keyword music and puppets. Only the upper case operator AND
+            would split the value into two searches.</p>
+        <h4>Search string: :keywords: "scrf=(cpcm,solvent=benzene)"</h4>
+        <p>This search will return all items with the exact keyword.</p>
+        <h4>Search string: :keywords: cancer category chemistry</h4>
+        <p>This search will return all items with the keyword "cancer category chemistry". If the user wants to
+            break the keyword and search also for a specific category please see Combined field search below.</p>
         <h4>Search string: :title: environmental science</h4>
         <p>This search will return all items that have at least one of the words in the title working as in field
             multi-term search by relevance.</p>
-        <h4>Search string: :title: Line balancing for improving production</h4>
-        <p>Figshare engine will add the space where needed between the operator and the actual term<br/>This search will
-            return only the items that have the specified phrase included in the title. As usual the search will
-            return also with a lower priority results containing all inflected words derived from the common stems.</p>
+        <h4>Search string: :title: "Line balancing for improving production"</h4>
+        <p>This search will return only the items whose title is exactly "Line balancing for improving production"
+            (not case sensitive). Without the quotes, the search would return items that have at least one of the
+            words in the title, ordered by relevance.</p>
         <h4>Search string: :description: growth of Indian manufacturing sector</h4>
         <p>This search will return all items that have at least one of the words from above contained in the
-            description from the list above as multi-term search ordered by relevance. As usual, the search will return
-            also with a lower priority results containing all inflected words derived from the common stems.</p>
-        <h4>Search string: description: "industrial case study"</h4>
+            description as multi-term search ordered by relevance. As usual, the search will return also with a lower
+            priority results containing all inflected words derived from the common stems.</p>
+        <h4>Search string: :description: "industrial case study"</h4>
         <p>This search will return all items that have the phrase from above contained in the description. As usual,
             the search will return also with a lower priority results containing all inflected words derived from the
             common stems.</p>
+        <h4>Search string: :edition: "2nd edition"</h4>
+        <p>This search will return all items whose edition is exactly "2nd edition". An edition of "2nd edition,
+            revised" would not match.</p>
+        <h4>Search string: :first_online_after: 2024-01-01</h4>
+        <p>This search will return all items first published online on or after 1 January 2024.</p>
     </div>
     <div id="description_v3_search_combined">
-        <h4>Search string: :author: M. Hahnel OR :author: J. Smith OR :Author: Albert Einstein</h4>
+        <h4>Search string: :authors: M. Hahnel OR :authors: J. Smith OR :Authors: Albert Einstein</h4>
         <p>This search will return all items that have at least one of the authors from the list above.</p>
-        <h4>Search string: :title: Line balancing for improving production AND :tag: cancer cell</h4>
-        <p>This search will return all results where the title matches phrase (multi term search by relevance) from
-            above and has the "cancer cell" tag. As usual the search will return also with a lower priority results
-            containing all inflected words derived from the common stems.</p>
-        <h4>Search string: :tag: chemistry applied AND :category: biochemistry</h4>
-        <p>This search will return all results where the tag is chemistry applied and the category is biochemistry. As
-            usual the search will return also with a lower priority results containing all inflected words derived from
-            the common stems.</p>
+        <h4>Search string: :title: "Line balancing for improving production" AND :keywords: cancer cell</h4>
+        <p>This search will return all results with the title from above that also have the "cancer cell"
+            keyword.</p>
+        <h4>Search string: :keywords: chemistry applied AND :categories: biochemistry</h4>
+        <p>This search will return all results where the keyword is chemistry applied and the category is
+            biochemistry. As usual the search will return also with a lower priority results containing all inflected
+            words derived from the common stems.</p>
     </div>
     <div id="description_v3_search_complex">
-        <h4>Search string: :title: science AND :tag: cell AND :search term: private research</h4>
-        <p>This search will return items that have the word science in the title and the tag cell and has the
+        <h4>Search string: :title: science AND :keywords: cell AND :search_term: "private research"</h4>
+        <p>This search will return items that have the word science in the title and the keyword cell and have the
             expression private research in any metadata field.</p>
-        <h4>Search string: :title: law OR :tag: democrat AND :search term: respect</h4>
-        <p>This search will return all items that contain law in title or the tag democrat but also contain the word
-            respect in any of the metadata fields.</p>
+        <h4>Search string: (:title: law OR :keywords: democrat) AND :search_term: respect</h4>
+        <p>This search will return all items that contain law in the title or have the keyword democrat, and also
+            contain the word respect in any of the metadata fields.</p>
+        <h4>Search string: :title: law OR :keywords: democrat AND :search_term: respect</h4>
+        <p>Without the parentheses, AND is applied before OR, so this search will return all items that contain law
+            in the title, together with all items that have the keyword democrat and contain the word respect in any
+            of the metadata fields.</p>
     </div>
 
     <div id="description_v3_oai_baseurl">
