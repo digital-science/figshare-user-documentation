@@ -3133,6 +3133,38 @@ schemas:
               description: URL for the personal profile link
               format: url
               example: https://researchgate.net/profile/1
+      affiliations:
+        type: array
+        description: User affiliations (up to 100). Each entry can optionally include a ROR ID for institutions found in the ROR registry.
+        example:
+        - ror_id: 02jbv0t02
+          name: Harvard University
+          url: https://www.harvard.edu
+          order: 0
+        - ror_id: ''
+          name: Riverside Community Health Lab
+          url: ''
+          order: 1
+        items:
+          type: object
+          properties:
+            ror_id:
+              type: string
+              description: ROR ID of the institution (empty string for manual entries)
+              example: 02jbv0t02
+            name:
+              type: string
+              description: Name of the institution or organization
+              example: Harvard University
+            url:
+              type: string
+              description: URL of the institution (optional)
+              format: url
+              example: https://www.harvard.edu
+            order:
+              type: integer
+              description: Display order (0-based)
+              example: 0
     x-tag: profiles
   Project:
     required:
