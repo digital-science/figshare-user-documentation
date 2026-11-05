@@ -246,3 +246,191 @@ schemas:
         format: url
         example: https://api.figshare.com/v3/items/2000005/versions/1
     x-tag: items
+  PersonListAffiliation:
+    type: object
+    description: An affiliation of a person on this item, collection or project. ROR-identified (`ror_id` + `name`)
+      or free text (`name` only). Order is the array order.
+    properties:
+      ror_id:
+        type: string
+        description: Short ROR id. Accepted on write as the short id or as `https://ror.org/<id>`; always returned short.
+          Left out for free-text affiliations.
+        example: 041kmwe10
+      name:
+        type: string
+        description: Affiliation name (max 255 characters).
+        example: Imperial College London
+    x-tag: authors
+  PersonListEntry:
+    type: object
+    description: 'One entry of a person_list field (`authors`, `supervisors` and custom person lists) as returned
+      on GET. Each entry points to a user: an account user, a ghost user (no account, no public profile) or an organization
+      user (`type` 2). The user''s current values are merged with what was overridden on this item, emails are masked,
+      and empty values are left out. Order is the array order. The entry is in the write format, so it can be sent back
+      unchanged (`PersonListEntryCreate`): unchanged values aren''t stored as overrides, masked emails are ignored and
+      `has_account` is dropped.'
+    required:
+    - type
+    - user_id
+    - has_account
+    properties:
+      type:
+        type: integer
+        enum:
+        - 1
+        - 2
+        description: 1 = person, 2 = organization.
+        example: 1
+      user_id:
+        type: integer
+        description: The user this entry points to. Use it to send the entry back, or to delete it from the authors.
+        example: 1000005
+      has_account:
+        type: boolean
+        readOnly: true
+        description: Whether the user has a Figshare account. Read only, ignored on write.
+        example: true
+      first_name:
+        type: string
+        description: People only.
+        example: Jane
+      last_name:
+        type: string
+        description: People only.
+        example: Smith
+      name:
+        type: string
+        description: Organizations only.
+        example: Wellcome Sanger Institute
+      email:
+        type: string
+        description: Masked email (e.g. `j********h@example.org`). A masked email sent back is ignored.
+        example: j********h@example.org
+      orcid_id:
+        type: string
+        description: People only.
+        example: 0000-0002-1825-0097
+      ror_id:
+        type: string
+        description: Organizations only. Short ROR id of the organization.
+        example: 05cy4wa09
+      contributors:
+        type: string
+        description: Organizations only. Free-text list of the people behind the organization.
+        example: Jane Smith, John Doe
+      is_corresponding:
+        type: boolean
+        description: Corresponding author. `authors` field only; returned only when true.
+        example: true
+      affiliations:
+        type: array
+        description: People only. Affiliations on this item.
+        items:
+          $ref: '#/components/schemas/PersonListAffiliation'
+    x-tag: authors
+  PersonListEntryCreate:
+    type: object
+    description: 'One entry of a person_list field (`authors`, `supervisors` and custom person lists) on create/update,
+      in `fields.<field name>` or in the authors endpoints. Validation errors return 422 with the path of the
+      offending value, e.g. `authors[1].affiliations[0].ror_id`.
+
+
+      **With `user_id`** (a user from the author search, or an entry read back from GET): the user must exist. For
+      people, `first_name`, `last_name`, `email` and `orcid_id` are compared with the user and only differences are stored
+      as overrides on this item; a missing key keeps the stored override and `null` clears the value on this item. For
+      organizations only `email` can be overridden (`name` and `ror_id` are ignored).
+
+
+      **Without `user_id`** (a typed entry): `type` is required. People need `last_name`, organizations need `name`.
+      The entry is matched exactly to an existing user on name + email + ORCID (people) or name + `ror_id` + email (organizations),
+      all three non-empty; otherwise a new user without an account (ghost person or organization) is created.
+
+
+      Rules: the same user once per field; at most 2 corresponding authors; at most 10 affiliations per person; strings
+      up to 255 characters (`contributors` up to 2000); the account''s `max_authors` limit (default 100) applies to every
+      person_list. `is_corresponding` is allowed in `authors` only. Unknown keys are rejected; `has_account` (returned
+      on GET) is ignored.'
+    properties:
+      user_id:
+        type: integer
+        description: An existing user. When set, `type` is optional (taken from the user).
+        example: 1000005
+      type:
+        type: integer
+        description: 1 = person, 2 = organization. Required without `user_id`.
+        example: 1
+      first_name:
+        type: string
+        nullable: true
+        description: People only.
+        example: Jane
+      last_name:
+        type: string
+        nullable: true
+        description: People only. Required for a typed person.
+        example: Smith
+      name:
+        type: string
+        nullable: true
+        description: Organizations only. Required for a typed organization.
+        example: Wellcome Sanger Institute
+      email:
+        type: string
+        nullable: true
+        example: jane.smith@example.org
+      orcid_id:
+        type: string
+        nullable: true
+        description: People only.
+        example: 0000-0002-1825-0097
+      ror_id:
+        type: string
+        nullable: true
+        description: Organizations only, for matching/creating the organization. Short id or `https://ror.org/<id>`.
+        example: 05cy4wa09
+      contributors:
+        type: string
+        nullable: true
+        description: Organizations only.
+        example: Jane Smith, John Doe
+      is_corresponding:
+        type: boolean
+        nullable: true
+        description: '`authors` field only.'
+        example: true
+      affiliations:
+        type: array
+        nullable: true
+        description: People only. Replaces the entry's affiliations; omit to keep them.
+        items:
+          $ref: '#/components/schemas/PersonListAffiliation'
+    x-tag: authors
+  PersonListAuthorsCreator:
+    type: object
+    required:
+    - authors
+    properties:
+      authors:
+        type: array
+        description: Author entries. POST appends them to the stored authors, PUT replaces the stored authors.
+        items:
+          $ref: '#/components/schemas/PersonListEntryCreate'
+    example:
+      authors:
+      - user_id: 1000005
+      - user_id: 1000006
+        last_name: Smith-Jones
+        is_corresponding: true
+        affiliations:
+        - ror_id: 041kmwe10
+          name: Imperial College London
+        - name: Free-text affiliation
+      - type: 1
+        first_name: Jane
+        last_name: Doe
+        email: jane.doe@example.org
+      - type: 2
+        name: Wellcome Sanger Institute
+        ror_id: https://ror.org/05cy4wa09
+        contributors: Jane Smith, John Doe
+    x-tag: authors

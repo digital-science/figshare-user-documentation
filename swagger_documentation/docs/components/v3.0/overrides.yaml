@@ -169,8 +169,7 @@ schemas:
         additionalProperties: true
         description: "Item-type based metadata field values keyed by field name. Only present for items with item-type based\
           \ metadata enabled. Scalar/text/date/dropdown stock fields and custom fields are returned as-is. Relational fields\
-          \ are hydrated on GET as follows: authors \u2192 [{id, name, first_name, last_name, is_active, url_name, orcid_id,\
-          \ affiliations}]; funding_list \u2192 [{id, title, grant_code, funder_name, is_user_defined, url}] (url only when\
+          \ are hydrated on GET as follows: person_list fields (authors, supervisors and custom person lists) \u2192 [PersonListEntry] (merged with each user, overrides applied, emails masked; the same shape is accepted back on write); funding_list \u2192 [{id, title, grant_code, funder_name, is_user_defined, url}] (url only when\
           \ a Dimensions grant id exists); related_materials \u2192 [{id, title, relation, identifier, identifier_type}];\
           \ categories \u2192 [{id, title, parent_id, path, source_id, taxonomy_id}]; licence \u2192 {id, value, name, url}."
       account_id:
@@ -386,8 +385,7 @@ schemas:
         additionalProperties: true
         description: "Item-type based metadata field values keyed by field name. Only present for items with item-type based\
           \ metadata enabled. Scalar/text/date/dropdown stock fields and custom fields are returned as-is. Relational fields\
-          \ are hydrated on GET as follows: authors \u2192 [{id, name, first_name, last_name, is_active, url_name, orcid_id,\
-          \ affiliations}]; funding_list \u2192 [{id, title, grant_code, funder_name, is_user_defined, url}] (url only when\
+          \ are hydrated on GET as follows: person_list fields (authors, supervisors and custom person lists) \u2192 [PersonListEntry] (merged with each user, overrides applied, emails masked; the same shape is accepted back on write); funding_list \u2192 [{id, title, grant_code, funder_name, is_user_defined, url}] (url only when\
           \ a Dimensions grant id exists); related_materials \u2192 [{id, title, relation, identifier, identifier_type}];\
           \ categories \u2192 [{id, title, parent_id, path, source_id, taxonomy_id}]; licence \u2192 {id, value, name, url}."
     required:
@@ -503,8 +501,7 @@ schemas:
         type: object
         description: "Item-type based metadata field values keyed by field name. Only present when the collection belongs\
           \ to an institution with item-type based metadata enabled. Scalar/text stock fields (e.g. publisher) and custom\
-          \ fields are returned as-is. Relational fields are hydrated on GET as follows: authors \u2192 [{id, name, first_name,\
-          \ last_name, is_active, url_name, orcid_id, affiliations}]; funding_list \u2192 [{id, title, grant_code, funder_name,\
+          \ fields are returned as-is. Relational fields are hydrated on GET as follows: person_list fields (authors, supervisors and custom person lists) \u2192 [PersonListEntry] (merged with each user, overrides applied, emails masked; the same shape is accepted back on write); funding_list \u2192 [{id, title, grant_code, funder_name,\
           \ is_user_defined, url}] (url only when a Dimensions grant id exists); related_materials \u2192 [{id, title, relation,\
           \ identifier, identifier_type}]; categories \u2192 [{id, title, parent_id, path, source_id, taxonomy_id}]."
         additionalProperties: {}
@@ -612,8 +609,7 @@ schemas:
         type: object
         description: "Item-type based metadata field values keyed by field name. Only present when the collection belongs\
           \ to an institution with item-type based metadata enabled. Scalar/text stock fields (e.g. publisher) and custom\
-          \ fields are returned as-is. Relational fields are hydrated on GET as follows: authors \u2192 [{id, name, first_name,\
-          \ last_name, is_active, url_name, orcid_id, affiliations}]; funding_list \u2192 [{id, title, grant_code, funder_name,\
+          \ fields are returned as-is. Relational fields are hydrated on GET as follows: person_list fields (authors, supervisors and custom person lists) \u2192 [PersonListEntry] (merged with each user, overrides applied, emails masked; the same shape is accepted back on write); funding_list \u2192 [{id, title, grant_code, funder_name,\
           \ is_user_defined, url}] (url only when a Dimensions grant id exists); related_materials \u2192 [{id, title, relation,\
           \ identifier, identifier_type}]; categories \u2192 [{id, title, parent_id, path, source_id, taxonomy_id}]."
         additionalProperties: {}

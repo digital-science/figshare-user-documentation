@@ -2304,7 +2304,7 @@ paths:
       tags:
       - items
       summary: List item authors
-      description: List item authors
+      description: List the item's authors, in the `fields.authors` shape (`PersonListEntry`). The item's authors are its `authors` person_list field (`fields.authors`); the same entries are read and changed through the item update, so every rule of `PersonListEntryCreate` applies.
       operationId: private_item_authors_list
       parameters:
       - name: item_id
@@ -2316,18 +2316,15 @@ paths:
           type: integer
       responses:
         '200':
-          description: OK. Authors list for item
+          description: OK. Authors of the item, in order.
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Author'
-        '400':
-          description: Bad Request
-          content: {}
+                  $ref: '#/components/schemas/PersonListEntry'
         '403':
-          description: Forbidden. Item-type based metadata is not enabled for the institution.
+          description: Forbidden
           content:
             application/json:
               schema:
@@ -2346,8 +2343,8 @@ paths:
       tags:
       - items
       summary: Replace item authors
-      description: Associate new authors with the item. This will remove all already associated authors
-        and add these new ones
+      description: Replace the item's authors with the sent entries. Sending back the entries from GET leaves the
+        authors unchanged. An empty list clears the authors. The item's authors are its `authors` person_list field (`fields.authors`); the same entries are read and changed through the item update, so every rule of `PersonListEntryCreate` applies.
       operationId: private_item_authors_replace
       parameters:
       - name: item_id
@@ -2358,11 +2355,11 @@ paths:
           minimum: 1
           type: integer
       requestBody:
-        description: Authors description
+        description: Authors
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AuthorsCreator'
+              $ref: '#/components/schemas/PersonListAuthorsCreator'
         required: true
       responses:
         '205':
@@ -2372,13 +2369,13 @@ paths:
               description: Location of list of authors
               schema:
                 type: string
-                format: uri
+                format: url
           content: {}
         '400':
-          description: Bad Request. Item ID must be an integer and bigger than 0. Author with ID Not Found.
+          description: Bad Request. The body isn't an `authors` list of objects.
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata is not enabled for the institution.
+          description: Forbidden, or the account's `max_authors` limit (default 100) is reached.
           content:
             application/json:
               schema:
@@ -2386,6 +2383,13 @@ paths:
         '404':
           description: Not Found
           content: {}
+        '422':
+          description: Unprocessable Entity. An entry is invalid; the message names its path, e.g. `authors[1].user_id`
+            (unknown or repeated user), `authors[0].last_name` (missing for a typed person) or `authors[2].affiliations[0].ror_id`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
         '500':
           description: Internal Server Error
           content: {}
@@ -2398,8 +2402,7 @@ paths:
       tags:
       - items
       summary: Add item authors
-      description: Associate new authors with the item. This will add new authors to the list of already
-        associated authors
+      description: Add the sent entries to the end of the item's authors. The item's authors are its `authors` person_list field (`fields.authors`); the same entries are read and changed through the item update, so every rule of `PersonListEntryCreate` applies.
       operationId: private_item_authors_add
       parameters:
       - name: item_id
@@ -2410,11 +2413,11 @@ paths:
           minimum: 1
           type: integer
       requestBody:
-        description: Authors description
+        description: Authors
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/AuthorsCreator'
+              $ref: '#/components/schemas/PersonListAuthorsCreator'
         required: true
       responses:
         '205':
@@ -2424,13 +2427,13 @@ paths:
               description: Location of list of authors
               schema:
                 type: string
-                format: uri
+                format: url
           content: {}
         '400':
-          description: Bad Request
+          description: Bad Request. The body isn't an `authors` list of objects.
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata is not enabled for the institution.
+          description: Forbidden, or the account's `max_authors` limit (default 100) is reached.
           content:
             application/json:
               schema:
@@ -2438,6 +2441,13 @@ paths:
         '404':
           description: Not Found
           content: {}
+        '422':
+          description: Unprocessable Entity. An entry is invalid; the message names its path, e.g. `authors[1].user_id`
+            (unknown or repeated user), `authors[0].last_name` (missing for a typed person) or `authors[2].affiliations[0].ror_id`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
         '500':
           description: Internal Server Error
           content: {}
@@ -2451,7 +2461,9 @@ paths:
       tags:
       - items
       summary: Delete item author
-      description: De-associate author from item
+      description: Remove the author entry that points to the user `author_id` (account user, ghost user or organization)
+        from the item's authors. The owner is removed like any other entry; it's only added automatically when the
+        item is created.
       operationId: private_item_author_delete
       parameters:
       - name: item_id
@@ -2463,7 +2475,7 @@ paths:
           type: integer
       - name: author_id
         in: path
-        description: Item Author unique identifier
+        description: The `user_id` of the author entry
         required: true
         schema:
           minimum: 1
@@ -2473,7 +2485,47 @@ paths:
           description: No Content
           content: {}
         '403':
-          description: Forbidden. Item-type based metadata is not enabled for the institution.
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found. No such item, or no author entry points to `author_id`.
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Item Authors
+  /account/collections/{collection_id}/authors:
+    get:
+      tags:
+      - collections
+      summary: List collection authors
+      description: List the collection's authors, in the `fields.authors` shape (`PersonListEntry`). The collection's authors are its `authors` person_list field (`fields.authors`); the same entries are read and changed through the collection update, so every rule of `PersonListEntryCreate` applies.
+      operationId: private_collection_authors_list
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+      responses:
+        '200':
+          description: OK. Authors of the collection, in order.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/PersonListEntry'
+        '403':
+          description: Forbidden
           content:
             application/json:
               schema:
@@ -2487,7 +2539,212 @@ paths:
       security:
       - OAuth2:
         - all
-      x-subcategory: Private Item Authors
+      x-subcategory: Private Collection Authors
+    put:
+      tags:
+      - collections
+      summary: Replace collection authors
+      description: Replace the collection's authors with the sent entries. Sending back the entries from GET leaves the
+        authors unchanged. An empty list clears the authors. The collection's authors are its `authors` person_list field (`fields.authors`); the same entries are read and changed through the collection update, so every rule of `PersonListEntryCreate` applies.
+      operationId: private_collection_authors_replace
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+      requestBody:
+        description: Authors
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonListAuthorsCreator'
+        required: true
+      responses:
+        '205':
+          description: Reset Content
+          headers:
+            Location:
+              description: Location of list of authors
+              schema:
+                type: string
+                format: url
+          content: {}
+        '400':
+          description: Bad Request. The body isn't an `authors` list of objects.
+          content: {}
+        '403':
+          description: Forbidden, or the account's `max_authors` limit (default 100) is reached.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '422':
+          description: Unprocessable Entity. An entry is invalid; the message names its path, e.g. `authors[1].user_id`
+            (unknown or repeated user), `authors[0].last_name` (missing for a typed person) or `authors[2].affiliations[0].ror_id`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Collection Authors
+      x-codegen-request-body-name: Authors
+    post:
+      tags:
+      - collections
+      summary: Add collection authors
+      description: Add the sent entries to the end of the collection's authors. The collection's authors are its `authors` person_list field (`fields.authors`); the same entries are read and changed through the collection update, so every rule of `PersonListEntryCreate` applies.
+      operationId: private_collection_authors_add
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+      requestBody:
+        description: Authors
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PersonListAuthorsCreator'
+        required: true
+      responses:
+        '201':
+          description: Created
+          headers:
+            Location:
+              description: Location of list of authors
+              schema:
+                type: string
+                format: url
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Location'
+        '400':
+          description: Bad Request. The body isn't an `authors` list of objects.
+          content: {}
+        '403':
+          description: Forbidden, or the account's `max_authors` limit (default 100) is reached.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found
+          content: {}
+        '422':
+          description: Unprocessable Entity. An entry is invalid; the message names its path, e.g. `authors[1].user_id`
+            (unknown or repeated user), `authors[0].last_name` (missing for a typed person) or `authors[2].affiliations[0].ror_id`.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Collection Authors
+      x-codegen-request-body-name: Authors
+  /account/collections/{collection_id}/authors/{author_id}:
+    delete:
+      tags:
+      - collections
+      summary: Delete collection author
+      description: Remove the author entry that points to the user `author_id` (account user, ghost user or organization)
+        from the collection's authors. The owner is removed like any other entry; it's only added automatically when the
+        collection is created.
+      operationId: private_collection_author_delete
+      parameters:
+      - name: collection_id
+        in: path
+        description: Collection unique identifier
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+      - name: author_id
+        in: path
+        description: The `user_id` of the author entry
+        required: true
+        schema:
+          minimum: 1
+          type: integer
+      responses:
+        '204':
+          description: No Content
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '404':
+          description: Not Found. No such collection, or no author entry points to `author_id`.
+          content: {}
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-subcategory: Private Collection Authors
+  /account/authors/search:
+    post:
+      tags:
+      - authors
+      summary: Search Authors
+      description: Search for users to add as authors. Only users with a Figshare account are returned (any `is_active`);
+        users without an account (ghost users) and organizations are never returned. Add a result to a person_list by its
+        `id` (as the entry's `user_id`); add anyone else as a typed entry (see `PersonListEntryCreate`).
+      operationId: private_authors_search
+      requestBody:
+        description: Search Parameters
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PrivateAuthorsSearch'
+        required: false
+      responses:
+        '200':
+          description: OK. An array of authors
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuthorComplete'
+        '400':
+          description: Bad Request
+          content: {}
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorMessage'
+        '500':
+          description: Internal Server Error
+          content: {}
+      security:
+      - OAuth2:
+        - all
+      x-codegen-request-body-name: search
   /account/items/{item_id}/publish:
     post:
       tags:
