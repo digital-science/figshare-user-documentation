@@ -1431,7 +1431,7 @@
                     "collections"
                 ],
                 "summary": "Replace collection authors",
-                "description": "Replace the collection's authors with the sent entries. Sending back the entries from GET leaves the authors unchanged. An empty list clears the authors. The collection's authors are its `authors` person_list field (`fields.authors`); the same entries are read and changed through the collection update, so every rule of `PersonListEntryCreate` applies.",
+                "description": "Replace the collection's authors with the sent entries. Sending back the entries from GET leaves the authors unchanged. An empty list clears the authors. To change one author, send the full list from GET with that entry edited; an entry left out is removed, and so are the `is_corresponding`, `affiliations` and `contributors` an entry doesn't send. The collection's authors are its `authors` person_list field (`fields.authors`); the same entries are read and changed through the collection update, so every rule of `PersonListEntryCreate` applies.",
                 "operationId": "private_collection_authors_replace",
                 "parameters": [
                     {
@@ -1464,7 +1464,7 @@
                                 "description": "Location of list of authors",
                                 "schema": {
                                     "type": "string",
-                                    "format": "url"
+                                    "format": "uri"
                                 }
                             }
                         },
@@ -1518,7 +1518,7 @@
                     "collections"
                 ],
                 "summary": "Add collection authors",
-                "description": "Add the sent entries to the end of the collection's authors. The collection's authors are its `authors` person_list field (`fields.authors`); the same entries are read and changed through the collection update, so every rule of `PersonListEntryCreate` applies.",
+                "description": "Add the sent entries to the end of the collection's authors. The stored entries are kept as GET returns them; in a 422 the path indexes the sent list (`authors[0]` is the first sent entry). The collection's authors are its `authors` person_list field (`fields.authors`); the same entries are read and changed through the collection update, so every rule of `PersonListEntryCreate` applies.",
                 "operationId": "private_collection_authors_add",
                 "parameters": [
                     {
@@ -1551,7 +1551,7 @@
                                 "description": "Location of list of authors",
                                 "schema": {
                                     "type": "string",
-                                    "format": "url"
+                                    "format": "uri"
                                 }
                             }
                         },
@@ -8243,7 +8243,7 @@
                     "items"
                 ],
                 "summary": "Replace item authors",
-                "description": "Replace the item's authors with the sent entries. Sending back the entries from GET leaves the authors unchanged. An empty list clears the authors. The item's authors are its `authors` person_list field (`fields.authors`); the same entries are read and changed through the item update, so every rule of `PersonListEntryCreate` applies.",
+                "description": "Replace the item's authors with the sent entries. Sending back the entries from GET leaves the authors unchanged. An empty list clears the authors. To change one author, send the full list from GET with that entry edited; an entry left out is removed, and so are the `is_corresponding`, `affiliations` and `contributors` an entry doesn't send. The item's authors are its `authors` person_list field (`fields.authors`); the same entries are read and changed through the item update, so every rule of `PersonListEntryCreate` applies.",
                 "operationId": "private_item_authors_replace",
                 "parameters": [
                     {
@@ -8276,7 +8276,7 @@
                                 "description": "Location of list of authors",
                                 "schema": {
                                     "type": "string",
-                                    "format": "url"
+                                    "format": "uri"
                                 }
                             }
                         },
@@ -8330,7 +8330,7 @@
                     "items"
                 ],
                 "summary": "Add item authors",
-                "description": "Add the sent entries to the end of the item's authors. The item's authors are its `authors` person_list field (`fields.authors`); the same entries are read and changed through the item update, so every rule of `PersonListEntryCreate` applies.",
+                "description": "Add the sent entries to the end of the item's authors. The stored entries are kept as GET returns them; in a 422 the path indexes the sent list (`authors[0]` is the first sent entry). The item's authors are its `authors` person_list field (`fields.authors`); the same entries are read and changed through the item update, so every rule of `PersonListEntryCreate` applies.",
                 "operationId": "private_item_authors_add",
                 "parameters": [
                     {
@@ -8363,7 +8363,7 @@
                                 "description": "Location of list of authors",
                                 "schema": {
                                     "type": "string",
-                                    "format": "url"
+                                    "format": "uri"
                                 }
                             }
                         },
@@ -17383,7 +17383,7 @@
             },
             "PersonListEntryCreate": {
                 "type": "object",
-                "description": "One entry of a person_list field (`authors`, `supervisors` and custom person lists) on create/update, in `fields.<field name>` or in the authors endpoints. Validation errors return 422 with the path of the offending value, e.g. `authors[1].affiliations[0].ror_id`.\n\n**With `user_id`** (a user from the author search, or an entry read back from GET): the user must exist. For people, `first_name`, `last_name`, `email` and `orcid_id` are compared with the user and only differences are stored as overrides on this item; a missing key keeps the stored override and `null` clears the value on this item. For organizations only `email` can be overridden (`name` and `ror_id` are ignored).\n\n**Without `user_id`** (a typed entry): `type` is required. People need `last_name`, organizations need `name`. The entry is matched exactly to an existing user on name + email + ORCID (people) or name + `ror_id` + email (organizations), all three non-empty; otherwise a new user without an account (ghost person or organization) is created.\n\nRules: the same user once per field; at most 2 corresponding authors; at most 10 affiliations per person; strings up to 255 characters (`contributors` up to 2000); the account's `max_authors` limit (default 100) applies to every person_list. `is_corresponding` is allowed in `authors` only. Unknown keys are rejected; `has_account` (returned on GET) is ignored.",
+                "description": "One entry of a person_list field (`authors`, `supervisors` and custom person lists) on create/update, in `fields.<field name>` or in the authors endpoints. Validation errors return 422 with the path of the offending value, e.g. `authors[1].affiliations[0].ror_id`.\n\n**With `user_id`** (a user from the author search, or an entry read back from GET): the user must exist. For people, `first_name`, `last_name`, `email` and `orcid_id` are compared with the user and only differences are stored as overrides on this item; for these keys a missing key keeps the stored override and `null` clears the value on this item. For organizations only `email` can be overridden (`name` and `ror_id` are ignored). `is_corresponding`, `affiliations` and `contributors` belong to the entry, not to the user: they are stored as sent, so leaving them out removes them.\n\n**Without `user_id`** (a typed entry): `type` is required. People need `last_name`, organizations need `name`. The entry is matched exactly to an existing user on name + email + ORCID (people) or name + `ror_id` + email (organizations), all three non-empty; otherwise a new user without an account (ghost person or organization) is created.\n\nRules: the same user once per field; at most 2 corresponding authors; at most 10 affiliations per person; strings up to 255 characters (`contributors` up to 2000); the account's `max_authors` limit (default 100) applies to every person_list. `is_corresponding` is allowed in `authors` only. Unknown keys are rejected; `has_account` (returned on GET) is ignored.",
                 "properties": {
                     "user_id": {
                         "type": "integer",
@@ -17433,19 +17433,19 @@
                     "contributors": {
                         "type": "string",
                         "nullable": true,
-                        "description": "Organizations only.",
+                        "description": "Organizations only. Stored as sent; leaving it out removes it.",
                         "example": "Jane Smith, John Doe"
                     },
                     "is_corresponding": {
                         "type": "boolean",
                         "nullable": true,
-                        "description": "`authors` field only.",
+                        "description": "`authors` field only. Stored as sent; leaving it out unsets it.",
                         "example": true
                     },
                     "affiliations": {
                         "type": "array",
                         "nullable": true,
-                        "description": "People only. Replaces the entry's affiliations; omit to keep them.",
+                        "description": "People only. Stored as sent; leaving them out (or `null`) removes the entry's affiliations.",
                         "items": {
                             "$ref": "#/components/schemas/PersonListAffiliation"
                         }

@@ -337,8 +337,10 @@ schemas:
 
       **With `user_id`** (a user from the author search, or an entry read back from GET): the user must exist. For
       people, `first_name`, `last_name`, `email` and `orcid_id` are compared with the user and only differences are stored
-      as overrides on this item; a missing key keeps the stored override and `null` clears the value on this item. For
-      organizations only `email` can be overridden (`name` and `ror_id` are ignored).
+      as overrides on this item; for these keys a missing key keeps the stored override and `null` clears the value on
+      this item. For organizations only `email` can be overridden (`name` and `ror_id` are ignored). `is_corresponding`,
+      `affiliations` and `contributors` belong to the entry, not to the user: they are stored as sent, so leaving them
+      out removes them.
 
 
       **Without `user_id`** (a typed entry): `type` is required. People need `last_name`, organizations need `name`.
@@ -391,17 +393,17 @@ schemas:
       contributors:
         type: string
         nullable: true
-        description: Organizations only.
+        description: Organizations only. Stored as sent; leaving it out removes it.
         example: Jane Smith, John Doe
       is_corresponding:
         type: boolean
         nullable: true
-        description: '`authors` field only.'
+        description: '`authors` field only. Stored as sent; leaving it out unsets it.'
         example: true
       affiliations:
         type: array
         nullable: true
-        description: People only. Replaces the entry's affiliations; omit to keep them.
+        description: People only. Stored as sent; leaving them out (or `null`) removes the entry's affiliations.
         items:
           $ref: '#/components/schemas/PersonListAffiliation'
     x-tag: authors

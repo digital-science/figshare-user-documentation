@@ -2344,7 +2344,7 @@ paths:
       - items
       summary: Replace item authors
       description: Replace the item's authors with the sent entries. Sending back the entries from GET leaves the
-        authors unchanged. An empty list clears the authors. The item's authors are its `authors` person_list field (`fields.authors`); the same entries are read and changed through the item update, so every rule of `PersonListEntryCreate` applies.
+        authors unchanged. An empty list clears the authors. To change one author, send the full list from GET with that entry edited; an entry left out is removed, and so are the `is_corresponding`, `affiliations` and `contributors` an entry doesn't send. The item's authors are its `authors` person_list field (`fields.authors`); the same entries are read and changed through the item update, so every rule of `PersonListEntryCreate` applies.
       operationId: private_item_authors_replace
       parameters:
       - name: item_id
@@ -2369,7 +2369,7 @@ paths:
               description: Location of list of authors
               schema:
                 type: string
-                format: url
+                format: uri
           content: {}
         '400':
           description: Bad Request. The body isn't an `authors` list of objects.
@@ -2402,7 +2402,7 @@ paths:
       tags:
       - items
       summary: Add item authors
-      description: Add the sent entries to the end of the item's authors. The item's authors are its `authors` person_list field (`fields.authors`); the same entries are read and changed through the item update, so every rule of `PersonListEntryCreate` applies.
+      description: Add the sent entries to the end of the item's authors. The stored entries are kept as GET returns them; in a 422 the path indexes the sent list (`authors[0]` is the first sent entry). The item's authors are its `authors` person_list field (`fields.authors`); the same entries are read and changed through the item update, so every rule of `PersonListEntryCreate` applies.
       operationId: private_item_authors_add
       parameters:
       - name: item_id
@@ -2427,7 +2427,7 @@ paths:
               description: Location of list of authors
               schema:
                 type: string
-                format: url
+                format: uri
           content: {}
         '400':
           description: Bad Request. The body isn't an `authors` list of objects.
@@ -2545,7 +2545,7 @@ paths:
       - collections
       summary: Replace collection authors
       description: Replace the collection's authors with the sent entries. Sending back the entries from GET leaves the
-        authors unchanged. An empty list clears the authors. The collection's authors are its `authors` person_list field (`fields.authors`); the same entries are read and changed through the collection update, so every rule of `PersonListEntryCreate` applies.
+        authors unchanged. An empty list clears the authors. To change one author, send the full list from GET with that entry edited; an entry left out is removed, and so are the `is_corresponding`, `affiliations` and `contributors` an entry doesn't send. The collection's authors are its `authors` person_list field (`fields.authors`); the same entries are read and changed through the collection update, so every rule of `PersonListEntryCreate` applies.
       operationId: private_collection_authors_replace
       parameters:
       - name: collection_id
@@ -2570,7 +2570,7 @@ paths:
               description: Location of list of authors
               schema:
                 type: string
-                format: url
+                format: uri
           content: {}
         '400':
           description: Bad Request. The body isn't an `authors` list of objects.
@@ -2603,7 +2603,7 @@ paths:
       tags:
       - collections
       summary: Add collection authors
-      description: Add the sent entries to the end of the collection's authors. The collection's authors are its `authors` person_list field (`fields.authors`); the same entries are read and changed through the collection update, so every rule of `PersonListEntryCreate` applies.
+      description: Add the sent entries to the end of the collection's authors. The stored entries are kept as GET returns them; in a 422 the path indexes the sent list (`authors[0]` is the first sent entry). The collection's authors are its `authors` person_list field (`fields.authors`); the same entries are read and changed through the collection update, so every rule of `PersonListEntryCreate` applies.
       operationId: private_collection_authors_add
       parameters:
       - name: collection_id
@@ -2628,7 +2628,7 @@ paths:
               description: Location of list of authors
               schema:
                 type: string
-                format: url
+                format: uri
           content:
             application/json:
               schema:
