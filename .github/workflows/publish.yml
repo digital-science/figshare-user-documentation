@@ -21,10 +21,9 @@ env:
   AWS_REGION: eu-west-1
   ECR_REGISTRY: "942286566325.dkr.ecr.eu-west-1.amazonaws.com"
   ECR_REPO: figshare/user_documentation
-  # ranjani/update-dev-configs, not master - that's still the active
-  # branch the figshare.dev environment's ArgoCD tracks today.
+  # master - the branch the figshare.dev environment's ArgoCD tracks.
   INFRA_REPO: digital-science/figshare-infrastructure
-  INFRA_BRANCH: ranjani/update-dev-configs
+  INFRA_BRANCH: master
   INFRA_PATCH_FILE: manifests/apps/docs/overlays/development/patch-deployment.yaml
 
 jobs:
