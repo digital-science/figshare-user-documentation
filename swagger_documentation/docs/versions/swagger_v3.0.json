@@ -1431,7 +1431,7 @@
                     "collections"
                 ],
                 "summary": "Replace collection authors",
-                "description": "Replace the collection's authors with the sent entries. Sending back the entries from GET leaves the authors unchanged. An empty list clears the authors. To change one author, send the full list from GET with that entry edited; an entry left out is removed, and so are the `is_corresponding`, `affiliations` and `contributors` an entry doesn't send. The collection's authors are its `authors` person_list field (`fields.authors`); the same entries are read and changed through the collection update, so every rule of `PersonListEntryCreate` applies.",
+                "description": "Replace the collection's authors with the sent entries. Sending back the entries from GET leaves the authors unchanged. An empty list clears the authors. To change one author, send the full list from GET with that entry edited; an entry left out is removed, and so are the `affiliations` and `contributors` an entry doesn't send. The collection's authors are its `authors` person_list field (`fields.authors`); the same entries are read and changed through the collection update, so every rule of `PersonListEntryCreate` applies.",
                 "operationId": "private_collection_authors_replace",
                 "parameters": [
                     {
@@ -8243,7 +8243,7 @@
                     "items"
                 ],
                 "summary": "Replace item authors",
-                "description": "Replace the item's authors with the sent entries. Sending back the entries from GET leaves the authors unchanged. An empty list clears the authors. To change one author, send the full list from GET with that entry edited; an entry left out is removed, and so are the `is_corresponding`, `affiliations` and `contributors` an entry doesn't send. The item's authors are its `authors` person_list field (`fields.authors`); the same entries are read and changed through the item update, so every rule of `PersonListEntryCreate` applies.",
+                "description": "Replace the item's authors with the sent entries. Sending back the entries from GET leaves the authors unchanged. An empty list clears the authors. To change one author, send the full list from GET with that entry edited; an entry left out is removed, and so are the `affiliations` and `contributors` an entry doesn't send. The item's authors are its `authors` person_list field (`fields.authors`); the same entries are read and changed through the item update, so every rule of `PersonListEntryCreate` applies.",
                 "operationId": "private_item_authors_replace",
                 "parameters": [
                     {
@@ -17347,21 +17347,33 @@
                 "x-tag": "authors"
             },
             "PersonListEntry": {
+                "description": "One entry of a person_list field (`authors`, `supervisors` and custom person lists) as returned on GET: a person (`type` 1, `PersonListPerson`) or an organization (`type` 2, `PersonListOrganization`). Each entry points to a user: an account user, a ghost user (no account, no public profile) or an organization user. The user's current values are merged with what was overridden on this item, emails are masked, and empty values are left out. Order is the array order. The entry is in the write format, so it can be sent back unchanged (`PersonListEntryCreate`): unchanged values aren't stored as overrides, masked emails are ignored and the read-only `has_account` / `is_active` are dropped.",
+                "oneOf": [
+                    {
+                        "$ref": "#/components/schemas/PersonListPerson"
+                    },
+                    {
+                        "$ref": "#/components/schemas/PersonListOrganization"
+                    }
+                ],
+                "x-tag": "authors"
+            },
+            "PersonListPerson": {
                 "type": "object",
-                "description": "One entry of a person_list field (`authors`, `supervisors` and custom person lists) as returned on GET. Each entry points to a user: an account user, a ghost user (no account, no public profile) or an organization user (`type` 2). The user's current values are merged with what was overridden on this item, emails are masked, and empty values are left out. Order is the array order. The entry is in the write format, so it can be sent back unchanged (`PersonListEntryCreate`): unchanged values aren't stored as overrides, masked emails are ignored and `has_account` is dropped.",
+                "description": "A person (`type` 1) in a person_list field, as returned on GET.",
                 "required": [
                     "type",
                     "user_id",
-                    "has_account"
+                    "has_account",
+                    "is_active"
                 ],
                 "properties": {
                     "type": {
                         "type": "integer",
                         "enum": [
-                            1,
-                            2
+                            1
                         ],
-                        "description": "1 = person, 2 = organization.",
+                        "description": "1 = person.",
                         "example": 1
                     },
                     "user_id": {
@@ -17372,23 +17384,22 @@
                     "has_account": {
                         "type": "boolean",
                         "readOnly": true,
-                        "description": "Whether the user has a Figshare account. Read only, ignored on write.",
+                        "description": "Whether the person has a Figshare account (false for ghost users). Read only, ignored on write.",
+                        "example": true
+                    },
+                    "is_active": {
+                        "type": "boolean",
+                        "readOnly": true,
+                        "description": "Whether the person has a Figshare account and that account is active. Read only, ignored on write.",
                         "example": true
                     },
                     "first_name": {
                         "type": "string",
-                        "description": "People only.",
                         "example": "Jane"
                     },
                     "last_name": {
                         "type": "string",
-                        "description": "People only.",
                         "example": "Smith"
-                    },
-                    "name": {
-                        "type": "string",
-                        "description": "Organizations only.",
-                        "example": "Wellcome Sanger Institute"
                     },
                     "email": {
                         "type": "string",
@@ -17397,27 +17408,11 @@
                     },
                     "orcid_id": {
                         "type": "string",
-                        "description": "People only.",
                         "example": "0000-0002-1825-0097"
-                    },
-                    "ror_id": {
-                        "type": "string",
-                        "description": "Organizations only. Short ROR id of the organization.",
-                        "example": "05cy4wa09"
-                    },
-                    "contributors": {
-                        "type": "string",
-                        "description": "Organizations only. Free-text list of the people behind the organization.",
-                        "example": "Jane Smith, John Doe"
-                    },
-                    "is_corresponding": {
-                        "type": "boolean",
-                        "description": "Corresponding author. `authors` field only; returned only when true.",
-                        "example": true
                     },
                     "affiliations": {
                         "type": "array",
-                        "description": "People only. Affiliations on this item.",
+                        "description": "The person's affiliations on this item.",
                         "items": {
                             "$ref": "#/components/schemas/PersonListAffiliation"
                         }
@@ -17425,9 +17420,52 @@
                 },
                 "x-tag": "authors"
             },
+            "PersonListOrganization": {
+                "type": "object",
+                "description": "An organization (`type` 2) in a person_list field, as returned on GET. Organizations have no account status (`has_account` / `is_active`) and no affiliations.",
+                "required": [
+                    "type",
+                    "user_id"
+                ],
+                "properties": {
+                    "type": {
+                        "type": "integer",
+                        "enum": [
+                            2
+                        ],
+                        "description": "2 = organization.",
+                        "example": 2
+                    },
+                    "user_id": {
+                        "type": "integer",
+                        "description": "The organization user this entry points to. Use it to send the entry back, or to delete it from the authors.",
+                        "example": 2000001
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Wellcome Sanger Institute"
+                    },
+                    "ror_id": {
+                        "type": "string",
+                        "description": "Short ROR id of the organization itself.",
+                        "example": "05cy4wa09"
+                    },
+                    "email": {
+                        "type": "string",
+                        "description": "Masked email (e.g. `i**o@sanger.ac.uk`). A masked email sent back is ignored.",
+                        "example": "i**o@sanger.ac.uk"
+                    },
+                    "contributors": {
+                        "type": "string",
+                        "description": "Free-text list of the people behind the organization on this item.",
+                        "example": "Jane Smith, John Doe"
+                    }
+                },
+                "x-tag": "authors"
+            },
             "PersonListEntryCreate": {
                 "type": "object",
-                "description": "One entry of a person_list field (`authors`, `supervisors` and custom person lists) on create/update, in `fields.<field name>` or in the authors endpoints. Validation errors return 422 with the path of the offending value, e.g. `authors[1].affiliations[0].ror_id`.\n\n**With `user_id`** (a user from the author search, or an entry read back from GET): the user must exist. For people, `first_name`, `last_name`, `email` and `orcid_id` are compared with the user and only differences are stored as overrides on this item; for these keys a missing key keeps the stored override and `null` clears the value on this item. For organizations only `email` can be overridden (`name` and `ror_id` are ignored). `is_corresponding`, `affiliations` and `contributors` belong to the entry, not to the user: they are stored as sent, so leaving them out removes them.\n\n**Without `user_id`** (a typed entry): `type` is required. People need `last_name`, organizations need `name`. The entry is matched exactly to an existing user on name + email + ORCID (people) or name + `ror_id` + email (organizations), all three non-empty; otherwise a new user without an account (ghost person or organization) is created.\n\nRules: the same user once per field; at most 2 corresponding authors; at most 10 affiliations per person; strings up to 255 characters (`contributors` up to 2000); the account's `max_authors` limit (default 100) applies to every person_list. `is_corresponding` is allowed in `authors` only. Unknown keys are rejected; `has_account` (returned on GET) is ignored.",
+                "description": "One entry of a person_list field (`authors`, `supervisors` and custom person lists) on create/update, in `fields.<field name>` or in the authors endpoints: a person (`type` 1) or an organization (`type` 2). Some keys belong to one type only (see each key); a key of the other type is rejected. Validation errors return 422 with the path of the offending value, e.g. `authors[1].affiliations[0].ror_id`.\n\n**With `user_id`** (a user from the author search, or an entry read back from GET): the user must exist. For people, `first_name`, `last_name`, `email` and `orcid_id` are compared with the user and only differences are stored as overrides on this item; for these keys a missing key keeps the stored override and `null` clears the value on this item. For organizations only `email` can be overridden (`name` and `ror_id` are ignored). `affiliations` and `contributors` belong to the entry, not to the user: they are stored as sent, so leaving them out removes them.\n\n**Without `user_id`** (a typed entry): `type` is required. People need `last_name`, organizations need `name`. The entry is matched exactly to an existing user on name + email + ORCID (people) or name + `ror_id` + email (organizations), all three non-empty; otherwise a new user without an account (ghost person or organization) is created.\n\nRules: the same user once per field; at most 10 affiliations per person; strings up to 255 characters (`contributors` up to 2000); the account's `max_authors` limit (default 100) applies to every person_list. Unknown keys are rejected, including `is_corresponding`, which is no longer supported; `has_account` and `is_active` (returned on GET) are ignored.",
                 "properties": {
                     "user_id": {
                         "type": "integer",
@@ -17471,20 +17509,14 @@
                     "ror_id": {
                         "type": "string",
                         "nullable": true,
-                        "description": "Organizations only, for matching/creating the organization. Short id or `https://ror.org/<id>`.",
+                        "description": "Organizations only. The organization's own ROR id (short id or `https://ror.org/<id>`), used to match an existing organization or to create a new one. A person's institutions go in `affiliations[].ror_id`.",
                         "example": "05cy4wa09"
                     },
                     "contributors": {
                         "type": "string",
                         "nullable": true,
-                        "description": "Organizations only. Stored as sent; leaving it out removes it.",
+                        "description": "Organizations only. Free-text list of the people behind the organization. Stored as sent; leaving it out removes it.",
                         "example": "Jane Smith, John Doe"
-                    },
-                    "is_corresponding": {
-                        "type": "boolean",
-                        "nullable": true,
-                        "description": "`authors` field only. Stored as sent; leaving it out unsets it.",
-                        "example": true
                     },
                     "affiliations": {
                         "type": "array",
@@ -17519,7 +17551,6 @@
                         {
                             "user_id": 1000006,
                             "last_name": "Smith-Jones",
-                            "is_corresponding": true,
                             "affiliations": [
                                 {
                                     "ror_id": "041kmwe10",
