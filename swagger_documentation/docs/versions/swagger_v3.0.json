@@ -17390,7 +17390,7 @@
                     "is_active": {
                         "type": "boolean",
                         "readOnly": true,
-                        "description": "Whether the person has a Figshare account and that account is active. Read only, ignored on write.",
+                        "description": "Whether the person has a Figshare account that is active (for a person linked to several accounts, any one of them). This is the account status, not the user-level `is_active` returned by v2 for authors. Read only, ignored on write.",
                         "example": true
                     },
                     "first_name": {
