@@ -20,8 +20,9 @@ permissions:
 env:
   AWS_REGION: eu-west-1
   # API host baked into the stage image's Swagger pages (the stage environment's parallel-run
-  # domain; see figshare-infrastructure docs/stage-eks-plan.md). Changed at cutover.
-  STAGE_API_URL: api-eks.figsh.com
+  # domain; see figshare-infrastructure docs/stage-eks-plan.md). api.figsh.com has been served from
+  # stage EKS since 2026-11-23, so the real name is baked in (was api-eks.figsh.com, internal-only).
+  STAGE_API_URL: api.figsh.com
   ECR_REGISTRY: "942286566325.dkr.ecr.eu-west-1.amazonaws.com"
   ECR_REPO: figshare/user_documentation
   # master - the branch the figshare.dev environment's ArgoCD tracks.
